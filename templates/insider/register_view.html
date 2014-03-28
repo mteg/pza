@@ -1,0 +1,25 @@
+<input type="hidden" class="dialog-title" value="Podgląd">
+{{include file="insider/table_view.html"}}
+<h3>Operacje wykonane w ramach transakcji {{$xid}}</h3>
+<table class="plain">
+    <tr>
+        <th>ID</th>
+        <th>Typ</th>
+        <th>Tabela</th>
+        <th>Rekord</th>
+        <th>Pole</th>
+        <th>Jest</th>
+        <th>Było</th>
+    </tr>
+    {{foreach from=$transaction item=i key=k}}
+    <tr>
+        <td>{{$k}}</td>
+        <td>{{$i.type|escape:'html'}}</td>
+        <td>{{$i.table|escape:'html'}}</td>
+        <td>{{$i.record|escape:'html'}}</td>
+        <td>{{$i.field|escape:'html'}}</td>
+        <td>{{$i.contents|escape:'html'|nl2br}}</td>
+        <td>{{$i.previous|escape:'html'|nl2br}}</td>
+    </tr>
+    {{/foreach}}
+</table>

@@ -1,0 +1,28 @@
+{{block name="dialog"}}
+<input type="hidden" class="dialog-title" value="Import spisów treści">
+
+<div class="source-domain">
+    <input type="hidden" name="source" value="{{$source|escape:'html'}}">
+    <input type="hidden" name="params" value="{{$params|escape:'html'}}">
+    <form>
+        <div class="table-import table-form">
+            {{include file="insider/field.html" i=$this->fields["link"] k="link"}}
+            <div>
+                <span>Spis treści</span>
+                <span class="fit">
+                <textarea name="entries" rows=5 cols=50></textarea>
+                </span>
+                <div></div>
+            </div>
+            <div>
+                <span>Wczytane dane</span>
+                <span class="fit import-details">
+                    &nbsp;
+                </span>
+                <div></div>
+            </div>
+        </div>
+
+    </form>
+</div>
+{{/block}}

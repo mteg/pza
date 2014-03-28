@@ -1,0 +1,20 @@
+{{extends "insider/table_view.html"}}
+{{block name="fields" append}}
+{{if !$restricted}}
+<div>
+    <span>Przynależność</span>
+    <span class="fit">
+        {{include file="insider/user_memberships.html"}}
+    </span>
+    <div></div>
+</div>
+
+<div>
+    <span>Uprawnienia</span>
+    <span class="fit">
+        {{include file="insider/user_entitlements.html"}}
+    </span>
+    <div></div>
+</div>
+{{/if}}
+{{/block}}

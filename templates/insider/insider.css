@@ -1,0 +1,249 @@
+
+div.menu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 15em;
+    height: 100%;
+}
+
+div#content {
+    padding-left: 15em;
+}
+
+.table-op-menu {
+    display: none;
+    position: absolute;
+    width: 10em;
+}
+
+.table-op-menu a {
+    font-size: 10pt;
+}
+
+ul.hmenu {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul.hmenu > li {
+    float: left;
+    padding: 2pt;
+    margin-right: 10pt;
+}
+
+ul.hmenu > li > a {
+    color: black;
+    text-decoration: none;
+}
+
+table.table-table {
+    clear: both;
+    width: 100%;
+}
+
+table.table-table > tbody td {
+    cursor: pointer;
+}
+
+div.table-form > div > span {
+    display: block;
+}
+
+div.table-form > div > span {
+    margin-left: 10em;
+}
+
+div.table-form > div > span:first-child {
+    width: 10em;
+    margin-left: 0;
+    position: absolute;
+    left: 0;
+}
+
+div.table-form > div > div:last-child {
+    clear: both;
+}
+
+span.fit {
+    overflow: hidden;
+    float: none;
+    position: relative;
+}
+
+span.fit > input {
+    width: 99%;
+}
+
+span.fit > textarea {
+    width: 99%;
+}
+
+/* Schowaj operacje na wielu obiektach w menu akcji na jednym obiekcie */
+.table-op-menu-multiple .table-action-single {
+    display: none;
+}
+
+
+.table-form > div {
+    width: 100%;
+    border-bottom: #ccc dotted 1px;
+    padding-top: 5pt;
+    padding-bottom: 5pt;
+    position: relative;
+}
+
+.table-form > div:last-child {
+    border-bottom: none;
+}
+
+.table-table {
+    border-collapse: collapse;
+}
+
+.table-table th {
+    text-align: left;
+    background: #ccc;
+}
+
+.table-table th a {
+    color: black;
+    text-decoration: none;
+}
+
+.table-table th a:hover {
+    text-decoration: underline;
+}
+
+.table-table th, .table-table td {
+    padding: 2pt;
+}
+
+.table-table td:first-child {
+    text-align: right;
+}
+
+.table-table tr:nth-child(even) td {
+    background: #ddd;
+}
+
+.table-table tr:nth-child(odd) td {
+    background: #eee;
+}
+
+img.ui-icon {
+    display: inline;
+    text-indent: 0;
+    overflow: visible;
+
+}
+
+.clear {
+    clear: both;
+}
+
+table.plain {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.plain th, table.plain td {
+    font-size: smaller;
+}
+
+table.plain th {
+    border-bottom: solid 1px black;
+    text-align: left;
+}
+
+table.plain td, table.plain th {
+    padding-top: 2pt;
+    padding-bottom: 2pt;
+    padding-right: 5pt;
+}
+
+table tr.inactive td {
+    color: #888;
+}
+
+table.plain td {
+    border-bottom: dotted 1px #888;
+}
+
+table.plain tr:last-child td {
+    border: none;
+}
+
+
+div.checkin-form {
+    width: 30em;
+}
+
+div.error {
+    color: #800;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.faded {
+    opacity: 0.4;
+    z-index: -10;
+}
+
+.field-comment {
+    font-size: smaller;
+}
+
+table.import {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.import tr th {
+    background: #aaa;
+}
+
+table.import tr.even td {
+    background: #ddd;
+}
+
+table.import tr td {
+    padding-left: 0.5em;
+}
+
+table.import tr.line td {
+    border-top: black solid 1px;
+}
+
+table.import tr.line td:nth-child(1) {
+    width: 2em;
+    text-align: right;
+}
+
+table.import tr.line td:nth-child(2) {
+    font-family: monospace;
+}
+
+table.import tr.line td:nth-child(3) {
+    width: 8em;
+    text-align: center;
+}
+
+.green {
+    color: #080;
+    font-weight: bold;
+}
+
+.yellow {
+    color: #880;
+    font-weight: bold;
+}
+
+a {
+    color: black;
+}
+
+.ui-menu .ui-menu-item {
+    position: relative;
+    z-index: 10;
+}

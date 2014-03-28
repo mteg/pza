@@ -1,0 +1,18 @@
+{{extends "insider/table_view.html"}}
+{{block name="fields" append}}
+<div>
+    <span>Odnośniki</span>
+    <span class="fit">
+        {{if $links}}
+        <ul>
+        {{foreach from=$links item=i}}
+            <li><a target="_blank" href="{{$i|escape:'html'}}">{{$i|escape:'html'}}</a></li>
+        {{/foreach}}
+        </ul>
+        {{else}}
+        <i>(brak odnośników)</i>
+        {{/if}}
+    </span>
+    <div></div>
+</div>
+{{/block}}

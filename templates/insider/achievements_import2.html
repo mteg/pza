@@ -1,0 +1,58 @@
+{{extends "insider/action.html"}}
+{{block name="body"}}
+<h2>Import wyników do bazy PZA</h2>
+<p>
+    Poniższe informacje zostały odczytane z przesłanego pliku z wynikami.
+</p>
+<p>
+    <b>Uwaga: dane nie zostały jeszcze zapisane do bazy PZA!</b>  Sprawdź poprawność
+    przetwarzania pliku, a następnie zatwierdź wczytanie wyników
+    do bazy przyciskiem na dole strony.
+</p>
+<form action="{{$source}}/import?{{$params}}&{{$colparams}}" method="POST" enctype="multipart/form-data">
+<table class="import">
+<tr>
+    <th>Wiersz</th>
+    <th>Treść linii</th>
+    <th>Status</th>
+</tr>
+{{foreach from=$lines item=i key=n}}
+<tr class="line{{if $i@iteration is even}} even{{/if}}">
+    <td>{{$n + 1}}</td>
+    <td>{{$i.text|escape:'html'|nl2br}}
+        <input type="hidden" name="lines[{{$n}}]" value="{{$i.text|escape:'html'}}">
+    </td>
+    <td>
+        &nbsp;
+        {{if $i.status == "g"}}<span class="green">OK</span>{{/if}}
+        {{if $i.status == "x"}}<span class="yellow">Ign</span>{{/if}}
+    </td>
+</tr>
+{{if $i.status != "g" && $i.status != "x"}}
+<tr class="{{if $i@iteration is even}}even{{/if}}">
+    <td>&nbsp;</td>
+    <td colspan=2>
+            {{if $i.status == "e"}}
+                {{foreach from=$i.err key=k item=e}}
+                    <div class="error">[{{$k}}] {{$e|escape:'html'}}</div>
+                {{/foreach}}
+            {{/if}}
+            {{if $i.status == "u"}}<div class="error">Nieznany wpis na zawody! Sprawdź nazwisko/identyfikator wpisu.</div>{{/if}}
+        </div>
+    </td>
+</tr>
+{{/if}}
+{{foreachelse}}
+<tr>
+    <td>&nbsp;</td>
+    <td><i>Brak danych wejściowych!</i></td>
+    <td>&nbsp;</td>
+</tr>
+{{/foreach}}
+</table>
+<input type="submit" value="Zatwierdź">
+<div style="margin-top: 20pt; font-size: smaller;">
+    ... lub <a href="{{$source}}/import?{{$params}}&{{$colparams}}">&laquo; Wróć i prześlij plik ponownie</a>
+</div>
+</form>
+{{/block}}

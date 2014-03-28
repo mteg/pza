@@ -1,0 +1,133 @@
+
+body {
+    background: #eeeeee;
+    padding: 0; margin: 0;
+}
+
+
+body > div {
+    margin-left: 2em;
+    margin-right: 2em;
+    background: white;
+    position: relative;
+}
+
+div#top_menu {
+    background: #0065b5;
+    border-top: solid 0.5em #0045a5;
+    color: white;
+    font-family: sans-serif;
+}
+
+div#top_menu > a {
+    font-weight: bold;
+    font-variant: small-caps;
+    color: white;
+    text-decoration: none;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+}
+
+div#bottom {
+    background: transparent;
+    color: #888;
+    font-size: smaller;
+    padding-left: 5em;
+}
+
+div#middle {
+    display: table;
+    width: 100%;
+}
+
+div#middle > div {
+    display: table-cell;
+}
+
+div#menu {
+    width: 18em;
+    background: #0065b5;
+    color: white;
+    font-family: verdana, sans-serif;
+    border-right: #ccc solid 1px;
+    border-bottom: #ccc solid 1px;
+    border-left: #0045a5 solid 0.2em;
+}
+
+div#content {
+    padding: 10pt;
+    padding-right: 20pt;
+    font-family: verdana, sans-serif;
+    border-left: #ccc solid 1px;
+    border-bottom: #ccc solid 1px;
+}
+
+div#footer {
+    clear: both;
+}
+
+div#top {
+    height: 10em;
+    overflow: hidden;
+    text-align: center;
+    border-top: #ccc solid 0.4em;
+    border-bottom: #ccc solid 0.4em;
+    background: #eeeeee;
+    border-left: #ccc solid 1px;
+    border-right: #ccc solid 1px;
+}
+
+div#top > img {
+    height: 100%;
+}
+
+h1, h2, h3 {
+    font-family: "Georgia", sans-serif;
+}
+
+h1 { color: #0065b5; }
+h2 { color: #555; }
+h3 { color: #888; }
+
+div#content > p {
+    text-align: justify;
+    position: relative;
+}
+
+div.column {
+    display: table-cell;
+    border-left: dotted 2px #ccc;
+    border-bottom: solid #ccc 1px;
+    width: 15em;
+    padding: 0.5em;
+}
+
+div.column > h3, div.columns > div > h3, div.columns > div > h2 {
+    margin-bottom: 0;
+}
+
+div.column > p {
+    margin: 0;
+    font-size: smaller;
+    text-align: justify;
+}
+
+div.columns > div > p
+{
+    text-align: justify;
+    margin: 0;
+}
+
+div.columns {
+    display: table-row;
+}
+
+div.columns > div {
+    display: table-cell;
+    padding: 5pt;
+    border-left: dotted 2px #ccc;
+}
+
+div.columns > div:first-child {
+    border-left: none;
+}

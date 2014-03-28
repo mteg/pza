@@ -1,0 +1,23 @@
+<input type="hidden" class="dialog-title" value="Wersje pliku">
+<table class="plain">
+    <tr>
+        <th>Lp.</th>
+        <th>Data</th>
+        <th>Użytkownik</th>
+        <th>Typ</th>
+        <th>Nazwa krótka</th>
+    </tr>
+    {{foreach from=$versions item=i key=k}}
+    <tr>
+        <td>{{$i@iteration}}.</td>
+        <td>{{$i.creat}}</td>
+        <td>{{$i.user|escape:'html'}}</td>
+        <td>{{$i.mime|escape:'html'}}</td>
+        <td><a target="_new" href="/insider/content/download?id={{$request.id}}&version={{$i.file_version}}">{{if $i.short}}{{$i.short|escape:'html'}}{{else}}<i>(brak)</i>{{/if}}</a></td>
+    </tr>
+    {{foreachelse}}
+    <tr>
+        <td colspan=5><i>(brak wersji pliku)</i></td>
+    </tr>
+    {{/foreach}}
+</table>

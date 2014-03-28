@@ -1,0 +1,26 @@
+<p>
+<b>Uwaga: podobne obiekty!</b>
+</p>
+<p>
+<small>
+    <i>W bazie PZA występuja powyższe, podobne obiekty, znajdujące się
+        we wskazanym kraju ({{$request.country}}). Prosimy o sprawdzenie,
+        czy nie dopisujesz jednego z obiektów podwójnie. Aby przejść
+        do podglądu, możesz kliknąć na wierszu tabeli.</i>
+</small>
+</p>
+
+<table class="plain">
+    <tr>
+        <th>ID</th>
+        <th>Nazwa</th>
+        <th>Rejon</th>
+    </tr>
+    {{foreach from=$similar item=i key=k}}
+    <tr>
+        <td>{{$i.id}}</td>
+        <td>{{$i.name|escape:'html'}}</td>
+        <td>{{$i.region|escape:'html'}}</td>
+    </tr>
+    {{/foreach}}
+</table>

@@ -1,0 +1,18 @@
+{{extends "insider/table_edit.html"}}
+{{block name="fields" prepend}}
+{{if $this->type == "file"  || $this->type == "paperback" || $this->type == "article" || $this->type == "photo"}}
+<div>
+    <span>
+        {{if $this->type == "article"}}Zdjęcia{{else}}Pliki{{/if}}
+    </span>
+    <span>
+        {{if $this->type == "article" || $this->type == "photo"}}
+        {{include file="insider/file_upload.html" class="photos"}}
+        {{else}}
+        {{include file="insider/file_upload.html"}}
+        {{/if}}
+    </span>
+    <div></div>
+</div>
+{{/if}}
+{{/block}}

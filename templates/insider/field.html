@@ -1,0 +1,37 @@
+{{if !$i.noedit}}
+<div>
+    <span>{{$i.name|escape:'html'}}</span>
+        <span {{if !$nofit}}class="fit"{{/if}}>
+            {{if $i.type == "html"}}
+            <textarea  {{if $disabled.$k}}disabled{{/if}} rows=5 cols=50 name="{{$k|escape:'html'}}" class="html">{{$data.$k|escape:'html'}}</textarea>
+            {{elseif $i.type == "area"}}
+            <textarea  {{if $disabled.$k}}disabled{{/if}} rows=5 cols=50 name="{{$k|escape:'html'}}">{{$data.$k|escape:'html'}}</textarea>
+            {{elseif $i.type == "select"}}
+            {{if $disabled.$k}}
+            {{html_options name=$k options=$i.options selected=$data.$k disabled=true}}
+            {{else}}
+            {{html_options name=$k options=$i.options selected=$data.$k}}
+            {{/if}}
+            {{elseif $i.type == "flags"}}
+            <input type="hidden" name="{{$k|escape:'html'}}" value="{{$data.$k|escape:'html'}}" class="table-flags" {{if $disabled.$k}}disabled{{/if}}>
+            {{foreach from=$i.options item=name key=letter}}
+            <div><input type="checkbox" value="{{$letter}}" {{if $disabled.$k}}disabled{{/if}}> {{$name|escape:'html'}}</div>
+            {{/foreach}}
+            {{else}}
+            <input type="{{if $i.type == 'password'}}password{{else}}text{{/if}}" name="{{$k|escape:'html'}}" value="{{$data.$k|escape:'html'}}"
+                {{if $i.size}} size="{{$i.size}}"{{/if}}
+                {{if $i.ref || $i.type == "list" || $i.consistency}}class="table-autocomplete"{{/if}}
+                {{if $i.type == "date"}}class="table-datepicker"{{/if}}
+                {{if $disabled.$k}}disabled{{/if}}
+            >
+            {{/if}}
+            <div class="error">{{if $err.$k}}{{$err.$k}}{{/if}}</div>
+            {{if $i.comment}}
+            <div class="field-comment">
+            {{$i.comment}}
+            </div>
+            {{/if}}
+        </span>
+    <div></div>
+</div>
+{{/if}}

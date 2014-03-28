@@ -1,0 +1,26 @@
+{{block name="dialog"}}
+{{if $data.id}}
+<input type="hidden" class="dialog-title" value="Edycja">
+{{else}}
+<input type="hidden" class="dialog-title" value="Dodawanie">
+{{/if}}
+
+<div class="source-domain">
+<input type="hidden" name="source" value="{{$source|escape:'html'}}">
+<input type="hidden" name="params" value="{{$params|escape:'html'}}">
+<form>
+    <div class="table-edit table-form">
+        {{if $data.id}}
+        <input type="hidden" name="id" value="{{$data.id}}">
+        {{/if}}
+        {{block name="fields"}}
+        {{foreach from=$this->fields item=i key=k}}
+        {{block name="field"}}
+        {{include file="insider/field.html"}}
+        {{/block}}
+        {{/foreach}}
+        {{/block}}
+    </div>
+</form>
+</div>
+{{/block}}

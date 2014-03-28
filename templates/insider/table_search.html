@@ -1,0 +1,26 @@
+<input type="hidden" class="dialog-title" value="Wyszukiwanie">
+<div class="table-search table-form">
+    {{foreach from=$this->filters item=i key=k}}
+    <div>
+        <span>{{$i.name|escape:'html'}}</span>
+        <span>
+            {{if $i.type == "select_filter"}}
+            {{html_options name=$k options=$i.options}}
+            {{else}}
+            <input type="text" name="{{$k|escape:'html'}}"
+                {{if $i.ref || $i.type == "list" || $i.consistency}}class="table-autocomplete"{{/if}}
+            >
+            {{/if}}
+        </span>
+    </div>
+    {{/foreach}}
+    <div>
+        <small>
+            Znaki specjalne: * (zastępuje dowolną ilość znaków), ? (zastępuje jeden znak),
+            (operator LUB), & (operator ORAZ), ~ (operator NIE),
+            nawiasy ( ) (grupowanie operatorów), = (rozpoczynając zapytanie, powoduje
+            wyszukiwanie dokładnie wskazanej treści), / (w wyszukiwaniu po dacie
+            pozwala na wskazanie zakresu dat).
+        </small>
+    </div>
+</div>

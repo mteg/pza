@@ -1,0 +1,16 @@
+{{extends "insider/action.html"}}
+{{block name="content"}}
+<h2>Zmiana hasła</h2>
+<form action="/insider/passwd" method="POST">
+<div class="table-form checkin-form">
+    <div>
+        {{include file="insider/passwd_info.html" passwd=1}}
+    </div>
+    {{include file="insider/field.html" i=[name => "Hasło", "type" => "password"] k="pw1" nofit=1 size=15}}
+    {{include file="insider/field.html" i=[name => "Powtórz hasło", "type" => "password"] k="pw2" nofit=1 size=15}}
+    <div>
+        <input type="submit" value="Zmień hasło">
+    </div>
+</div>
+</form>
+{{/block}}

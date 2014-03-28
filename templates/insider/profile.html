@@ -1,0 +1,19 @@
+{{extends "insider/action.html"}}
+{{block name="head" append}}
+<script language="JavaScript" src="/js/tinymce/jquery.tinymce.min.js"></script>
+<script language="JavaScript" src="/js/tinymce/tinymce.min.js"></script>
+{{/block}}
+{{block name="content"}}
+<form action="{{$source}}" method="POST" class="table-container">
+    <input type="hidden" name="source" value="{{$source|escape:'html'}}">
+    <input type="hidden" name="params" value="{{$params|escape:'html'}}">
+    <div class="table-edit table-form">
+        {{foreach from=$this->fields item=i key=k}}
+        {{include file="insider/field.html"}}
+        {{/foreach}}
+        <div>
+            <input type="submit" value="Zapisz dane">
+        </div>
+    </div>
+</form>
+{{/block}}

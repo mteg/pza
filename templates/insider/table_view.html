@@ -1,0 +1,32 @@
+{{block name="dialog"}}
+<input type="hidden" class="dialog-title" value="Podgląd">
+<div class="table-view table-form source-domain">
+    <input type="hidden" name="id" value="{{$data.id}}">
+    {{include file="insider/table_menu.html"}}
+    <input type="hidden" name="source" value="{{$source|escape:'html'}}">
+    <input type="hidden" name="params" value="{{$params|escape:'html'}}">
+    {{block name="fields"}}
+    {{foreach from=$this->fields item=i key=k}}
+    {{if !$i.noview}}
+    {{if (!$i.suppress) || (($data.$k != "") && ($data.$k != "0") && ($data.$k != "0000-00-00"))}}
+    <div>
+        <span>{{$i.name|escape:'html'}}</span>
+        <span class="fit">
+            {{if $data.$k}}
+            {{if $i.type == "html"}}
+            {{$data.$k}}
+            {{else}}
+            {{$data.$k|escape:'html'|nl2br}}
+            {{/if}}
+            {{else}}
+            &nbsp;
+            {{/if}}
+        </span>
+        <div></div>
+    </div>
+    {{/if}}
+    {{/if}}
+    {{/foreach}}
+    {{/block}}
+</div>
+{{/block}}

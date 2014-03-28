@@ -1,0 +1,20 @@
+{{extends "insider/table_view.html"}}
+{{block name="dialog" append}}
+<h3>{{$ach_title}}</h3>
+<table class="plain">
+    {{include file="insider/table_table.html" this=$o results=$achievements embedded=1}}
+    {{if $o->count > 15}}
+    <tr>
+        <td>&nbsp;</td>
+        <td colspan=99>
+            <i>... łącznie {{$o->count}} wpisów w bazie danych.</i>
+        </td>
+    </tr>
+    {{/if}}
+</table>
+{{if $o->count}}
+<a href="/insider/achievements?ground={{$data.id}}">
+    <small>&raquo; Pełne opcje</small>
+</a>
+{{/if}}
+{{/block}}

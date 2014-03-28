@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+{{function name="action_menu" html=""}}
+    <ul {{$html}}>
+    {{foreach from=$menu key=label item=link}}
+    {{if is_array($link)}}
+        <li><a href='javascript: void(0);'>{{$label}}</a>
+        {{action_menu menu=$link}}
+        </li>
+    {{else}}
+        <li><a href="{{$link}}">{{$label}}</a></li>
+    {{/if}}
+    {{/foreach}}
+    </ul>
+{{/function}}
+
+{{block name="head"}}
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>PZA Insider</title>
+    <link rel="stylesheet" type="text/css" href="/templates/insider/insider.css">
+    <link href="/templates/smoothness/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
+    <script language="JavaScript" src="/js/jquery-1.9.1.js" type="text/JavaScript"></script>
+    <script language="JavaScript" src="/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script language="JavaScript" src="/js/jquery.ui.datepicker-pl.js"></script>
+    <script language="JavaScript" src="/js/insider.js"></script>
+
+    <!-- File upload plugin -->
+    <script src="/js/vendor/jquery.ui.widget.js"></script>
+    <!-- The Templates plugin is included to render the upload/download listings -->
+    <script src="http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
+    <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+    <script src="http://blueimp.github.io/JavaScript-Load-Image/js/load-image.min.js"></script>
+    <!-- The Canvas to Blob plugin is included for image resizing functionality -->
+    <script src="http://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+    <!-- blueimp Gallery script -->
+    <script src="http://blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+    <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+    <script src="/js/jquery.iframe-transport.js"></script>
+    <!-- The basic File Upload plugin -->
+    <script src="/js/jquery.fileupload.js"></script>
+    <!-- The File Upload processing plugin -->
+    <script src="/js/jquery.fileupload-process.js"></script>
+    <!-- The File Upload image preview & resize plugin -->
+    <script src="/js/jquery.fileupload-image.js"></script>
+    <!-- The File Upload audio preview plugin -->
+    <script src="/js/jquery.fileupload-audio.js"></script>
+    <!-- The File Upload video preview plugin -->
+    <script src="/js/jquery.fileupload-video.js"></script>
+    <!-- The File Upload validation plugin -->
+    <script src="/js/jquery.fileupload-validate.js"></script>
+    <!-- The File Upload user interface plugin -->
+    <script src="/js/jquery.fileupload-ui.js"></script>
+
+    <link rel="stylesheet" href="/templates/smoothness/jquery.fileupload.css">
+    <link rel="stylesheet" href="/templates/smoothness/jquery.fileupload-ui.css">
+
+    {{/block}}
+</head>
+<body>
+{{block name="body"}}
+<div class="menu">
+{{block name="menu"}}
+    {{action_menu menu=$this->_menu html="id='menu'"}}
+{{/block}}
+</div>
+<div id="content">
+{{block name="content"}}
+
+{{/block}}
+</div>
+{{/block}}
+</body>
+</html>

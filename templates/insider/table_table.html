@@ -1,0 +1,40 @@
+<thead>
+<tr>
+    <th>Lp.</th>
+{{foreach from=$this->columns item=c}}
+    <th>
+        {{if $embedded}}
+        {{$c.name}}
+        {{else}}
+        <a href='{{$c.order_onclick}}' title="Kliknij, aby posortować wg tej kolumny" class="table-order">{{$c.name}}</a></th>
+        {{/if}}
+{{/foreach}}
+    {{if !$embedded}}
+    <th><span class="ui-icon ui-icon-shuffle table-action-toggle"></span></th>
+    <th><span class="ui-icon ui-icon-triangle-1-e table-action-menu"></span></th>
+    {{/if}}
+</tr>
+</thead>
+<tbody>
+{{foreach from=$results item=r}}
+<tr>
+    <td>{{$r@iteration + $offset}}.</td>
+    {{foreach from=$this->columns key=k item=junk}}
+    <td>{{$r.$k|escape:'html'|nl2br}}</td>
+    {{/foreach}}
+    {{if !$embedded}}
+    <td class="table-noclick">
+        <input type="checkbox"><input type="hidden" name="id" value="{{$r.id}}">
+    </td>
+    <td class="table-noclick">
+        <span class="ui-icon ui-icon-triangle-1-e table-action-menu"></span>
+    </td>
+    {{/if}}
+</tr>
+{{foreachelse}}
+<tr>
+    <td colspan="{{$c@total + 3}}" class="table-noclick"><i>Nic nie znaleziono</i></td>
+</tr>
+{{/foreach}}
+
+</tbody>

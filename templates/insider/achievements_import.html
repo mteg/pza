@@ -1,0 +1,33 @@
+{{extends "insider/action.html"}}
+{{block name="body"}}
+<h2>Import wyników do bazy PZA</h2>
+<p>
+    Wybierz plik CSV z którego zaimportować. Plik musi być zakodowany
+    w standardzie UTF-8 i posiadać pola rozdzielane znakami tabulacji.
+</p>
+<p>
+    W pliku muszą znajdować się kolumny z: <b>identyfikatorem wpisu na zawody</b>,
+    <b>nazwiskiem</b> oraz jednym lub więcej z wyników zawodnika:
+    <b>czas w sekundach</b>, <b>miejsce</b>, <b>punkty</b>.
+</p>
+
+<form action="{{$source}}/import?{{$params}}" method="POST" enctype="multipart/form-data" >
+    <div class="table-form register-form">
+        <div>
+            <span>Plik</span>
+            <span>
+            <input type="file" name="file">
+            <div class="error">{{if $err.file}}{{$err.file}}{{/if}}</div>
+            </span>
+            <div></div>
+        </div>
+        {{foreach from=$cols item=i key=k}}
+        {{include file="insider/field.html" i=$i k=$k nofit=1}}
+        {{/foreach}}
+        <div>
+            <input type="submit" value="Importuj!">
+        </div>
+    </div>
+</form>
+
+{{/block}}

@@ -1,0 +1,21 @@
+{{function name="link" class="table-action" liclass=""}}
+<li{{if $liclass}} class="{{$liclass}}"{{/if}}>
+<a
+        class="{{$class}}"
+        href="{{$href}}"
+{{if $p.target}}target="{{$p.target}}"{{/if}}
+{{if $p.ask}}rel="{{$p.ask|escape:'html'}}"{{/if}}
+>{{if $p.icon}}<img class="ui-icon ui-icon-{{$p.icon}}" src="/i/blank.png">{{/if}} <span>{{$p.name}}</span></a></li>
+{{/function}}
+
+<div class="table-op-menu">
+    <ul>
+        {{foreach from=$this->actions item=i key=a}}
+        {{if $i.multiple}}
+        {{link href=$a p=$i class="table-action table-append-id" liclass="table-action-multiple"}}
+        {{else}}
+        {{link href=$a p=$i class="table-action table-append-id" liclass="table-action-single"}}
+        {{/if}}
+        {{/foreach}}
+    </ul>
+</div>

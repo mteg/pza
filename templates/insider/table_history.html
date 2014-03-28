@@ -1,0 +1,30 @@
+<input type="hidden" class="dialog-title" value="Historia obiektu">
+<div class="table-history">
+<table class="plain">
+<tr>
+    <th>Lp.</th>
+    <th>Data</th>
+    <th>Użytkownik</th>
+    <th>Akcja</th>
+    <th>Pole</th>
+    <th>Zawartość</th>
+</tr>
+<tbody>
+{{foreach from=$history item=r key=n}}
+<tr>
+    <td>{{$r@iteration}}.</td>
+    <td>{{$r.creat}}</td>
+    <td title="{{$r.source}}">{{$r.user}}</td>
+    <td>{{$r.type}}</td>
+    <td>{{$this->fields[$r.field][0]}}</td>
+    <td>{{$r.contents|escape:'html'|nl2br}}</td>
+</tr>
+{{foreachelse}}
+<tr>
+    <td colspan="6"><i>Nic nie znaleziono</i></td>
+</tr>
+{{/foreach}}
+
+</tbody>
+</table>
+</div>

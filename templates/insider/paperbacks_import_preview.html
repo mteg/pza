@@ -1,0 +1,23 @@
+{{function name="prop"}}
+{{if $v}}
+<div><b>{{$p}}: </b> {{$v|escape:'html'}}</div>
+{{/if}}
+{{/function}}
+
+{{foreach from=$a item=i key=$k}}
+<h3>Tytuł: {{$i.title}}</h3>
+{{prop p="Autorzy" v=$i.authors}}
+{{prop p="Strony" v=$i.content}}
+{{prop p="Streszczenie" v=$i.lead}}
+{{if $i.err}}
+{{foreach from=$i.err item=ei key=ek}}
+<div class="error">
+[{{$ek}}] {{$ei|escape:'html'}}
+</div>
+{{/foreach}}
+{{/if}}
+
+{{foreachelse}}
+<i>(nie rozpoznano żadnych prawidłowych elementów spisu treści)</i>
+{{/foreach}}
+

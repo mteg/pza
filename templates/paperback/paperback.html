@@ -1,0 +1,38 @@
+{{if $paperback.pdf_thumbnail}}
+<img src="/{{$paperback.id}}.jpg"/>
+{{/if}}
+
+{{function name="prop"}}
+    {{if $v}}
+    <p>{{$k}}: <b>{{$v|escape:'html'}}</b></p>
+    {{/if}}
+{{/function}}
+
+<span class="paperback-info">
+    {{prop k="Autorzy" v=$paperback.authors}}
+    {{prop k="Data publikacji" v=$paperback.date}}
+</span>
+<div class="paperback-lead">
+    {{$paperback.lead|escape:'html'}}
+</div>
+
+{{if $paperback.index}}
+<table class="paperback-index">
+<tr>
+    <th>Lp.</th>
+    <th>Autorzy</th>
+    <th>Tytuł</th>
+    <th>Strony</th>
+</tr>
+{{foreach from=$paperback.index item=i}}
+    <tr>
+        <td>{{$i@iteration}}.</td>
+        <td>{{$i.authors|escape:'html'}}</td>
+        <td>{{$i.title|escape:'html'}}</td>
+        <td>{{$i.pages|escape:'html'}}</td>
+    </tr>
+{{/foreach}}
+</table>
+{{/if}}
+
+<a href="/{{$paperback.id}}.pdf">&raquo; Pobierz PDF</a>

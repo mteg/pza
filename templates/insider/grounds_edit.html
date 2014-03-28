@@ -1,0 +1,47 @@
+{{extends "insider/table_edit.html"}}
+{{block name="dialog" append}}
+<script language="JavaScript">
+<!--
+
+$(function() {
+    $('.table-edit input[name=country], .table-edit input[name=name]').
+        on("change", function() {
+            var f = $(this).closest(".table-edit");
+
+            var country = f.find("input[name=country]").val();
+            var name = f.find("input[name=name]").val();
+            var id = f.find("input[name=id]").val();
+            var params = $(this).closest(".source-domain").find("input[name=params]").val();
+
+
+            f.find(".dupcheck-warning").remove();
+
+            if(name.length < 3) return;
+            if(!country.length) return;
+
+
+            var o = $("<div class='dupcheck-warning'><img src='/i/ajax.gif'></div>");
+            f.find("input[name=country]").closest("div").
+                    after(o);
+
+            f.find(".dupcheck-warning")
+                .load("/insider/grounds/dupcheck?" + params,
+                    {"country": country, "name": name, "id": id}, function(resp) {
+                        $(this).find("table td").
+                                css("cursor", "pointer").
+                                on("click", function() {
+                                    table_modal(this, "/insider/grounds/click?id=" +
+                                    $(this).parent().children("td:first-child").text() +
+                                    "&" + params);
+                                }
+                        );
+
+                        if(!resp.length)
+                            $(this).remove();
+                });
+    });
+});
+
+-->
+</script>
+{{/block}}

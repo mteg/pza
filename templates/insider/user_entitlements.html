@@ -1,0 +1,21 @@
+<table class="plain">
+    <tr>
+        <th>Lp.</th>
+        <th>Od</th>
+        <th>Do</th>
+        <th>Uprawnienie</th>
+    </tr>
+    {{foreach from=$entitlements item=i key=k}}
+    <tr {{if $i.status == 0}}class="inactive"{{/if}}>
+    <td>{{$k}}.</td>
+    <td>{{$i.starts}}</td>
+    <td>{{if $i.due == "9999-12-31"}}<i>bezterminowo</i>{{else}}{{$i.due}}{{/if}}</td>
+    <td>{{$i.name|escape:'html'}}</td>
+    </tr>
+    {{foreachelse}}
+    <tr>
+        <td colspan=4><i>Brak uprawnień</i></td>
+    </tr>
+    {{/foreach}}
+
+</table>
