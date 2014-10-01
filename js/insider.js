@@ -34,7 +34,7 @@ function init_controls(element)
 
     /* Edycja czegokolwiek powoduje wyczyszczenie błędu */
     $(element).on("change", "input, textarea, select", function() {
-        $(this).siblings("div.error").html("");
+        $(this).removeClass('err').siblings("div.error").html("");
     });
 
     /* Datepicker */
@@ -184,8 +184,13 @@ function q_set(param, val)
     document.location = res[1] + "#" + qstr.substr(1);
 }
 
-$(function() {
-    $('#menu').menu();
-    init_controls($('body'));
+var toggleShow = function (event) {
+    $(this)[$(this).hasClass('ui-state-active') ? 'removeClass' : 'addClass']('ui-state-active');
+};
 
+$(function() {
+    $('.main-header .profile').on('click', toggleShow);
+    $('.navigation').on('click', 'a', toggleShow);
+    
+    init_controls($('body'));
 });

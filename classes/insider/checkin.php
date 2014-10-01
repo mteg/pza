@@ -1,7 +1,6 @@
 <?
 
 // todo może jednak dozwolic login via e-mail
-// todo zmiana hasła przez administratora
 // todo procedura odzyskiwania
 // todo captcha?
 // todo logowanie nadawania/odbierania uprawnień użytkownikom

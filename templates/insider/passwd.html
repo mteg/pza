@@ -2,6 +2,7 @@
 {{block name="content"}}
 <h2>Zmiana hasła</h2>
 <form action="/insider/passwd" method="POST">
+<input type="hidden" name="id" value="{{$request.id|escape:'html'}}">
 <div class="table-form checkin-form">
     <div>
         {{include file="insider/passwd_info.html" passwd=1}}

@@ -6,7 +6,7 @@ class vsql
     static $conf = array(
         "server" => "localhost",
         "username" => "pza",
-        "password" => "...",
+        "password" => "PizetEj",
         "db" => "pza",
     );
 

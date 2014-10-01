@@ -1,0 +1,568 @@
+/* Compiled Less CSS File */
+/* Generated from "style.css" */
+
+/* CSS3 PROPERTIES
+ * --------------------------------------------------
+ */
+/* BACKGROUNDS
+ * --------------------------------------------------
+ */
+/* FLEXBOX
+ * --------------------------------------------------
+ */
+/* IE FIX
+ * --------------------------------------------------
+ */
+body {
+  background: #ffffff;
+  color: #282828;
+  font-size: 9pt;
+  font-family: "Open Sans", Verdana, sans-serif;
+}
+body,
+html {
+  height: 100%;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+a {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+h1 {
+  font-size: 3em;
+  font-weight: 300;
+  padding: 0 20px;
+  margin: 40px 0 0;
+}
+h1.login-header {
+  margin-top: 100px;
+}
+h2 {
+  font-size: 1.5em;
+  font-weight: 300;
+  margin-bottom: 20px;
+}
+/* **********************************************************************
+ * main page elements
+ */
+#page-logo {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  background: #fff;
+  padding: 4px 10px;
+}
+.main-header {
+  padding: 0 20px;
+  height: 40px;
+  margin-left: 300px;
+  text-align: right;
+  background-color: #242738;
+  border-bottom: 1px solid #000;
+  position: relative;
+}
+.main-header:before {
+  content: "";
+  border: solid transparent;
+  border-top-color: #242738;
+  border-width: 40px 0 0 40px;
+  position: absolute;
+  left: -40px;
+  top: 0;
+}
+.profile-info {
+  display: inline-block;
+}
+.profile-info > span {
+  position: relative;
+}
+.profile-info .profile-menu {
+  display: none;
+  position: absolute;
+  right: 2px;
+  background: #fff;
+  text-align: left;
+  list-style: none;
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+.profile-info .profile-menu a {
+  display: block;
+  padding: 10px;
+  -webkit-transition: background 0.2s ease-out;
+  -moz-transition: background 0.2s ease-out;
+  -o-transition: background 0.2s ease-out;
+  transition: background 0.2s ease-out;
+  white-space: nowrap;
+}
+.profile-info .profile-menu a:hover {
+  background-color: #e28f05;
+  color: #fff;
+  text-decoration: none;
+}
+.profile-info .ui-state-active + .profile-menu {
+  display: block;
+}
+.profile-info .profile {
+  padding-left: 15px;
+  position: relative;
+  cursor: pointer;
+  text-transform: uppercase;
+  -webkit-transition: background 0.3s;
+  -moz-transition: background 0.3s;
+  -o-transition: background 0.3s;
+  transition: background 0.3s;
+}
+.profile-info .profile strong {
+  font-weight: 700;
+}
+.profile-info .profile:hover {
+  background-color: #51576d;
+}
+.header-links,
+.profile-info .profile {
+  display: inline-block;
+  line-height: 40px;
+  color: #fff;
+  font-size: 1.08em;
+  font-weight: 300;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+.header-links {
+  margin-right: -20px;
+}
+.header-links a {
+  display: block;
+  padding: 0 20px;
+  -webkit-transition: background 0.3s;
+  -moz-transition: background 0.3s;
+  -o-transition: background 0.3s;
+  transition: background 0.3s;
+}
+.header-links a:hover {
+  background-color: #51576d;
+  text-decoration: none;
+}
+.menu-more {
+  padding-right: 40px;
+  background-repeat: no-repeat;
+  background-image: url(../images/arrow_down.png), url(../images/arrow_up.png);
+  background-position: 100% 50%, 100% 150%;
+  -webkit-transition: background 0.2s ease-out;
+  -moz-transition: background 0.2s ease-out;
+  -o-transition: background 0.2s ease-out;
+  transition: background 0.2s ease-out;
+}
+.menu-more.ui-state-active {
+  background-position: 100% -50%, 100% 50%;
+}
+.action-prev,
+.action-next {
+  background-repeat: no-repeat;
+}
+.action-prev {
+  background-position: 0 50%;
+  background-image: url(../images/arrow_left.png);
+}
+.action-next {
+  background-position: 100% 50%;
+  background-image: url(../images/arrow_right.png);
+}
+.navigation {
+  float: left;
+  width: 250px;
+  margin: 50px 0 40px;
+  border-right: 5px solid #eceff6;
+}
+.navigation li ul {
+  display: none;
+  margin-bottom: 10px;
+}
+.navigation li a.ui-state-active + ul {
+  display: block;
+}
+.navigation a {
+  color: #242738;
+  text-decoration: none;
+  display: block;
+  padding: 5px 30px 5px 40px;
+  -webkit-transition: background 0.2s ease-out;
+  -moz-transition: background 0.2s ease-out;
+  -o-transition: background 0.2s ease-out;
+  transition: background 0.2s ease-out;
+}
+.navigation a.active {
+  font-weight: 800;
+  border-right: 5px solid #848790;
+  margin-right: -5px;
+}
+.navigation a:hover {
+  background-color: #eceff6;
+}
+.navigation ul ul a:hover {
+  background-color: #e28f05;
+  color: #fff;
+}
+.navigation > ul > li + li {
+  background: url(../images/nav_divider.png) no-repeat 50% 0;
+}
+.navigation > ul > li > a {
+  text-transform: uppercase;
+  font-size: 1.17em;
+  line-height: 1.6em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  color: #484e61;
+}
+#content {
+  margin-left: 335px;
+  padding: 40px 20px 40px 0;
+}
+.hmenu {
+  list-style: none;
+  background: #ffffff;
+  margin: 10px 0 20px;
+}
+.hmenu li {
+  display: inline-block;
+  vertical-align: top;
+}
+.hmenu a {
+  font-weight: 600;
+  color: #484e61;
+  padding: 10px 20px;
+  display: block;
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+}
+.hmenu .action-prev {
+  border-right: 1px dotted #ddd;
+  padding-left: 40px;
+}
+.hmenu .action-next {
+  border-left: 1px solid #eee;
+  padding-right: 40px;
+}
+.hmenu a:hover {
+  color: #bd2122;
+  background-color: #fbfbfb;
+}
+.float-right {
+  float: right;
+}
+.gray-panel {
+  background: #fbfbfb;
+  margin: 10px 20px;
+  padding: 30px;
+}
+/* **********************************************************************
+ * icons
+ */
+.icon {
+  display: inline-block;
+  font: NaN a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  background-repeat: no-repeat;
+}
+.icon.logout {
+  background-image: url(../images/icon_logout.png);
+  background-position: 0 0;
+}
+.icon.logout:hover {
+  background-position: 0 -50px;
+}
+.icon.search {
+  width: 16px;
+  height: 16px;
+  background-image: url(../images/icon_search.png);
+  vertical-align: -3px;
+  margin-right: 10px;
+}
+/* **********************************************************************
+ * forms
+ */
+.btn {
+  border: none;
+  display: inline-block;
+  background-color: #a6acba;
+  color: #fff;
+  font-size: 1.08em;
+  font-weight: 600;
+  height: 3em;
+  text-decoration: none;
+  padding: 0 20px;
+  -webkit-transition: background 0.3s;
+  -moz-transition: background 0.3s;
+  -o-transition: background 0.3s;
+  transition: background 0.3s;
+  cursor: pointer;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+a.btn {
+  line-height: 3em;
+}
+.btn:hover,
+.btn:active {
+  background-color: #8991a4;
+  text-decoration: none;
+}
+.form-btns {
+  text-align: right;
+}
+.field {
+  padding: 0 0 15px;
+}
+.field label {
+  display: block;
+  color: #686868;
+  font-size: 1.17em;
+  font-weight: 300;
+  margin-bottom: 5px;
+}
+.field input[type="text"],
+.field input[type="password"],
+.field select,
+.field textarea {
+  background: #FFFFFF;
+  color: #282828;
+  font-family: inherit;
+  font-size: 1.25em;
+  border: 1px solid #dddcdc;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+}
+.field input[type="text"]:focus,
+.field input[type="password"]:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #e28f05;
+  -webkit-box-shadow: 0 0 3px rgba(226, 143, 5, 0.09999999999999998);
+  -moz-box-shadow: 0 0 3px rgba(226, 143, 5, 0.09999999999999998);
+  box-shadow: 0 0 3px rgba(226, 143, 5, 0.09999999999999998);
+}
+.field input[type="text"].err,
+.field input[type="password"].err,
+.field select.err,
+.field textarea.err {
+  border-color: #f2b6b6;
+  color: #bc2220;
+  background: #fefbfb;
+}
+.field input[type="text"].err + .error,
+.field input[type="password"].err + .error,
+.field select.err + .error,
+.field textarea.err + .error {
+  color: #bc2220;
+  margin-top: 5px;
+}
+.field textarea {
+  padding: 10px;
+}
+.field input[type="text"],
+.field input[type="password"] {
+  height: 2.67em;
+  padding: 0 0 0 10px;
+}
+.field select {
+  padding: .5em 0 .5em 10px;
+}
+.notification {
+  display: block;
+  border: 1px solid;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  text-align: left;
+  margin: 30px auto;
+  padding: 10px;
+  padding-right: 20px;
+  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+.notification p + p {
+  margin-top: 5px;
+}
+.notification h3 {
+  font-weight: 600;
+  font-size: 1.17em;
+  margin-bottom: 5px;
+}
+.notification:before {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+  line-height: 20px;
+  position: absolute;
+  right: -10px;
+  top: 5px;
+}
+.notification.desc {
+  border-color: #ddd;
+  background-color: #f6f6f6;
+  color: #888;
+}
+.notification.desc:before {
+  content: "i";
+  background: #999;
+}
+.notification.error {
+  border-color: #f2b6b6;
+  background-color: #fceeee;
+  color: #bc2220;
+}
+.notification.error:before {
+  content: "!";
+  background: #bc2220;
+}
+/* **********************************************************************
+ * tables
+ */
+.table-table {
+  width: 100%;
+  /* table-layout: fixed; */
+
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.table-table th {
+  text-align: left;
+  color: #242738;
+  font-weight: 800;
+  border-bottom: 1px solid #ccc;
+  line-height: 2.4em;
+}
+.table-table td {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-size: 1.08em;
+  -webkit-transition: background 0.2s;
+  -moz-transition: background 0.2s;
+  -o-transition: background 0.2s;
+  transition: background 0.2s;
+  background-color: #fbfbfb;
+  border-top: 2px solid #fff;
+  border-bottom: 1px solid #f1f1f1;
+}
+.table-table tr:nth-child(even) td {
+  background: #f6f6f6;
+}
+.table-table th,
+.table-table td {
+  padding-left: 10px;
+  padding-right: 10px;
+  /* &:first-child {
+      padding-left: 0;
+    }
+    &:last-child {
+      padding-right: 0;
+    } */
+
+}
+.table-table tr:hover td {
+  background-color: #eceff6;
+}
+/* **********************************************************************
+ * views
+ */
+.login-center {
+  width: 580px;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 0 10px;
+}
+.login-center .login-panel {
+  width: 300px;
+  padding-right: 50px;
+  border-right: 1px solid #dadadc;
+  float: left;
+}
+.login-center .login-panel .btn {
+  background-color: #242738;
+}
+.login-center .login-panel .btn:hover,
+.login-center .login-panel .btn:active {
+  background-color: #383d57;
+}
+.login-center .register-panel {
+  margin-left: 400px;
+}
+.register-center {
+  text-align: center;
+  padding: 0 10px;
+}
+.register-center .fields-section {
+  text-align: left;
+  display: inline-block;
+  max-width: 500px;
+  width: 50%;
+  padding-right: 50px;
+  vertical-align: top;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border-right: 1px solid #dadadc;
+}
+.register-center .fields-section + .fields-section {
+  border-right: none;
+  padding-left: 50px;
+  padding-right: 0;
+}
+.register-center .form-btns {
+  text-align: center;
+  margin-top: 40px;
+}
+.register-center .notification.error {
+  margin-top: 0;
+  max-width: 980px;
+}
+/* **********************************************************************
+ * responsive
+ */
+body {
+  min-width: 480px;
+}
+@media screen and (max-width: 720px) {
+  .register-center .fields-section {
+    width: auto;
+    display: block;
+    padding-right: 0;
+    max-width: none;
+    border-right: none;
+  }
+  .register-center .fields-section + .fields-section {
+    border-top: 1px solid #dadadc;
+    padding-left: 0;
+    margin-top: 35px;
+    padding-top: 30px;
+  }
+}

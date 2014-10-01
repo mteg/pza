@@ -1,38 +1,46 @@
 {{extends "insider/action.html"}}
 
+
 {{block name="head" append}}
-<script language="JavaScript" src="/js/insider_table.js"></script>
-<script language="JavaScript" src="/js/tinymce/jquery.tinymce.min.js"></script>
-<script language="JavaScript" src="/js/tinymce/tinymce.min.js"></script>
-<script language="JavaScript" src="/js/tinymce/langs/pl.js"></script>
-
+  <script language="JavaScript" src="/js/insider_table.js"></script>
+  <script language="JavaScript" src="/js/tinymce/jquery.tinymce.min.js"></script>
+  <script language="JavaScript" src="/js/tinymce/tinymce.min.js"></script>
+  <script language="JavaScript" src="/js/tinymce/langs/pl.js"></script>
 {{/block}}
+
 {{block name="content"}}
-<div class="table-container source-domain">
-
-{{include file="insider/table_menu.html"}}
-
-<input type="hidden" name="source" value="{{$source|escape:'html'}}">
-<input type="hidden" name="params" value="{{$params|escape:'html'}}">
-{{function name="buttons"}}
-<ul class="hmenu{{if $class}} {{$class}}{{/if}}">
-    <li><a href="javascript: void(0);" class='table-action-up'><img class="ui-icon ui-icon-arrow-1-n" src="/i/blank.png"> <span>Poprzednie</span></a></li>
-    <li><a href="javascript: void(0);" class="table-action-dn"><img class="ui-icon ui-icon-arrow-1-s" src="/i/blank.png"> <span>Następne</span></a></li>
-    {{foreach from=$this->buttons item=op key=url}}
-    {{link href=$url p=$op}}
-    {{/foreach}}
-    <li class="clear"></li>
-</ul>
-{{/function}}
-{{buttons}}
-<div class="table-dialog"></div>
-<table class="table-table">
-<thead>
-    <tr>
-        <td><i>Wczytywanie danych...</i></td>
-    </tr>
-</thead>
-</table>
-{{buttons class="faded"}}
-</div>
+  <div class="table-container source-domain">
+    {{include file="insider/table_menu.html"}}
+    
+    {{strip}}
+    {{function name="buttons"}}
+      <ul class="hmenu {{if $class}}{{$class}}{{/if}}">
+        <li><a class="table-action-up action-prev"><span>Poprzednie</span></a></li>
+        <li class="float-right"><a class="table-action-dn action-next"><span>Następne</span></a></li>
+        
+        {{foreach from=$this->buttons item=op key=url}}{{link href=$url p=$op}}{{/foreach}}
+      
+      </ul>
+      
+    {{/function}}
+    {{/strip}}
+    
+    
+    <input type="hidden" name="source" value="{{$source|escape:'html'}}">
+    <input type="hidden" name="params" value="{{$params|escape:'html'}}">
+    
+    {{buttons}}
+    
+    <div class="table-dialog"></div>
+    <table class="table-table">
+      <thead>
+        <tr>
+          <td><em>Wczytywanie danych...</em></td>
+        </tr>
+      </thead>
+    </table>
+    
+    {{buttons class="faded"}}
+  
+  </div>
 {{/block}}

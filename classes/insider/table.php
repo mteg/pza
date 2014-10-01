@@ -867,6 +867,21 @@ abstract class insider_table extends insider_action
     }
 
     /**
+     * Funkcja pomocnicza dla validate()
+     *
+     * case-insensitive in_array()
+     */
+
+    static function in_arrayi($needle, $haystack)
+    {
+        foreach($haystack as $el)
+            if(!strcasecmp($el, $needle))
+                return $el;
+
+        return false;
+    }
+
+    /**
      *
      * Funkcja pomocnicza dla metody save()
      *
@@ -920,8 +935,8 @@ abstract class insider_table extends insider_action
                     $a = array($val);
 
                 $a = array_map("trim", $a);
-                foreach($a as $ent)
-                    if(!in_array($ent, $this->fields[$f]["options"]))
+                foreach($a as $q => $ent)
+                    if(!($a[$q] = $this->in_arrayi($ent, $this->fields[$f]["options"])))
                         $err[$f] = "Nieprawidłowa wartość: $ent";
 
                 $data[$f] = implode($mchar, $a);

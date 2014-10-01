@@ -15,14 +15,8 @@
  *
  */
 
-// todo MILESTONES
-// todo menedżer plików multimedialnych
-// todo pliki do pobrania / dokumenty
+// todo łatwiejsze wstawianie (już istniejących) zdjęć
 // todo komunikacja z zapisanymi na event (SMS / e-mail)
-// todo wpłaty na komisje
-// todo ankiety i testy
-// todo rankingi
-// todo wybór płci: małe m nie działa ...
 
 
 require_once "common.php";

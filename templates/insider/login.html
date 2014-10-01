@@ -1,27 +1,37 @@
 {{extends "insider/action.html"}}
+
+{{block name="header"}}{{/block}}
+
 {{block name="body"}}
-<h2>Witamy wewnątrz PZA!</h2>
-<form action="/insider/checkin" method="POST">
-<div class="table-form checkin-form">
-    <div>
-        <p>
-            Wprowadź poniżej swoją nazwę użytkownika i hasło lub
-            <a href="/insider/checkin/register">kliknij, aby się zarejestrować</a>
-        </p>
+<h1 class="login-header">Witamy wewnątrz PZA!</h1>
+
+<section class="gray-panel">
+
+  <div class="login-center">
+    <div class="login-panel">
+    <form action="/insider/checkin" method="post">
+      {{include file="insider/field.html" i=[name => "Nazwa użytkownika"] k="login" data=["login" => $request.login] nofit=1 size=15}}
+      {{include file="insider/field.html" i=[name => "Hasło", "type" => "password"] k="password" nofit=1 size=15}}
+      
+      <a href="/insider/checkin/recover">Nie pamiętam hasła</a>
+      
+      <div class="form-btns">
+        <input type="submit" class="btn" value="Zaloguj się">
+      </div>
+    </form>
     </div>
-    {{include file="insider/field.html" i=[name => "Nazwa użytkownika"] k="login" data=["login" => $request.login] nofit=1 size=15}}
-    {{include file="insider/field.html" i=[name => "Hasło", "type" => "password"] k="password" nofit=1 size=15}}
-    <div>
-        <p>
-            <small>
-                Nie pamiętasz...?
-                <a href="/insider/checkin/recover">Procedura odzyskiwania hasła.</a>
-            </small>
-        </p>
+    <div class="register-panel">
+      <h2>Nie posiadasz konta?</h2>
+      <a href="/insider/checkin/register" class="btn">Zarejestruj się</a>
     </div>
-    <div>
-        <input type="submit" value="Zaloguj się">
-    </div>
-</div>
-</form>
+  </div>
+  
+</section>
+
+<script type="text/javascript">
+$('[name="login"]').trigger('focus').select();
+if ($('input.err').length) {
+  $('input.err').first().trigger('focus');
+}
+</script>
 {{/block}}

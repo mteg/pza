@@ -2,7 +2,6 @@
 
 class insider_passwd extends insider_action
 {
-    /* Should not be possible to call from outside - UID is then 0 */
     static function passwd($userid = 0, $password = "")
     {
         if(!$password) $password = md5(uniqid());
@@ -50,13 +49,21 @@ class insider_passwd extends insider_action
 
             if(!count($err))
             {
-                $this->passwd(access::getuid(), $pw);
+                $uid = access::getuid();
+
+                if($_REQUEST["id"])
+                    if(access::has("god"))
+                        $uid = $_REQUEST["id"];
+
+                $this->passwd($uid, $pw);
                 $this->success("Zmiana hasła");
             }
 
             $this->S->assign("data", $_POST);
             $this->S->assign("err", $err);
         }
+        if($_REQUEST["id"])
+            $this->S->assign("login", vsql::get("SELECT login FROM users WHERE deleted = 0 AND id = " . vsql::quote($_REQUEST["id"]), "login"));
         $this->S->assign("pw_suggestion", $this->suggest());
         $this->S->display("insider/passwd.html");
     }

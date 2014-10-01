@@ -1,7 +1,11 @@
 <p>
-    Ustal poniżej {{if $passwd}}nowe{{/if}} hasło do swojego konta.
-    Wymagane jest co najmniej
-    osiem liter i co najmniej jedna cyfra lub znak specjalny.
-    Jeśli nie masz pomysłu, proponujemy dwa wyrazy rozdzielone spacją,
-    na przykład: <b>{{$pw_suggestion}}</b>
+{{if $request.id}}
+  Ustal hasło dla użytkownika <strong>{{$request.id}}{{if $login}} | {{$login}}{{/if}}</strong>.
+
+{{else}}
+  Ustal poniżej {{if $passwd}}nowe{{/if}} hasło do swojego konta.
+{{/if}}
+
+Wymagane jest co najmniej osiem liter i co najmniej jedna cyfra lub znak specjalny.
+Jeśli nie masz pomysłu, proponujemy dwa wyrazy rozdzielone spacją, na przykład: <strong>{{$pw_suggestion}}</strong>
 </p>

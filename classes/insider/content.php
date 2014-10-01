@@ -1,5 +1,4 @@
 <?
-// todo doprowadzić do porządku ten tinymce
 // todo różne funkcje do templejtów
 // todo legacy links
 // todo styling różnych stron
@@ -8,10 +7,7 @@
 // todo problem cache'owania kontentu plikowego (bezpośredni link) vs restricted content (zakupione numery...)
 // todo zdjęcia i galerie
 // todo sprzątanie po uploadzie
-
-// todo bug CSS w edycji własnego profilu, w zmianie hasła
 // todo user pages
-// todo zmiana hasła przez admina
 
 
     class insider_content extends insider_table

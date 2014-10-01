@@ -46,6 +46,10 @@ function get_Smarty()
 
     $S->left_delimiter = "{{";
     $S->right_delimiter = "}}";
+    
+    $S->compile_check = true;
+    $S->force_compile = true;
+    
     return $S;
 }
 

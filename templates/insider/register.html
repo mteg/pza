@@ -1,87 +1,84 @@
 {{extends "insider/action.html"}}
+
+{{block name="header"}}
+  <div class="header-links"><a href="/insider/checkin">Logowanie</a></div>
+{{/block}}
+
 {{block name="body"}}
 
-<h2>Zarejestruj się wewnątrz PZA</h2>
-<form action="/insider/checkin/register" method="POST">
-<div class="table-form register-form">
-    <div>
-        {{if $err}}
-        <div class="error">Błędnie wypełniony formularz rejestracji!</div>
+<h1 class="register-header">Zarejestruj się wewnątrz PZA</h1>
+{{strip}}
+<section class="gray-panel">
+  
+  <div class="register-center">
+    <form action="/insider/checkin/register" method="post">
+      
+      {{if $err}}
+      <div class="notification error">
+        <h3>Błędnie wypełniony formularz rejestracji!</h3>
         <p>
-            Twoje konto <u>nie zostało</u> jeszcze założone.
-            Zapoznaj się z komunikatami o błędach poniżej, popraw wprowadzone
-            informacje i spróbuj ponownie.
-        </p>
-        {{else}}
-        <p>
-            Wprowadź poniżej swoje imię i nazwisko, adres e-mail oraz
-            wybraną przez siebie nazwę użytkownika (dozwolone są litery,
-            cyfry, podkreślnik, kropka - prosimy bez polskich liter i odstępów!).
-        </p>
-        {{/if}}
-    </div>
+          Twoje konto <u>nie zostało</u> jeszcze założone. Zapoznaj się z komunikatami o błędach poniżej, popraw wprowadzone informacje i spróbuj ponownie.
+        </p>      
+      </div>
+      {{/if}}
+      
+      
+      <div class="fields-section">
+        <h2>Twoje konto</h2>
+        
+        <span class="notification desc">
+          <p>Wprowadź poniżej swoje imię i nazwisko, adres e-mail oraz wybraną przez siebie nazwę użytkownika (dozwolone są litery, cyfry, podkreślnik, kropka - prosimy bez polskich liter i odstępów!).</p>
+        </span>
+        
+        {{foreach from=$u->fields item=i key=k}}
+          {{if !$i.noregister}}
+            {{include file="insider/field.html" nofit=1}}
+          {{/if}}
 
-    {{foreach from=$u->fields item=i key=k}}
-    {{if !$i.noregister}}
-    {{include file="insider/field.html" nofit=1}}
-    {{/if}}
+          {{if $k == "email"}}
+            {{if $pw_suggestion}}
+              <span class="notification desc">{{include file="insider/passwd_info.html"}}</span>
+            {{/if}}
+            
+            {{include file="insider/field.html" i=[name => "Hasło", "type" => "password"] k="pw1" nofit=1 size=15}}
+            {{include file="insider/field.html" i=[name => "Potwierdzenie", "type" => "password"] k="pw2" nofit=1 size=15}}
+            
+            <span class="notification desc">
+              <p>Wybierz swój klub macierzysty. Jeśli nie jesteś zrzeszony w żadnym z wymienionych klubów, pozostaw brak wyboru.</p>
+              <p>Opcjonalnie, możesz podać datę, od kiedy należysz do klubu (w formacie RRRR-MM-DD).</p>
+              <p><strong>Uwaga:</strong> Możliwość korzystania z opcji systemu dostępnych tylko dla członków klubów PZA otrzymasz dopiero po potwierdzeniu Twojego członkowstwa w klubie przez administratora klubowego.</p>
+            </span>
+            
+            {{include file="insider/field.html" nofit=1 i=["name" => "Klub", "type" => "select", "options" => $member_list] k="member"}}
+            {{include file="insider/field.html" nofit=1 i=["name" => "Członkowstwo od", "type" => "date"] k="member_from"}}
+            
+          </div>
+          <div class="fields-section">
+            <h2>Twoje dane</h2>
+            
+            <span class="notification desc">
+              <p>Wszystkie poniższe pola formularza rejestracji są opcjonalne. Nie musisz ich wypełniać, aby uzyskać dostęp do systemu PZA. Pamiętaj jednak, że wypełnienie niektórych z nich będzie konieczne do skorzystania z wybranych opcji systemu np. rejestracji na zawody wspinaczkowe lub ski-tourowe, bądź też złożenia wniosku o dofinansowanie.</p>
+            </span>
+          
+          {{/if}}
+        {{/foreach}}
+      
+      </div>
+      
+      <div class="form-btns">
+        <input type="submit" value="Zarejestruj się!" class="btn">
+      </div>
+    
+    </form>
+    
+  </div>
+{{/strip}}
+</section>
 
-    {{if $k == "email"}}
-    {{if $pw_suggestion}}
-    <div>
-        {{include file="insider/passwd_info.html"}}
-    </div>
-    {{/if}}
-    {{include file="insider/field.html" i=[name => "Hasło", "type" => "password"] k="pw1" nofit=1 size=15}}
-    {{include file="insider/field.html" i=[name => "Potwierdzenie", "type" => "password"] k="pw2" nofit=1 size=15}}
-
-
-    <div>
-        <p>
-            Wybierz swój klub macierzysty. Jeśli nie jesteś zrzeszony
-            w żadnym z wymienionych klubów, pozostaw brak wyboru.
-        </p>
-        <p>
-            Opcjonalnie, możesz podać datę, od kiedy należysz do klubu
-            (w formacie RRRR-MM-DD).
-        </p>
-        <p>
-            <b>Uwaga: </b> Możliwość
-            korzystania z opcji systemu dostępnych tylko dla członków klubów PZA
-            otrzymasz dopiero po potwierdzeniu Twojego członkowstwa w klubie
-            przez administratora klubowego.
-        </p>
-    </div>
-    {{include file="insider/field.html" nofit=1 i=["name" => "Klub", "type" => "select", "options" => $member_list] k="member"}}
-    {{include file="insider/field.html" nofit=1 i=["name" => "Członkowstwo od", "type" => "date"] k="member_from"}}
-    <div>
-        <p>
-            Wszystkie dalsze pola formularza rejestracji są opcjonalne. Nie musisz
-            ich wypełniać, aby uzyskać dostęp do systemu PZA. Pamiętaj jednak,
-            że wypełnienie niektórych z nich będzie konieczne do skorzystania
-            z wybranych opcji systemu np. rejestracji na zawody wspinaczkowe lub
-            ski-tourowe, bądź też złożenia wniosku o dofinansowanie.
-        </p>
-    </div>
-
-    {{/if}}
-    {{/foreach}}
-
-    <div>
-        <input type="submit" value="Zarejestruj się!">
-    </div>
-</div>
-</form>
-<script language="JavaScript">
-<!--
-
-$(function() {
-    $("input[name=name]").on("change", function() {
-        var s = $(this).val();
-        $("select[name=sex]").val((s.toLowerCase().charAt(s.length - 1) == "a") ? "K" : "M")
-    });
+<script type="text/javascript">
+$("input[name=name]").on("change", function (event) {
+  var s = $(this).val();
+  $("select[name=sex]").val((s.toLowerCase().charAt(s.length - 1) == "a") ? "K" : "M");
 });
-
--->
 </script>
 {{/block}}

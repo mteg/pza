@@ -1,12 +1,12 @@
+{{strip}}
 {{function name="link" class="table-action" liclass=""}}
-<li{{if $liclass}} class="{{$liclass}}"{{/if}}>
-<a
-        class="{{$class}}"
-        href="{{$href}}"
-{{if $p.target}}target="{{$p.target}}"{{/if}}
-{{if $p.ask}}rel="{{$p.ask|escape:'html'}}"{{/if}}
->{{if $p.icon}}<img class="ui-icon ui-icon-{{$p.icon}}" src="/i/blank.png">{{/if}} <span>{{$p.name}}</span></a></li>
+  <li{{if $liclass}} class="{{$liclass}}"{{/if}}>
+    <a class="{{$class}}" href="{{$href}}" {{if $p.target}}target="{{$p.target}}"{{/if}} {{if $p.ask}}rel="{{$p.ask|escape:'html'}}"{{/if}}>
+      {{if $p.icon}}<i class="icon {{$p.icon}}"></i>{{/if}}<span>{{$p.name}}</span>
+    </a>
+  </li>
 {{/function}}
+{{/strip}}
 
 <div class="table-op-menu">
     <ul>

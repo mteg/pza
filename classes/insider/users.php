@@ -49,6 +49,12 @@
             $this->fields["district"]["options"] = placelist::get("regions");
             $this->actions["/insider/users/achievements"] = array("name" => "Osiągnięcia", "target" => "_self");
 
+            /* "passwd" as a separate priviledge does not make sense,
+               since it is possible to hijack "god" */
+            if(access::has("god"))
+                $this->actions["/insider/passwd"] = array("name" => "Zmiana hasła", "target" => "_self");
+
+
 
             if($profile)
             {

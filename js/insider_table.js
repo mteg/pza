@@ -395,8 +395,8 @@ $(function() {
     });
 
     /* tinyMCE w dialogu: http://fiddle.tinymce.com/rsdaab */
-    $(document).on('focusin', function(event, ui) {
-        if ($(event.target).closest(".html").length) {
+    $(document).on('focusin', function(event) {
+        if ($(event.target).closest(".mce-window").length) {
             event.stopImmediatePropagation();
         }
     });
