@@ -28,10 +28,12 @@
   <title>PZA Insider</title>
   
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-  
+
+  <link rel="stylesheet" href="/templates/smoothness/jquery-ui-1.10.3.custom.min.css">
   <link href="/templates/insider/css/style.css" type="text/css" rel="stylesheet">
-  <link href="/templates/insider/css/ui.css" type="text/css" rel="stylesheet">
-  
+{{*  <link href="/templates/insider/css/ui.css" type="text/css" rel="stylesheet">*}}
+  <link href="/templates/insider/css/forms.css" type="text/css" rel="stylesheet">
+
   <link rel="stylesheet" href="/templates/smoothness/jquery.fileupload.css">
   <link rel="stylesheet" href="/templates/smoothness/jquery.fileupload-ui.css">
   
@@ -44,13 +46,13 @@
   <!-- File upload plugin -->
   <script src="/js/vendor/jquery.ui.widget.js"></script>
   <!-- The Templates plugin is included to render the upload/download listings -->
-  <script src="http://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
+  <script src="/js/upload/tmpl.min.js"></script>
   <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-  <script src="http://blueimp.github.io/JavaScript-Load-Image/js/load-image.min.js"></script>
+  <script src="/js/upload/load-image.all.min.js"></script>
   <!-- The Canvas to Blob plugin is included for image resizing functionality -->
-  <script src="http://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+  <script src="/js/upload/canvas-to-blob.min.js"></script>
   <!-- blueimp Gallery script -->
-  <script src="http://blueimp.github.io/Gallery/js/jquery.blueimp-gallery.min.js"></script>
+  <script src="/js/upload/jquery.blueimp-gallery.min.js"></script>
   <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
   <script src="/js/jquery.iframe-transport.js"></script>
   <!-- The basic File Upload plugin -->
@@ -83,7 +85,7 @@
     {{block name="header"}}
     <div class="profile-info">
       <span>
-        <span class="profile menu-more">(Imię) <strong>(Nazwisko)</strong></span>
+        <span class="profile menu-more">Zalogowany jako: {{$this->username|escape:'html'}}</span>
         <ul class="profile-menu">
           <li><a href="/insider/profile">Moje dane</a></li>
           <li><a href="/insider/passwd">Zmiana hasła</a></li>

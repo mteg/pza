@@ -46,11 +46,11 @@
             <span class="notification desc">
               <p>Wybierz swój klub macierzysty. Jeśli nie jesteś zrzeszony w żadnym z wymienionych klubów, pozostaw brak wyboru.</p>
               <p>Opcjonalnie, możesz podać datę, od kiedy należysz do klubu (w formacie RRRR-MM-DD).</p>
-              <p><strong>Uwaga:</strong> Możliwość korzystania z opcji systemu dostępnych tylko dla członków klubów PZA otrzymasz dopiero po potwierdzeniu Twojego członkowstwa w klubie przez administratora klubowego.</p>
+              <p><strong>Uwaga:</strong> Możliwość korzystania z opcji systemu dostępnych tylko dla członków klubów PZA otrzymasz dopiero po potwierdzeniu Twojego członkostwa w klubie przez administratora klubowego.</p>
             </span>
             
             {{include file="insider/field.html" nofit=1 i=["name" => "Klub", "type" => "select", "options" => $member_list] k="member"}}
-            {{include file="insider/field.html" nofit=1 i=["name" => "Członkowstwo od", "type" => "date"] k="member_from"}}
+            {{include file="insider/field.html" nofit=1 i=["name" => "Członkostwo od", "type" => "date"] k="member_from"}}
             
           </div>
           <div class="fields-section">

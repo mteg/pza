@@ -2,12 +2,14 @@
 <tr>
     <th>#</th>
 {{foreach from=$this->columns item=c}}
+    {{if !$c.nocol}}
     <th>
         {{if $embedded}}
         {{$c.name}}
         {{else}}
         <a href='{{$c.order_onclick}}' title="Kliknij, aby posortować wg tej kolumny" class="table-order">{{$c.name}}</a></th>
         {{/if}}
+    {{/if}}
 {{/foreach}}
     {{if !$embedded}}
     <th><span class="ui-icon ui-icon-shuffle table-action-toggle"></span></th>
@@ -19,8 +21,10 @@
 {{foreach from=$results item=r}}
 <tr>
     <td>{{$r@iteration + $offset}}.</td>
-    {{foreach from=$this->columns key=k item=junk}}
+    {{foreach from=$this->columns key=k item=ci}}
+    {{if !$ci.nocol}}
     <td>{{$r.$k|escape:'html'|nl2br}}</td>
+    {{/if}}
     {{/foreach}}
     {{if !$embedded}}
     <td class="table-noclick">

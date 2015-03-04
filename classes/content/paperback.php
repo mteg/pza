@@ -6,7 +6,14 @@ class content_paperback extends content_file
         if(preg_match('/\.pdf$/', $path))
             return parent::render_object($id, $path);
 
-        $i = vsql::get("SELECT id, categories, title, lead, date, authors, thumbnail, file_version FROM content WHERE id = " . vsql::quote($id));
+        $i = vsql::get("SELECT p.id, p.categories, p.title, p.lead, p.date, p.authors,
+                        p.thumbnail, p.file_version,
+                        CONCAT(c.path, '/', IF(p.short != '', p.short, p.id)) AS path
+                        FROM content AS p
+                         LEFT JOIN category_map AS cm ON cm.article = p.id AND cm.main = 1
+                         LEFT JOIN categories AS c ON c.id = cm.category
+                         WHERE
+                p.active = 1 AND p.deleted = 0 AND p.id = " . vsql::quote($id));
         if(preg_match('/\.jpg$/', $path))
             return content_file::serve($id, $i["file_version"], "image/jpeg", "thumb");
 

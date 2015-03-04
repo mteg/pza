@@ -10,6 +10,7 @@
             $categ = "/" . $S->getTemplateVars("path") . "/" . $categ;
 
         /* Wylistuj artykuły */
+        $params["active"] = 1;
         $o = new browser("article"); $out = "";
         $arts = $o->set($params)->set("categories", $categ)->paging()->ls();
 
@@ -28,17 +29,33 @@
             else
                 $thumb = "";
 
-            $art =
-                "<div>" .
-                "<h2>" . $e["title"] . "</h2>" .
-                $thumb .
-                "<p>" .
-                "<span>" . htmlspecialchars($e["lead"]) . "</span>" .
-                "<span class='pza-readon'>" .
-                "<a href='" . $e["categories"] . '/' . $e["id"] . "'>" .
-                "Czytaj&nbsp;dalej&nbsp;&raquo;" .
-                "</a></span><div class='clear'></div></p>" .
-                "</div>";
+            if($thumb)
+                $thumb = "<a href='" . $e["art_path"] . "'>" . $thumb . "</a>";
+
+            if($params["syntax"] == "box")
+                $art =
+                    "<div class='box'>" .
+                    "<a href='" . $e["art_path"] . "' class='ngl'>" .
+                    "<span>" . htmlspecialchars($e["main_category"]) . "</span>" .
+                    "</a>" .
+                    "<h2>" . $e["title"] . "</h2>" .
+                    $thumb .
+                    "<a href='" . $e["art_path"] . "' class='bg'>" .
+                    htmlspecialchars($e["lead"]) . "</a>" .
+                    "</div>";
+            else
+                $art =
+                    "<div class='ll'>" .
+                    $thumb .
+                    "<div>" .
+                    "<h2><a href='" . $e["art_path"] . "'>" . $e["title"] . "</a></h2>" .
+                    "<p>" .
+                    "<span>" . htmlspecialchars($e["lead"]) . "</span>" .
+                    "<span class='pza-readon'>" .
+                    "<a href='" . $e["art_path"] . "'>" .
+                    "Czytaj&nbsp;dalej&nbsp;&raquo;" .
+                    "</a></span></p>" .
+                    "</div></div>";
             $arts[$n] = $art;
         }
         $out .= implode("", $arts);

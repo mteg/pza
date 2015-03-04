@@ -296,3 +296,7 @@ class vsql
 
 }
 
+if(strstr($_SERVER["SERVER_NAME"], "test"))
+    vsql::$conf["db"] = "pza_test";
+
+require_once "db_passwd.php";

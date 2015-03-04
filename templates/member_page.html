@@ -1,0 +1,15 @@
+<h2>Informacje o klubie</h2>
+{{foreach from=$fields item=fd key=fid}}
+{{if $data.$fid}}
+<p>
+<strong>{{if is_array($fd)}}{{$fd.0}}{{else}}{{$fd}}{{/if}}: </strong>
+{{if $fid == "www"}}
+    <a href="{{$data.$fid}}" target="_blank">{{$data.$fid|escape:'html'}}</a>
+{{elseif $fid == "pza"}}
+    {{if $data.$fid}}TAK{{else}}---{{/if}}
+{{else}}
+    {{$data.$fid|escape:'html'}}
+{{/if}}
+</p>
+{{/if}}
+{{/foreach}}

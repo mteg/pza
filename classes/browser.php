@@ -2,7 +2,7 @@
 
 class browser extends insider_content
 {
-    public $type, $browser_params = array(), $count;
+    public $type, $browser_params = array(), $count, $order = "weight DESC";
     protected $table = "content";
 
     function __construct($ctype)
@@ -32,15 +32,15 @@ class browser extends insider_content
         if(!is_numeric($limit = $p["limit"]))
             $limit = 20;
 
-        if($limit > 50) $limit = 50;
+        if($limit > 100) $limit = 100;
 
         return $this->retr($offset, $limit, $p);
 
     }
 
-    function retr_query($filters)
+    function retr_query($filters, $extra_cols = "")
     {
-        return parent::retr_query($filters, ", t.lead, t.thumbnail, t.legacy_thumbnail, t.file_version");
+        return parent::retr_query($filters, $extra_cols . ", t.lead, t.thumbnail, t.legacy_thumbnail, t.file_version, cat_main.name AS main_category, CONCAT(cat_main.path, '/', IF(t.short = '', t.id, t.short)) AS art_path");
     }
 
     function paging()
@@ -57,7 +57,17 @@ class browser extends insider_content
         return $this;
     }
 
-    function panel()
+    function extra_panel()
+    {
+        return "";
+    }
+
+    function extra_self()
+    {
+        return "";
+    }
+
+    function panel($force = false)
     {
         $params = $this->browser_params;
 
@@ -66,8 +76,7 @@ class browser extends insider_content
 
         $page = floor($offset / $limit) + 1;
         $count = ceil($this->count / $limit);
-        if($count <= 1 && (!$params["date"]) && !$offset) return "";
-
+        if($count <= 1 && (!$params["date"]) && !$offset && !$force) return "";
 
         /* Zbuduj listę opcji do przycisku "Na stronie" */
         $limits = array_flip(array(10, 50, 100));
@@ -82,8 +91,8 @@ class browser extends insider_content
 
         /* Przygotuj linki poprzedni/następny */
         $date = urlencode($_REQUEST["date"]);
-        $prev = ($page > 1 ?      ("{$self}?date={$date}&limit={$limit}&page=" . ($page - 1)) : "javascript:void(0);");
-        $next = ($page < $count ? ("{$self}?date={$date}&limit={$limit}&page=" . ($page + 1)) : "javascript:void(0);");
+        $prev = ($page > 1 ?      ("{$self}?date={$date}&limit={$limit}&page=" . ($page - 1) . $this->extra_self()) : "javascript:void(0);");
+        $next = ($page < $count ? ("{$self}?date={$date}&limit={$limit}&page=" . ($page + 1) . $this->extra_self()) : "javascript:void(0);");
 
         /* Wyświetl panel */
         $date = htmlspecialchars($_REQUEST["date"]);
@@ -96,6 +105,7 @@ class browser extends insider_content
         $out .= "<span>Na stronie: <select name='limit'>{$limits}</select></span>";
         $out .= "<span><input type='submit' value='Zmień'></span>";
         $out .= "<span><a href='{$next}'>Wcześniejsze &raquo;</a></span>";
+        $out .= $this->extra_panel();
         $out .= "</form>";
         $out .= "</div>";
         return $out;

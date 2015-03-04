@@ -1,54 +1,43 @@
-function show(o, n)
-{
-    var list = $(o).children("input[type=hidden]");
-    if(n == null)
-    {
-        n = $(o).data("n");
-        if(n == null)
-            n = 0;
+$(function() {
+    $('table.sortable').tablesorter();
+
+    $('body').on("keyup", function (event) {
+        console.log(event);
+
+        if(!$(event.target).is("body, a")) return;
+
+        var artid = $('input[name=artid]').val(),
+            op = false;
+
+        if(event.which == 69)
+            op = "edit";
+        else if(event.which == 86)
+            op = "view";
+        else if(event.which == 72)
+            op = "html";
+
+        if(!(artid && op)) return;
+        window.open("/insider/content?type=article#id=" + artid + "&modal=" + op);
+    });
+
+    $('div#back').on("click", "a", function (event) {
+        window.history.back();
+    });
+
+    $('div#menu-phone').on("click", "a", function (event) {
+        var sm = $('#sidemenu');
+        if(!sm.size()) return;
+        if(sm.hasClass("phone-sidemenu"))
+        {
+            sm.removeClass("phone-sidemenu");
+            sm.insertAfter(".col2 #search");
+        }
         else
-            n++;
-
-        if(n >= list.length) n = 0;
-    }
-    $(o).data("n", n);
-
-    var im = list.eq(n).val();
-
-    $(o).find(".pza-banner-switcher").children().removeClass("active");
-
-    $(o).find("img").fadeOut(400, function() {
-        $(this).attr('src', im).unbind('onreadystatechange load').
-            bind('onreadystatechange load', function() {
-            if(this.complete)
-            {
-                $(this).fadeIn(400);
-                $(this).parent().children(".pza-banner-switcher").
-                    children().
-                    eq(n).addClass("active");
-            }
-        });
+        {
+            sm.addClass("phone-sidemenu");
+            sm.insertBefore("div.col1");
+        }
     });
-}
-
-$(function () {
-    $('.pza-banners').each(function() {
-       var o = $('<div class="pza-banner-switcher"/>');
-       o.appendTo(this);
-       $(this).children("input[type=hidden]").each(function(n) {
-           $('<div>&nbsp;</div>').appendTo(o).data("seq", n);
-       });
-    });
-
-    setInterval(function() {
-        $('.pza-banners').each(function() {
-            if($(this).is(":hover")) return;
-            show(this);
-        });
-    }, 6000);
-
-    $(".pza-banner-switcher").on("click", "div", function() {
-        show($(this).parent().parent(), $(this).data("seq"));
-    })
-
 });
+
+

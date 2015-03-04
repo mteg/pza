@@ -64,7 +64,7 @@ class insider_profile extends insider_users
 
     function membership()
     {
-        $this->list_memberships($id = access::getuid());
+        $this->S->assign("memberships", $this->list_memberships($id = access::getuid()));
 
         $due = vsql::get("SELECT MAX(due) AS due FROM memberships WHERE " .
             " deleted = 0 AND deleted = 0 " .
@@ -87,7 +87,7 @@ class insider_profile extends insider_users
 
     function entitlements()
     {
-        $this->list_entitlements(access::getuid());
+        $this->S->assign("entitlements", $this->list_entitlements(access::getuid()));
         $this->w("profile_entitlements.html");
     }
 }

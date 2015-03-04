@@ -77,9 +77,16 @@
             dispatch_category($o["id"], $o["type"]);
     }
     /* Username */
-    else if(preg_match('#^~([a-zA-Z][a-zA-Z0-9_.]+)$#', $q, $m))
+    else if(preg_match('#^~([a-zA-Z0-9_.]+)$#', $q, $m))
     {
         co($m[1], "users", "user")->render_object($m[1], $q);
+        exit;
+
+    }
+    /* Club name */
+    else if(preg_match('#^_([a-zA-Z0-9_.]+)$#', $q, $m))
+    {
+        co($m[1], "members", "member")->render_object($m[1], $q);
         exit;
 
     }

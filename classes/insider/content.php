@@ -22,10 +22,13 @@
             "short" =>      array("Nazwa krótka", "suppress" => true),
             "date" =>       array("Data pub.", "type" => "date"),
             "creat" =>      array("Data utw.", "noedit" => true, "type" => "date"),
+            "mod" =>        array("Data mod.", "no" => "add,edit,view,search,col", "order" => "IF(t.mod = '0000-00-00', t.creat, t.`mod`)"),
+            "weight" =>     array("Waga", "regexp" => "-?[0-9]+", "empty" => true, "order" => "DATE_ADD(t.date, INTERVAL t.weight DAY) ", "no" => "col"),
+            "active" =>     array("Treść aktywna", "noadd" => true, "type" => "select", "options" => array("Nie", "Tak"), "no" => "col")
         );
 
         protected $capt = "<title>";
-        protected $order = "creat DESC, date DESC, title";
+        protected $order = "weight DESC, date DESC, title";
 
         public $type = "article";
         protected $files = array();
@@ -46,7 +49,7 @@
                     $this->fields["content"]["no" . $p] = true;
 
                 $this->fields["content"]["type"] = "html";
-                $this->fields["thumbnail"] = array("Zdjęcie", "ref" => "content", "by" => "title", "ref_order" => "`creat` DESC", "no" => "add", "empty" => true);
+                $this->fields["thumbnail"] = array("Zdjęcie", "ref" => "content", "by" => "title", "ref_order" => "`creat` DESC", "no" => "add,col", "empty" => true);
             }
 
             if($this->type == "file" || $this->type == "paperback")
@@ -59,11 +62,11 @@
             {
                 $this->fields["content"][0] = "Typ";
                 $this->fields["lead"][0] = "Komentarz";
-                $this->fields["title"][0] = "Nazwa pliku";
+                $this->fields["title"][0] = "Opis pliku";
 
                 unset($this->fields["title"]["regexp"]);
 
-                foreach(array("lead", "title", "short") as $f)
+                foreach(array("title", "short") as $f)
                     $this->fields[$f]["noadd"] = true;
 
                 $this->fields["content"]["noedit"] = true;
@@ -96,8 +99,11 @@
             else
             {
                 unset($this->fields["link"]);
-                unset($this->fields["authors"]);
+                if($this->type != "photo" && $this->type != "file")
+                    unset($this->fields["authors"]);
             }
+
+            $this->actions["<classpath>/category"] = array("Zmień kategorie", "multiple" => true);
 
             parent::__construct();
 
@@ -332,6 +338,7 @@
                             ($uid ? (" AND c.creat_by = " . vsql::quote($uid)) : "") .
                             " ORDER BY c.creat DESC LIMIT 1"))
                     break;
+            if(!$data) $data = array();
 
             $data["date"] = date("Y-m-d");
             return $data;
@@ -409,12 +416,12 @@
                 $ents = $_REQUEST["entries"]; $sect = ""; $link = $_REQUEST["link"];
                 foreach(explode("\n", $ents) as $line)
                 {
-                    if(!($line = trim($line))) continue;
+                    if(!($line = trim($line))) { $sect = ""; continue; }
                     if(!strpos($line, "|")) { $sect = $line; continue; }
 
                     list($title, $authors, $pages, $summary) = explode("|", $line, 4);
                     if($sect)
-                        $title = $title . " ({$sect})";
+                        $title = $sect . " | " . $title;
 
                     $data = array(
                         "link" => $link,
@@ -464,6 +471,12 @@
             $this->S->display("insider/content_versions.html");
         }
 
+        public function category()
+        {
+            $this->S->display("insider/content_category.html");
+
+        }
+
         public function view()
         {
             $links = array();
@@ -508,6 +521,40 @@
                     " " . escapeshellarg($infile);
             $gs_cmd = strtr($gs_cmd, array("\n" => " ", "\r" => " "));
             system($gs_cmd);
+        }
+
+        public function correct_entities()
+        {
+            header("Content-type: text/plain; charset=utf-8");
+            foreach(vsql::retr("SELECT id, title, content, lead FROM content")
+                        as $id => $i)
+            {
+                $new_flag = false;
+                foreach(array("title", "content", "lead") as $f)
+                {
+                    $new = preg_replace_callback(
+                        "/(&#[0-9]+;)/",
+                        function($m) {
+                            return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES");
+                        }, $i[$f]);
+                    if($new != $i[$f])
+                    {
+                        $i[$f] = $new;
+                        $new_flag = true;
+                    }
+                }
+                if($new_flag)
+                {
+                    $q = "UPDATE content SET title = " . vsql::quote($i["title"]) .
+                        ", lead = " . vsql::quote($i["lead"]) . ", content= " .
+                        vsql::quote($i["content"]) . " WHERE id = " . vsql::quote($id);
+
+                    echo $q . "\n";
+                    if($_REQUEST["do"])
+                        vsql::query($q);
+                }
+            }
+
         }
 
     }

@@ -372,7 +372,7 @@ $(function() {
     /* Przygotuj dialog do akcji */
     $('.table-dialog').dialog({
         width: $(window).width() * 0.9,
-        height: $(window).height() * 0.9,
+//        height: $(window).height() * 0.9,
         modal: true,
         autoOpen: false
     });
@@ -401,4 +401,13 @@ $(function() {
         }
     });
 
+    /* a może zamówiono jakąś akcję? */
+    var action = q_get("modal", false);
+    if(action != false)
+    {
+        var url = $("input[name=source]").val() + "/" + action + "?id=" +
+                    encodeURIComponent(q_get("id", "")) +
+                    "&" + $("input[name=params]").val();
+        table_modal(null, url);
+    }
 });

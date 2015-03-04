@@ -1,0 +1,11 @@
+<div class="source-domain">
+    <input type="hidden" class="dialog-title" value="Zmiana kategorii">
+    <input type="hidden" name="source" value="{{$source|escape:'html'}}">
+    <input type="hidden" name="params" value="{{$params|escape:'html'}}">
+    <form>
+    <input type="hidden" name="id" value="{{$request.id}}">
+    <div class="table-edit table-form">
+        {{include file="insider/field.html" i=$this->fields["categories"] k="categories"}}
+    </div>
+    </form>
+</div>

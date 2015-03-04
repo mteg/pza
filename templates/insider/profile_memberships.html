@@ -10,14 +10,14 @@
     Możesz, opcjonalnie, uzupełnić datę zmiany przynależności.
 </p>
 <p>
-    Pamiętaj, że pełny dostęp do opcji związanych z członkowstwem w klubie uzyskasz
+    Pamiętaj, że pełny dostęp do opcji związanych z członkostwem w klubie uzyskasz
     po jego potwierdzeniu przez administratora klubowego.
 </p>
 
 <form action="/insider/profile/membership" method="POST" class="table-container">
     <div class="table-edit table-form">
         {{include file="insider/field.html" nofit=1 i=["name" => "Klub", "type" => "select", "options" => $member_list] k="member"}}
-        {{include file="insider/field.html" nofit=1 i=["name" => "Członkowstwo od", "type" => "date"] k="member_from"}}
+        {{include file="insider/field.html" nofit=1 i=["name" => "Członkostwo od", "type" => "date"] k="member_from"}}
         <div>
             <input type="submit" value="Zmień klub">
         </div>

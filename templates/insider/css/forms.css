@@ -1,0 +1,101 @@
+
+.table-op-menu {
+    display: none;
+    position: absolute;
+    width: 10em;
+}
+
+.table-op-menu a {
+    font-size: 10pt;
+}
+
+div.table-form > div > span {
+    display: block;
+}
+
+div.table-form > div > span {
+    margin-left: 10em;
+}
+
+div.table-form > div > span:first-child {
+    width: 10em;
+    margin-left: 0;
+    position: absolute;
+    left: 0;
+}
+
+div.table-form > div > div:last-child {
+    clear: both;
+}
+
+span.fit {
+    overflow: hidden;
+    float: none;
+    position: relative;
+}
+
+span.fit > input {
+    width: 99%;
+}
+
+span.fit > textarea {
+    width: 99%;
+}
+
+/* Schowaj operacje na wielu obiektach w menu akcji na jednym obiekcie */
+.table-op-menu-multiple .table-action-single {
+    display: none;
+}
+
+.table-form > div {
+    width: 100%;
+    border-bottom: #ccc dotted 1px;
+    padding-top: 5pt;
+    padding-bottom: 5pt;
+    position: relative;
+}
+
+.table-form > div:last-child {
+    border-bottom: none;
+}
+
+.clear {
+    clear: both;
+}
+
+table.plain {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.plain th, table.plain td {
+    font-size: smaller;
+}
+
+table.plain th {
+    border-bottom: solid 1px black;
+    text-align: left;
+}
+
+table.plain td, table.plain th {
+    padding-top: 2pt;
+    padding-bottom: 2pt;
+    padding-right: 5pt;
+}
+
+table tr.inactive td {
+    color: #888;
+}
+
+table.plain td {
+    border-bottom: dotted 1px #888;
+}
+
+table.plain tr:last-child td {
+    border: none;
+}
+
+.ui-menu .ui-menu-item {
+    position: relative;
+    z-index: 10;
+}

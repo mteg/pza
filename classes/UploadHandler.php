@@ -143,8 +143,8 @@ class UploadHandler
                     // dimensions and e.g. create square thumbnails:
                     //'crop' => true,
 
-                    'max_width' => 80,
-                    'max_height' => 80
+                    'max_width' => 225,
+                    'max_height' => 225
                 )
             )
         );

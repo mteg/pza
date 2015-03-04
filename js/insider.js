@@ -20,8 +20,8 @@ function init_controls(element)
         textareas.tinymce({
             plugins: [
                 "code", "fullscreen", "paste", "table",
-                "lists", "link", "searchreplace", "image", "noneditable"],
-            toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | inserttable link fullscreen",
+                "lists", "link", "searchreplace", "image", "noneditable", "example"],
+            toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | inserttable link fullscreen | example"
         });
 
 
@@ -184,13 +184,20 @@ function q_set(param, val)
     document.location = res[1] + "#" + qstr.substr(1);
 }
 
-var toggleShow = function (event) {
-    $(this)[$(this).hasClass('ui-state-active') ? 'removeClass' : 'addClass']('ui-state-active');
-};
 
 $(function() {
-    $('.main-header .profile').on('click', toggleShow);
-    $('.navigation').on('click', 'a', toggleShow);
-    
+
+    $('.navigation').on('mouseenter', '#menu > li > a', function (event) {
+        $(this).closest(".navigation").find("a").removeClass("ui-state-active");
+        $(this).addClass("ui-state-active");
+    });
+
+    $('.main-header .profile').on('click', function (event) {
+        if($(this).hasClass("ui-state-active"))
+            $(this).removeClass("ui-state-active");
+        else
+            $(this).addClass("ui-state-active");
+    });
+
     init_controls($('body'));
 });

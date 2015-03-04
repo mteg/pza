@@ -1,9 +1,9 @@
 {{if $paperback.pdf_thumbnail}}
-<img src="/{{$paperback.id}}.jpg"/>
+<a href="{{$paperback.path}}"><img src="/{{$paperback.id}}.jpg"/></a>
 {{/if}}
 
 {{function name="prop"}}
-    {{if $v}}
+    {{if $v && $v != "0000-00-00"}}
     <p>{{$k}}: <b>{{$v|escape:'html'}}</b></p>
     {{/if}}
 {{/function}}
@@ -35,4 +35,4 @@
 </table>
 {{/if}}
 
-<a href="/{{$paperback.id}}.pdf">&raquo; Pobierz PDF</a>
+<a href="{{$paperback.path}}">&raquo; Pobierz PDF</a>

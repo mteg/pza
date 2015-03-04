@@ -1,0 +1,109 @@
+.box {
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+}
+
+.bg {
+    height: 100%;
+}
+
+table.paperback-index {
+    width: 90%;
+}
+
+table.personnel, table.members, table.paperback-index {
+    border-collapse: collapse;
+}
+
+table.personnel td, table.members td, table.paperback-index td {
+    border-top: solid 1px #888;
+    padding-left: 8pt;
+    padding-right: 8pt;
+}
+
+table.personnel tr:first-child td,
+table.members tr:first-child td,
+table.paperback-index tr:first-child td
+{
+    border-top: solid 1px black;
+}
+
+a {
+    color: black;
+}
+
+table.personnel td:first-child,
+table.members td:first-child,
+table.paperback-index td:first-child
+{
+    text-align: right;
+}
+
+.article-text img {
+    display: block;
+    max-width: 90%;
+}
+
+div.ll {
+    clear: both;
+    border-top: dotted #888 1px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+div.ll:first-child {
+    border-top: none;
+}
+
+div.ll > a {
+    position: absolute;
+    width: 150px;
+}
+
+div.ll > a > img {
+    max-width: 256px;
+    max-height: 220px;
+}
+
+div.ll > div {
+    margin-left: 280px;
+    height: 220px;
+    overflow: hidden;
+}
+
+span.pza-readon {
+    font-style: oblique;
+    margin-left: 10px;
+}
+
+div.pza-browsepanel {
+    background: #ececec;
+    border: solid 1px white;
+}
+
+div.pza-browsepanel input, div.pza-browsepanel select {
+    border: solid #888 1px;
+    background: #efefef;
+}
+
+div.pza-browsepanel span {
+    margin-left: 20px;
+}
+
+.article-text a {
+    border-bottom: 1px dotted #888;
+}
+
+.article-text a:hover {
+    border-bottom: 1px solid #444;
+}
+
+.phone-sidemenu {
+    display: block;
+    margin-top: 10pt;
+
+}
+
+.phone-sidemenu li {
+}

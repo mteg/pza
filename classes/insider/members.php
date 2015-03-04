@@ -1,9 +1,11 @@
 <?
     class insider_members extends insider_table
     {
-        public $fields = array(
+        public $fields;
+        static $_fields = array(
             "name" =>       array("Nazwa klubu", "regexp" => ".+"),
             "short" =>      array("Nazwa krótka", "regexp" => ".+", "suppress" => true),
+            "designation" =>      array("Skrót", "regexp" => "[A-Za-z]+", "suppress" => true, "empty" => true),
             "email" =>      "E-mail",
             "country" =>    array("Kraj", "type" => "list", "options" => array()),
             "district" =>   array("Województwo", "type" => "list", "options" => array()),
@@ -29,6 +31,7 @@
 
         function __construct()
         {
+            $this->fields = static::$_fields;
             parent::__construct();
             $this->fields["country"]["options"] = placelist::get("countries");
             $this->fields["district"]["options"] = placelist::get("regions");

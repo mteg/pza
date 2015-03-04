@@ -480,6 +480,10 @@ abstract class insider_table extends insider_action
         else
             $a = "t.`" . $f . "`";
 
+        if($this->fields[$f]["type"] == "select")
+            if(isset($this->fields[$f]["options"][$s]))
+                return "$a = " . vsql::quote($s);
+
         if($this->fields[$f]["type"] != "date")
         {
             if($s[0] == "=")
@@ -514,6 +518,7 @@ abstract class insider_table extends insider_action
 
             case "select":
                 $optlist = array(); $s = strtoupper($s);
+
                 foreach($this->fields[$f]["options"] as $opt => $val)
                     if(fnmatch($s, strtoupper($val)))
                         $optlist[] = vsql::quote($opt);
@@ -640,7 +645,6 @@ abstract class insider_table extends insider_action
             " FROM " . $this->table . " AS t " .
             " WHERE deleted = 0 " . $filters . " " .
             $this->retr_extra_filters();
-
     }
 
     /**
@@ -1025,22 +1029,26 @@ abstract class insider_table extends insider_action
         if(!isset($_REQUEST["id"]))
         {
             $this->enforce("add");
-            $id = 0;
+            $idlist = 0;
         }
         else
         {
             $this->enforce("edit");
-            $id = $_REQUEST["id"];
+            $idlist = $_REQUEST["id"];
         }
 
-        $data =  array_intersect_key($_REQUEST, $this->fields);
-        $err = $this->validate($id, $data);
-        if(!$err)
+        foreach(explode(" ", $idlist) as $id)
         {
-            $err = array();
-            $this->update($id, $data);
+            $data =  array_intersect_key($_REQUEST, $this->fields);
+            $err = $this->validate($id, $data);
+            if(!$err)
+            {
+                $err = array();
+                $this->update($id, $data);
+            }
+            else
+                break;
         }
-
         echo json_encode($err);
     }
 

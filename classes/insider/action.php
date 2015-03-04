@@ -39,7 +39,7 @@ abstract class insider_action
         ),
         "Treść strony" => array(
             "Kategorie" => "/insider/categories?type=article|search(categories)",
-            "Artykuły" =>  "/insider/content?type=article|search(content)",
+            "Artykuły" =>  "/insider/content?type=article#order=mod+DESC|search(content)",
         ),
         "Zdjęcia" => array(
             "Galerie" => "/insider/categories?type=photo|search(categories)",
@@ -115,6 +115,8 @@ abstract class insider_action
      */
     public $source = "", $params = "";
 
+    public $username;
+
     /**
      * Przefiltruj rekursywnie tablicę z menu, pozostawiając tylko pozycje,
      * do których zalogowany użytkownik posiada prawo dostępu.
@@ -159,8 +161,14 @@ abstract class insider_action
 
         list($source, $this->params) = explode("?", $_SERVER["REQUEST_URI"], 2);
         $this->source = $this->classpath();
+        if($this->username = access::getlogin())
+            if($_SERVER["HTTPS"] != "on")
+            {
+                header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+                exit;
+            }
 
-        // todo can be eliminated, templates may use this->source, this->params
+            // todo can be eliminated, templates may use this->source, this->params
         $this->S->assign(array(
             "source" => $this->source,
             "params" => $this->params,

@@ -4,10 +4,11 @@
 
     class insider_users extends insider_table
     {
-        public $fields = array(
+        public $fields;
+        static public $_fields = array(
             "surname" =>    array("Nazwisko", "regexp" => ".+", "pub" => "B"),
             "name" =>       array("Imię", "pub" => "B"),
-            "login" =>      array("Login", "regexp" => "[a-z][a-z0-9_.]+", "suppress" => true, "empty" => true),
+            "login" =>      array("Login", "regexp" => "[a-z][a-z0-9_.]+", "suppress" => true, "empty" => true, "pub" => "*"),
             "email" =>      array("Adres e-mail", "suppress" => true, "pub" => "M"),
             "sex"   =>      array("Płeć", "type" => "list", "options" => array("M", "K"), "suppress" => true, "pub" => "B"),
             "phone" =>      array("Numer telefonu", "suppress" => true, "pub" => "T"),
@@ -24,7 +25,7 @@
             "access" =>     array("Prawa dostępu", "type" => "area", "no" => "register"),
             "flags" =>      array("Profil", "type" => "flags", "no" => "register", "pub" => "B",
                     "options" => array(
-                        "B" => "Publiczne imię, nazwisko, płeć, przynależność",
+                        "B" => "Publiczne imię, nazwisko, płeć, przynależność, data urodzenia",
                         "M" => "Publiczne e-mail, skype, WWW",
                         "T" => "Publiczny telefon",
                         "E" => "Publiczne uprawnienia PZA",
@@ -41,6 +42,8 @@
 
         function __construct($profile = false)
         {
+            $this->fields = static::$_fields;
+
             if(!access::has("god"))
                 unset($this->fields["access"]);
 
@@ -98,25 +101,23 @@
             header("Location: /insider/achievements?user=" . $id);
         }
 
-        protected function list_memberships($id)
+        static function list_memberships($id, $extra_sql = "")
         {
-            $this->S->assign("memberships",
-                $m = vsql::retr("SELECT m.starts, m.due, IF(m.due >= NOW() AND m.flags LIKE '%R%', 1, 0) AS status, o.short
+            $m = vsql::retr("SELECT m.starts, m.due, IF(m.due >= NOW() AND m.flags LIKE '%R%', 1, 0) AS status, o.short
                                 FROM memberships AS m
                                 JOIN members AS o ON o.id = m.member
-                                WHERE m.user = " . vsql::quote($id) .
-                " AND m.deleted = 0 ORDER BY m.starts, m.due, o.short", ""));
+                                WHERE m.user = " . vsql::quote($id) . $extra_sql .
+                " AND m.deleted = 0 ORDER BY m.starts, m.due, o.short", "");
             return $m;
         }
 
-        protected function list_entitlements($id)
+        static function list_entitlements($id, $extra_sql = "")
         {
-            $this->S->assign("entitlements",
                 $m = vsql::retr("SELECT e.starts, e.due, IF(e.due >= NOW(), 1, 0) AS status, r.name
                                 FROM entitlements AS e
                                 JOIN rights AS r ON r.id = e.right
-                                WHERE e.user = " . vsql::quote($id) .
-                " AND e.deleted = 0 ORDER BY e.starts, e.due, r.name", ""));
+                                WHERE e.user = " . vsql::quote($id) . $extra_sql .
+                " AND e.deleted = 0 ORDER BY e.starts, e.due, r.name", "");
             return $m;
         }
 
@@ -125,8 +126,10 @@
             $id = $_REQUEST["id"];
             if(access::has("view(users)"))
             {
-                $this->list_memberships($id);
-                $this->list_entitlements($id);
+                $this->S->assign(array(
+                    "memberships" => $this->list_memberships($id),
+                    "entitlements" => $this->list_entitlements($id)
+                ));
             }
             else
                 $this->S->assign("restricted", true);
@@ -173,7 +176,7 @@
                     if(!isset($r[$f])) continue;
 
                     if(isset($i["pub"]))
-                        if(strstr($flags, $i["pub"]))
+                        if(strstr($flags, $i["pub"]) || $i["pub"] == "*")
                             continue;
 
                     unset($r[$f]);

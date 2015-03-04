@@ -9,13 +9,26 @@
         if($categ{0} != "/")
             $categ = "/" . $S->getTemplateVars("path") . "/" . $categ;
 
-        $o = new browser("article"); $out = "";
+        if(isset($params["skip"]))
+            $skip = array_map("trim", explode(",", $params["skip"]));
+        else
+            $skip = array();
+
+        $ctype = isset($params["ctype"]) ? $params["ctype"] : "article";
+        $o = new browser($ctype); $out = "";
         if(!$params["noul"]) $out .= "<ul>";
 
-        foreach($o->set($params)->set("categories", $categ)->paging()->ls() as $e)
-            $out .= "<li><a href='" . $e["categories"] . '/' . $e["id"] . "'>" .
-                    htmlspecialchars($e["title"]) . "</a></li>";
+        $params["active"] = 1;
 
+        foreach($o->set($params)->set("categories", $categ)->paging()->ls() as $e)
+        {
+            if($e["short"])
+                if(in_array($e["short"], $skip))
+                    continue;
+            $link = $e["categories"] . '/' . ($e["short"] ? $e["short"] : $e["id"]);
+            $out .= "<li><a href='" . $link . "'>" .
+                    htmlspecialchars($e["title"]) . "</a></li>";
+        }
         if(!$params["noul"]) $out .= "</ul>";
 
         return $out;

@@ -30,7 +30,7 @@ class content_file extends content
     {
         $d = vsql::get("SELECT a.id, a.file_version, a.content, a.title
                         FROM content AS a
-                        WHERE a.id = " . vsql::quote($id) . " AND a.deleted = 0");
+                        WHERE a.id = " . vsql::quote($id) . " AND a.deleted = 0 AND a.active = 1");
 
         /* Brak pliku w bazie danych */
         if(!$d)
@@ -39,8 +39,8 @@ class content_file extends content
         $version = $d["file_version"];
         $mime = $d["content"];
 
-        if($d["title"])
-            header("Content-Disposition: " . $this->disposition . "; filename=" . vsql::quote($d["title"]));
+        if($d["short"])
+            header("Content-Disposition: inline; filename=" . vsql::quote($d["short"]));
 
         $this->serve($id, $version, $mime, $_REQUEST["thumb"] ? "thumb" : "file");
 

@@ -1,0 +1,27 @@
+<h2>Informacje o osobie</h2>
+{{foreach from=$fields item=fd key=fid}}
+{{if $data.$fid && $fid != "about"}}
+<p>
+<strong>{{$fd.0}}: </strong> {{$data.$fid|escape:'html'}}
+</p>
+{{/if}}
+{{/foreach}}
+
+
+{{if $data.about}}
+<div class="about">
+{{$data.about}}
+</div>
+{{/if}}
+
+{{if $memberships}}
+<h3>Uprawnienia PZA</h3>
+{{include file="insider/user_entitlements.html"}}
+{{/if}}
+{{if $entitlements}}
+<h3>Członkostwo w klubach PZA</h3>
+{{include file="insider/user_memberships.html"}}
+{{/if}}
+
+
+

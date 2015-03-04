@@ -1,0 +1,27 @@
+{{$panel}}
+{{if $arts}}
+<table class="paperback-index">
+<tr>
+    <th>Lp.</th>
+    <th>Publikacja</th>
+    <th>Autor</th>
+    <th>Tytuł</th>
+    <th>Streszczenie</th>
+    <th>&nbsp;</th>
+</tr>
+{{foreach from=$arts item=i}}
+    <tr>
+        <td>{{$i@iteration + $br->browser_params["offset"]}}.</td>
+        <td>{{$i.issue_title|escape:'html'}}</td>
+        <td>{{$i.authors|escape:'html'}}</td>
+        <td>{{$i.title|escape:'html'}}</td>
+        <td>{{$i.lead|escape:'html'}}</td>
+        <td><a href="/{{$i.issue_id}}.pdf">Pobierz PDF</a></td>
+    </tr>
+{{/foreach}}
+</table>
+{{else}}
+<p>
+    <i>Brak artykułów.</i>
+</p>
+{{/if}}

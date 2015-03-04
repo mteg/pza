@@ -4,8 +4,9 @@ session_start();
 
 class access
 {
-    private static $rights = false;
+    private static $rights = false, $username = false;
     public static $nologin = false;
+
 
     static function aliases()
     {
@@ -33,7 +34,7 @@ class access
 
         $uid = $_SESSION["user_id"];
 
-        $uinfo = vsql::get("SELECT u.id, u.access, m.id AS membership FROM users AS u" .
+        $uinfo = vsql::get("SELECT u.login, u.id, u.access, m.id AS membership FROM users AS u" .
                 " LEFT JOIN memberships AS m ON m.user = u.id " .
                         " AND m.deleted = 0 AND m.starts <= NOW() AND m.due >= NOW() " .
                 " WHERE u.deleted = 0 AND u.id = " . vsql::quote($uid) .
@@ -54,6 +55,7 @@ class access
 
 
         static::$rights = static::expand_rights($perm);
+        static::$username = $uinfo["login"];
     }
 
     static function expand_rights($PERMISSIONS)
@@ -136,5 +138,11 @@ class access
     {
         static::load_rights();
         return $_SESSION["user_id"] ? $_SESSION["user_id"] : 0;
+    }
+
+    static function getlogin()
+    {
+        static::load_rights();
+        return $_SESSION["user_id"] ? static::$username : "";
     }
 }
