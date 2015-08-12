@@ -1,3 +1,16 @@
+{{if $fu_type == "photo"}}
+<div class="file_upload photo_upload{{if $class}} {{$class}}{{/if}}">
+    <input name="xid" value="{{$xid}}" type="hidden">
+    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+    <div class="row fileupload-buttonbar">
+        <div class="col-lg-7">
+            <!-- The fileinput-button span is used to style the file input field as button -->
+                <span class="btn btn-success fileinput-button">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    <span>Prześlij nowe zdjęcie...</span>
+                    <input type="file" name="files[]" multiple>
+                </span>
+{{else}}
 <div class="file_upload{{if $class}} {{$class}}{{/if}}">
     <input name="xid" value="{{$xid}}" type="hidden">
     <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
@@ -22,6 +35,7 @@
                 <span>Usuń</span>
             </button>
             <input type="checkbox" class="toggle">
+{{/if}}
             <!-- The global file processing state -->
             <span class="fileupload-process"></span>
         </div>

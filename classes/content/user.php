@@ -1,6 +1,15 @@
 <?
 class content_user extends content
 {
+    static function user_photo($id = false)
+    {
+        if(!$id) $id = access::getuid();
+        foreach(array("png", "gif", "jpg", "jpeg") as $ext)
+            if(file_exists($fp = "files/users/" . $id . "." . $ext))
+                return($fp);
+        return false;
+    }
+
     function render_object($id, $path)
     {
         /* Check for active PZA membership */
@@ -20,7 +29,7 @@ class content_user extends content
             die("Brak takiej osoby");
 
         if(!$udata["member"])
-            die("Osoba bez potwierdzonego czlonkowstwa - brak informacji");
+            die("Osoba bez potwierdzonego członkostwa - brak informacji");
 
 
         foreach(insider_users::$_fields as $f => $info)
@@ -32,11 +41,14 @@ class content_user extends content
             $i[$f] = $udata[$f];
         }
 
-        $this->S->assign("fields", insider_users::$_fields);
+        $ss = str_split($udata["flags"]);
         $this->S->assign("data", $i);
+        $this->S->assign("pub", array_combine($ss, $ss));
+        $this->S->assign("photo", $this->user_photo($id));
 
         if(strstr($udata['flags'], "E"))
             $this->S->assign("entitlements", insider_users::list_entitlements($id));
+
         if(strstr($udata['flags'], "B"))
             $this->S->assign("memberships", insider_users::list_memberships($id));
 

@@ -1,4 +1,3 @@
-
 /* Compare just file names, without paths */
 function same_file(n1, n2)
 {
@@ -16,20 +15,76 @@ function init_controls(element)
 {
     /* Uruchomienie pól HTML */
     var textareas = $(element).find('textarea.html');
-    if(typeof textareas.tinymce == "function")
-        textareas.tinymce({
-            plugins: [
-                "code", "fullscreen", "paste", "table",
-                "lists", "link", "searchreplace", "image", "noneditable", "example"],
-            toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | inserttable link fullscreen | example"
+//    if(typeof textareas.tinymce == "function")
+    if(1)
+    {
+        var fs_ed = false;
+        textareas.each(function() {
+            var parentdiv = $(this).closest("div.field");
+            var d = parentdiv.closest(".table-dialog");
+
+            if(d.size())
+            {
+                $('body').prepend(parentdiv);
+                parentdiv.addClass("html-container");
+
+                $(this).tinymce({
+                    script_url: '/js/tinymce/tinymce.min.js',
+                    language: 'pl',
+                    plugins: [
+                        "code", "fullscreen", "paste", "table",
+                        "lists", "link", "searchreplace", "noneditable", "pza"],
+                    toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | inserttable link | jqmodal save pzaquit",
+                    oninit: function (ed) {
+                        $('.mce-tinymce').css('zIndex', 101);
+                        ed.execCommand("mceFullScreen");
+                        setTimeout(function () {
+                            ed.execCommand("mceFullScreen");
+                            ed.execCommand("mceFullScreen");
+                        }, 100);
+                    },
+                    setup: function (ed) {
+                        ed.on('keydown', function (e) {
+                            if(e.keyCode == 27)
+                            {
+                                $('div.html-container').remove();
+                                d.dialog("close");
+                                $('body').removeClass("mce-fullscreen");
+                            }
+                        });
+                    }
+                });
+
+                console.log("hgtSet");
+                d.dialog("option", "height", $(window).height());
+                var buttons = d.dialog("option", "buttons"); // getter
+                buttons.push({ "text": "Edycja treści",
+                                click: function () {
+                                    $('.mce-tinymce').css('zIndex', 101); }
+                });
+                d.dialog("option", "buttons", buttons); // setter
+            }
+            else
+            {
+                $(this).tinymce({
+                    script_url: '/js/tinymce/tinymce.min.js',
+                    language: 'pl',
+                    plugins: [
+                        "code", "fullscreen", "paste", "table",
+                        "lists", "link", "searchreplace", "noneditable"],
+                    toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | inserttable link"
+                });
+
+            }
         });
 
+    }
 
-    textareas.each(function() {
+/*    textareas.each(function() {
         $(this).parent().parent().find(".html-fullscreen-link").on("click", function() {
             $(this).parent().find("textarea.html").tinymce().execCommand("mceFullScreen");
         })
-    });
+    });*/
 
 
     /* Edycja czegokolwiek powoduje wyczyszczenie błędu */
@@ -80,51 +135,70 @@ function init_controls(element)
     });
 
     var fu_container = $(element).find('.file_upload');
-    var fu = fu_container.fileupload({
+    if(fu_container.hasClass("photo_upload"))
+    {
+        var xid =  $(element).find("input[name=xid]").val();
+        fu = fu_container.fileupload({
+            url: '/upload.php?xid=' + xid + (fu_container.hasClass("photos") ? "&photos=1" : ""),
+            autoUpload: true,
+            disableImageResize: true,
+            imageMaxWidth: 1024,
+            imageMaxHeight: 1024,
+            maxNumberOfFiles: 1
+        }).bind("fileuploaddone",  function(e, data) {
+            window.location = "/insider/photo/commit?xid=" + xid;
+        });
+    }
+    else
+    {
+
+        var fu = fu_container.fileupload({
             url: '/upload.php?xid=' + $(element).find("input[name=xid]").val() + (fu_container.hasClass("photos") ? "&photos=1" : ""),
             autoUpload: true,
             disableImageResize: true,
             imageMaxWidth: 1024,
             imageMaxHeight: 1024
-    }).bind("fileuploaddestroyed", function(e, data) {
-            var mce = $("textarea.html");
-            var content;
-            if(!mce.size()) return;
-            content = $(mce.tinymce().getContent());
-            content.find("img").each(function() {
-                if(same_file($(this).attr("src"), $(data.context).find("a").first().attr("href")))
-                    $(this).remove();
+        }).bind("fileuploaddestroyed", function(e, data) {
+                var mce = $("textarea.html");
+                var content;
+                if(!mce.size()) return;
+                content = $(mce.tinymce().getContent());
+                content.find("img").each(function() {
+                    if(same_file($(this).attr("src"), $(data.context).find("a").first().attr("href")))
+                        $(this).remove();
+                });
+                console.log($("<div />").append(content.clone()).html());
+                mce.tinymce().setContent($("<div />").append(content.clone()).html());
+            }).bind("fileuploaddone",  function(e, data) {
+                var j;
+                var mce = $("textarea.html");
+
+                if(!mce.size()) return;
+
+                mce = mce.tinymce();
+                for(j = 0; j<data.result.files.length; j++)
+                {
+                    var fname = data.result.files[j].url;
+                    if((/\.(gif|jpg|jpeg|tiff|png)$/i).test(fname))
+                        mce.dom.add(mce.getBody(), 'img', {src: fname, class: "mceNonEditable"});
+                }
+            }).bind("fileuploadsend", function (e, data) {
+                var cnt = $(this).data("sending");
+                if(!cnt) cnt = 0;
+                $(this).data("sending", ++cnt);
+                /* Form cannot be submitted */
+                $(".ui-dialog-buttonset").find("button").button("disable");
+            }).bind("fileuploadalways", function (e, data) {
+                var cnt = $(this).data("sending");
+                $(this).data("sending", --cnt);
+                if(!cnt) /* Form can be submitted again */
+                    $(".ui-dialog-buttonset").find("button").button("enable");
             });
-            console.log($("<div />").append(content.clone()).html());
-            mce.tinymce().setContent($("<div />").append(content.clone()).html());
-    }).bind("fileuploaddone",  function(e, data) {
-            var j;
-            var mce = $("textarea.html");
 
-            if(!mce.size()) return;
+        if(fu_container.hasClass("photos"))
+            fu.fileupload("option", "disableImageResize", false);
+    }
 
-            mce = mce.tinymce();
-            for(j = 0; j<data.result.files.length; j++)
-            {
-                var fname = data.result.files[j].url;
-                if((/\.(gif|jpg|jpeg|tiff|png)$/i).test(fname))
-                    mce.dom.add(mce.getBody(), 'img', {src: fname, class: "mceNonEditable"});
-            }
-    }).bind("fileuploadsend", function (e, data) {
-        var cnt = $(this).data("sending");
-        if(!cnt) cnt = 0;
-        $(this).data("sending", ++cnt);
-        /* Form cannot be submitted */
-        $(".ui-dialog-buttonset").find("button").button("disable");
-    }).bind("fileuploadalways", function (e, data) {
-        var cnt = $(this).data("sending");
-        $(this).data("sending", --cnt);
-        if(!cnt) /* Form can be submitted again */
-            $(".ui-dialog-buttonset").find("button").button("enable");
-    });
-
-    if(fu_container.hasClass("photos"))
-        fu.fileupload("option", "disableImageResize", false);
 }
 
 /* Pobierz parametry par1=war1 znajdujące się w
@@ -190,6 +264,10 @@ $(function() {
     $('.navigation').on('mouseenter', '#menu > li > a', function (event) {
         $(this).closest(".navigation").find("a").removeClass("ui-state-active");
         $(this).addClass("ui-state-active");
+    });
+
+    $('.navigation li ul').on("mouseleave", function ()  {
+        $('.navigation a.ui-state-active').removeClass("ui-state-active");
     });
 
     $('.main-header .profile').on('click', function (event) {

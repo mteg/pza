@@ -24,7 +24,7 @@
             "creat" =>      array("Data utw.", "noedit" => true, "type" => "date"),
             "mod" =>        array("Data mod.", "no" => "add,edit,view,search,col", "order" => "IF(t.mod = '0000-00-00', t.creat, t.`mod`)"),
             "weight" =>     array("Waga", "regexp" => "-?[0-9]+", "empty" => true, "order" => "DATE_ADD(t.date, INTERVAL t.weight DAY) ", "no" => "col"),
-            "active" =>     array("Treść aktywna", "noadd" => true, "type" => "select", "options" => array("Nie", "Tak"), "no" => "col")
+            "active" =>     array("Treść aktywna", "type" => "select", "options" => array(1 => "Tak", 0 => "Nie"), "no" => "col")
         );
 
         protected $capt = "<title>";
@@ -43,6 +43,7 @@
             if($this->type == "article")
             {
                 $this->actions["<classpath>/html"] = "Kod HTML";
+                $this->actions["<classpath>/mce"] = array("Test MCE", "target" => "_mce");
                 $this->actions["<classpath>/preview"] = array("Podgląd", "target" => "_blank");
 
                 foreach(array("view", "hist", "list") as $p)
@@ -340,6 +341,9 @@
                     break;
             if(!$data) $data = array();
 
+            if($cat = $_REQUEST['category'])
+                $data["categories"] = vsql::get("SELECT path FROM categories WHERE id = " . vsql::quote($cat), "path", "");
+
             $data["date"] = date("Y-m-d");
             return $data;
         }
@@ -356,6 +360,7 @@
                 " LEFT JOIN categories AS cat_any ON cat_any.id = cm_any.category " .
                 " LEFT JOIN content AS issue ON issue.id = t.link AND issue.deleted = 0 " .
                 " WHERE t.deleted = 0 " . $filters .
+                $this->retr_extra_filters() .
                 " AND t.type = " . vsql::quote($this->type) .
                 " GROUP BY t.id ";
 
@@ -386,25 +391,23 @@
             exit;
         }
 
-        private function gen_xid()
+        static function gen_xid()
         {
             while($xid = (date("YmdHis") . substr(md5(uniqid("")), 0, 8)))
-            {
-                $this->S->assign("xid", $xid);
                 if(!file_exists("upload/{$xid}"))
-                    return;
-            }
+                    return $xid;
+            return "NONE";
         }
 
         public function edit()
         {
-            $this->gen_xid();
+            $this->S->assign("xid", $this->gen_xid());
             parent::edit();
         }
 
         public function add()
         {
-            $this->gen_xid();
+            $this->S->assign("xid", $this->gen_xid());
             parent::add();
         }
 
@@ -557,4 +560,11 @@
 
         }
 
+        protected function retr_extra_filters()
+        {
+            $f = "";
+            if($_REQUEST["category"])
+                $f .= " AND cat_main.id = " . vsql::quote($_REQUEST["category"]);
+            return $f;
+        }
     }

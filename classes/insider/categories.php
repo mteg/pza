@@ -29,7 +29,7 @@
 
             parent::__construct();
 
-            if($this->type == "articles")
+            if($this->type == "article")
                 $this->actions["/insider/categories/content"] = array("name" => "Artykuły", "target" => "_self");
 
             if($this->type == "photos")
@@ -106,7 +106,6 @@
 
         public function content()
         {
-            $path = vsql::get("SELECT path FROM categories WHERE deleted = 0 AND id = " . vsql::quote($_REQUEST["id"]), "path", "");
-            header("Location: /insider/content?type=" . $this->type . "#categories=" . htmlspecialchars($path));
+            header("Location: /insider/content?type=" . $this->type . "&category=" . htmlspecialchars($_REQUEST["id"]));
         }
     }

@@ -21,8 +21,9 @@
             "birthdate" =>  array("Data urodzenia", "type" => "date", "suppress" => true, "empty" => true),
             "skype" =>      array("Skype", "suppress" => true, "pub" => "M"),
             "www" =>        array("Strona WWW", "suppress" => true, "pub" => "M"),
-            "about" =>      array("O sobie", "type" => "html", "no" => "view,hist,register"),
+            "about" =>      array("O sobie", "type" => "html", "no" => "view,hist,register", "pub" => "*"),
             "access" =>     array("Prawa dostępu", "type" => "area", "no" => "register"),
+            "fav_categories" => array("Ulubione kategorie", "ref" => "categories", "by" => "path", "no" => "search", "multiple" => true, "empty" => true),
             "flags" =>      array("Profil", "type" => "flags", "no" => "register", "pub" => "B",
                     "options" => array(
                         "B" => "Publiczne imię, nazwisko, płeć, przynależność, data urodzenia",
@@ -33,7 +34,7 @@
                     ))
         );
 
-        public $columns = array("surname", "name", "org" => array("Aktualny klub"));
+        public $columns = array("surname", "name", "org" => array("Aktualny klub", "order" => "org"));
         public $filters = array(
             "org" => array("Aktualny klub", "search" => "o.short"),
             "surname", "name", "town", "country", "district", "birthdate", "flags");
@@ -50,6 +51,7 @@
             parent::__construct();
             $this->fields["country"]["options"] = placelist::get("countries");
             $this->fields["district"]["options"] = placelist::get("regions");
+            $this->actions["/insider/users/edit?about=1&"] = array("name" => "Edytuj 'o sobie'");
             $this->actions["/insider/users/achievements"] = array("name" => "Osiągnięcia", "target" => "_self");
 
             /* "passwd" as a separate priviledge does not make sense,
@@ -73,6 +75,8 @@
                 $this->fields["sex"]["type"] = "select";
                 $this->fields["sex"]["options"] = array("" => "-- brak wyboru --", "K" => "Kobieta", "M" => "Mężczyzna");
             }
+            else if(!isset($_REQUEST["about"]))
+                unset($this->fields["about"]);
         }
 
         function validate($id, &$data)
@@ -113,11 +117,11 @@
 
         static function list_entitlements($id, $extra_sql = "")
         {
-                $m = vsql::retr("SELECT e.starts, e.due, IF(e.due >= NOW(), 1, 0) AS status, r.name
-                                FROM entitlements AS e
-                                JOIN rights AS r ON r.id = e.right
-                                WHERE e.user = " . vsql::quote($id) . $extra_sql .
-                " AND e.deleted = 0 ORDER BY e.starts, e.due, r.name", "");
+            $m = vsql::retr("SELECT e.starts, e.due, IF(e.due >= NOW(), 1, 0) AS status, r.name, e.number, r.public
+                            FROM entitlements AS e
+                            JOIN rights AS r ON r.id = e.right
+                            WHERE e.user = " . vsql::quote($id) . $extra_sql .
+            " AND e.deleted = 0 ORDER BY e.starts, e.due, r.name", "");
             return $m;
         }
 

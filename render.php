@@ -31,6 +31,8 @@
     $S = get_Smarty();
     $S->registerResource('cat', new tpl_cat_loader());
     $S->registerResource('art', new tpl_art_loader());
+    $S->assign("request", $_REQUEST);
+    $S->assign("req", $_REQUEST);
 
     $q = $_REQUEST["q"];
 

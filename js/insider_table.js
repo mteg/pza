@@ -36,18 +36,10 @@ function table_modal(o, action)
         /* Obsługa formularza edycji */
         $(this).find(".table-edit").each(function() {
 
-            /* Uruchomienie pól typu autocomplete, date itd. */
-            init_controls(this);
-
-            $(this).find("script").each(function() {
-                if($(this).attr("type") != "text/x-tmpl")
-                    eval($(this).text());
-            });
-
-
             /* Oprogramowanie przycisków */
             d.dialog("option", "buttons", [{
                 text: "Zapisz dane",
+                "class": "save-button",
                 click: function() {
                     var src  = $(this).find("input[name=source]").val();
                     var params = $(this).find("input[name=params]").val();
@@ -55,7 +47,7 @@ function table_modal(o, action)
                     $.ajax({
                             type: "POST",
                             url: src + "/save?" + params,
-                            data: $(this).find("form").serialize(),
+                            data: $(this).find("form").serialize() + "&" + $('textarea.html').serialize(),
                             success: function (data) {
                                 if(Object.keys(data).length > 0)
                                 {
@@ -76,6 +68,8 @@ function table_modal(o, action)
                                 {
                                     /* Wszystko OK */
                                     $(".table-container > input[name=source]").trigger("change");
+                                    $('body').removeClass("mce-fullscreen");
+                                    $('div.html-container').remove();
                                     d.dialog("close");
                                 }
                             },
@@ -84,6 +78,14 @@ function table_modal(o, action)
                 }
             }]);
 
+        });
+
+        /* Uruchomienie pól typu autocomplete, date itd. */
+        init_controls(this);
+
+        $(this).find("script").each(function() {
+            if($(this).attr("type") != "text/x-tmpl")
+                eval($(this).text());
         });
 
         /* Obsługa formularza importu */
@@ -215,6 +217,30 @@ function table_append_id(o, url)
     return url + "&id=" + encodeURIComponent(ids);
 }
 
+function table_action(o, target, url)
+{
+    if(target == "_blank")
+        window.open(url);
+    else if(target == "_self")
+        window.location = url;
+    else if(target == "_top")
+    {
+        $.get(url, "", function(data) {
+            if("msg" in data)
+                alert(data["msg"]);
+            $(".table-container > input[name=source]").trigger("change");
+            $(".table-dialog").dialog("close");
+        }, "json");
+    }
+    else if(target == "_mce")
+    {
+
+        table_modal(o, url);
+    }
+    else
+        table_modal(o, url);
+}
+
 $(function() {
 
     /* Oprogramuj akcję odświeżania tabeli (filtry i przeglądanie) */
@@ -269,7 +295,13 @@ $(function() {
         /* Otwórz okno akcji "click" */
         var src  = $(".table-container > input[name=source]").val();
         src += "/click?" + $(".table-container > input[name=params]").val();
-        table_modal(this, src + "&id=" +
+
+        var m = $(this).closest(".table-container").find(".table-op-menu");
+        var a = m.find('a[href$="/click"]'), target = false
+        if(a.size())
+            target = $(a).attr("target")
+
+        table_action(this, target, src + "&id=" +
                    $(this).closest("tr").find("input[name=id]").val());
     });
 
@@ -312,7 +344,6 @@ $(function() {
 
         /* URL akcji */
         var url = $(this).attr("href");
-
         url += '?';
 
         // + "?" + q_all(); (filtry przeszkadzają - czy to jest potrzebne?)
@@ -332,22 +363,7 @@ $(function() {
 
         /* Wykonaj operację, w zależności od atrybutu target */
         var target = $(this).attr("target");
-
-        if(target == "_blank")
-            window.open(url);
-        else if(target == "_self")
-            window.location.replace(url);
-        else if(target == "_top")
-        {
-            $.get(url, "", function(data) {
-                if("msg" in data)
-                    alert(data["msg"]);
-                $(".table-container > input[name=source]").trigger("change");
-                $(".table-dialog").dialog("close");
-            }, "json");
-        }
-        else
-            table_modal(this, url);
+        table_action($(this), target, url);
 
         return false;
     });
@@ -374,7 +390,17 @@ $(function() {
         width: $(window).width() * 0.9,
 //        height: $(window).height() * 0.9,
         modal: true,
-        autoOpen: false
+        autoOpen: false,
+        beforeClose: function (ev, ui) {
+            if($('.mce-tinymce').size())
+            {
+                $('.mce-tinymce').css('zIndex', 101);
+
+                ev.stopPropagation();
+                ev.stopImmediatePropagation();
+                ev.preventDefault();
+            }
+        }
     });
 
     /* Klawisz ENTER wciska pierwszy przycisk dialogu */

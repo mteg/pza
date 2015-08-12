@@ -1,4 +1,7 @@
 $(function() {
+    $('body').on("change", "form.onchangesubmit input, form.onchangesubmit select", function () {
+        $(this).closest("form").submit();
+    });
     $('table.sortable').tablesorter();
 
     $('body').on("keyup", function (event) {

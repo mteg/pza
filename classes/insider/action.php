@@ -33,12 +33,14 @@ abstract class insider_action
         ),
         "Moje konto" => array(
             "Moje dane" => "/insider/profile",
+            "Moje zdjęcie" => "/insider/photo",
             "Zmiana hasła" => "/insider/passwd",
             "Przynależność klubowa" => "/insider/profile/membership",
             "Uprawnienia" => "/insider/profile/entitlements",
         ),
         "Treść strony" => array(
-            "Kategorie" => "/insider/categories?type=article|search(categories)",
+            "Moje kategorie" => "/insider/favcats?type=article|search(categories)",
+            "Wszystkie kategorie" => "/insider/categories?type=article|search(categories)",
             "Artykuły" =>  "/insider/content?type=article#order=mod+DESC|search(content)",
         ),
         "Zdjęcia" => array(

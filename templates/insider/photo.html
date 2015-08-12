@@ -1,0 +1,13 @@
+{{extends "insider/action.html"}}
+{{block name="content"}}
+<div style="margin-bottom: 20pt;">
+{{if !$photo}}
+<i>(Obecnie nie posiadasz żadnego zdjęcia w swoim profilu)</i>
+{{else}}
+<img src="/{{$photo}}" style="max-width: 100%;">
+<br>
+<a class="btn" onclick="return confirm('Usunąć zdjęcie?');" href="/insider/photo/remove">Usuń zdjęcie z profilu</a>
+{{/if}}
+</div>
+{{include file="insider/file_upload.html" fu_type="photo"}}
+{{/block}}

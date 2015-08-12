@@ -1,19 +1,54 @@
-<h2>Informacje o osobie</h2>
-{{foreach from=$fields item=fd key=fid}}
-{{if $data.$fid && $fid != "about"}}
-<p>
-<strong>{{$fd.0}}: </strong> {{$data.$fid|escape:'html'}}
-</p>
+
+<span class="profil-title">
+    {{if $pub.B}}{{$data.name}} {{$data.surname}}
+    {{elseif $data.login}}{{$data.login}}
+    {{else}}Użytkownik {{$data.id}}
+    {{/if}}
+</span>
+
+
+{{function name="cd"}}
+{{if $data.$f}}
+<p><strong>{{$descr}}: </strong> {{$data.$f|escape:'html'}}</p>
+{{/if}}
+{{/function}}
+
+<div class="profil-foto">
+
+{{if $photo}}
+<a href="/{{$photo}}" target="_blank"><img style="max-width: 25%;" src="/{{$photo}}"></a>
+{{/if}}
+
+<div class="profil-foto-1">
+{{foreach from=$entitlements item=i key=k}}
+{{if $i.public && $i.status}}
+<p><strong>{{$i.name}}</strong>{{if $i.number}} (Numer: {{$i.number}}){{/if}}</p>
+{{/if}}
+{{/foreach}}
+{{foreach from=$memberships item=i key=k}}
+{{if $i.status}}
+<p><strong>Klub: </strong> {{$i.short|escape:'html'}}</p>
 {{/if}}
 {{/foreach}}
 
+{{if $pub.M}}
+{{cd f="email" descr="E-mail"}}
+{{cd f="skype" descr="Skype"}}
+{{cd f="www" descr="WWW"}}
+{{/if}}
+{{if $pub.T}}
+{{cd f="phone" descr="Telefon"}}
+{{/if}}
+</div>
+</div>
 
 {{if $data.about}}
-<div class="about">
+<div class="profil-box" style="clear: both;">
 {{$data.about}}
 </div>
 {{/if}}
 
+        {{*
 {{if $memberships}}
 <h3>Uprawnienia PZA</h3>
 {{include file="insider/user_entitlements.html"}}
@@ -22,6 +57,4 @@
 <h3>Członkostwo w klubach PZA</h3>
 {{include file="insider/user_memberships.html"}}
 {{/if}}
-
-
-
+*}}

@@ -4,6 +4,7 @@
         public $fields = array(
             "right" =>   array("Uprawnienie", "ref" => "rights", "by" => "name", "search" => "r.name", "order" => "r.name"),
             "user" =>    array("Osoba", "ref" => "users", "by" => "ref"),
+            "number" =>  array("Numer uprawnienia"),
             "starts" =>  array("Data uzyskania", "type" => "date"),
             "due" =>     array("Data wygaśnięcia", "type" => "date"),
         );

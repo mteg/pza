@@ -1,0 +1,363 @@
+html {margin: 0;
+      padding: 0;}
+
+body {width: 1200px;
+      margin: 0 auto;
+      padding: 0;
+      font-size: 13px;
+      font-family: Ubuntu, verdana, sans-serif;
+      color: #242736;}
+      
+#header-phone, .no-desc {display: none;}      
+      
+    
+      
+a {text-decoration: none;}  
+
+
+.right {text-align: right;}  
+
+.f-left {float: left;} 
+
+.f-right {float: right;} 
+
+      
+#header {width: 100%;
+        margin: 0 auto;
+        position: relative;}  
+        
+#logo {width: 110px;
+       height: 50px;
+       float: left;
+       margin: 15px 0 0 0;} 
+       
+#logo img {width: 100%;}       
+       
+
+.menu {width: 769px;
+       height: 40px;
+       float: right;
+       background: url(/img/menu_top.jpg) no-repeat;
+       margin: 39px 0 0 0; }
+       
+.menu ul {list-style: none;
+         text-transform: uppercase;
+         margin: 0;
+         padding: 0;}
+         
+.menu ul li  {float: left;
+              padding: 14px 15px 0 15px;}
+
+.menu ul li:first-child {padding: 14px 15px 0 55px;}
+
+.menu ul li a {display: block;
+              color: #fff;}
+
+.menu a img {float: right;
+             margin: 11px 10px 0 2px;}
+
+ 
+.baner-top {width: 100%;}                               
+       
+.baner-top img {width: 100%;}   
+
+.col1 {width: 980px;
+       float: left;
+       margin-bottom: 25px;}
+       
+.box {width: 225px;
+      float: left;
+      margin: 0 20px 0 0;
+      padding-top: 18px;} 
+      
+.box a.ngl {background: url(/img/dzial_naglowek_linia.gif) no-repeat 0 8px;
+             color: #B82626;
+             display: block;} 
+             
+.box span {background: #fff;
+           padding: 0 10px 0 0;}                  
+      
+.box a.bg {background: #E9E9E9;
+           display: block;
+           padding: 8px;
+           color: #242736;
+           text-align: justify;
+           margin-top: -2px;}            
+
+.box h2 {text-transform: uppercase;
+         font-size: 14px;
+         margin: 12px 0 3px 0;}
+         
+.box img {width: 100%;}         
+             
+.col2 {width: 220px;
+       float: right;
+       margin: 0 0 20px 0;} 
+       
+     
+       
+#search {width: 220px;
+         height: 29px;
+         margin-top: 16px;}  
+         
+#search input[type='text'] {width: 182px;
+                            height: 19px;
+                            float: left;
+                            font-family: Ubuntu, verdana, sans-serif;
+                            border: none;
+                            padding: 4px 4px;
+                            border-left: 1px solid #CCCCCC;
+                            border-top: 1px solid #CCCCCC;
+                            border-bottom: 1px solid #CCCCCC;}        
+         
+.submit {float: right;}
+
+
+#search img { margin: 0;}   
+
+
+.col2 ul {list-style: none;
+           margin: 10px 0 15px 0;
+           padding: 10px 0 ;
+           background: #ECECEC;}
+                   
+            
+
+.col2 ul li a {color: #01315F;
+               padding: 5px 0 5px 13px;
+               display: block;}
+
+.col2 ul li a:hover {background: #242738;
+                     color: #EAEAEC;
+                     padding: 5px 0 5px 13px;}
+
+.col2 ul li > ul {margin: 5px 0 5px 0;
+                  display: none;
+                  padding: 0;}
+
+.col2 ul.persistent li > ul { display: block !important; }
+
+.col2 ul li:hover > ul {display: block;}            
+
+
+.col2 ul li > ul li a {padding: 5px 0 5px 32px;}  
+                       
+.col2 ul li > ul li a:hover {color: #01315F;
+                             background: none;
+                             font-weight: bold;
+                              padding: 5px 0 5px 32px;}  
+                              
+                              
+/**/
+
+#newsletter {width: 204px;
+             overflow: hidden;
+             background: #8B92A2;
+             padding: 8px 9px;}
+             
+          
+             
+#newsletter span {font-size: 13px; 
+                  display: block;
+                  padding: 0 0 4px 0;
+                  color: #fff;} 
+                  
+#newsletter input[type='text'] {width: 144px;
+                                height: 28px;
+                                border: none;
+                                float: left;
+                                padding: 0 4px;
+                                font-size: 11px;
+                                } 
+            
+#newsletter input[type='submit'] {border: none;
+                      background: #A5ADBA;
+                      float: right;
+                      color: #fff;
+                      padding: 6px 4px; 
+                      font-size: 11px;}
+                      
+/**/                                                    
+
+
+.col2 img {width: 100%;
+           margin-top: 12px;}  
+
+           
+.partnerzy {clear: both;
+            width: 100%;
+            border-top: 1px solid #C3C3C3;
+            height: 100px;
+            position: relative;} 
+            
+.partnerzy span {display: block;
+                 width: 67px;
+                 color: #3C4554;
+                 background: #fff;
+                 position: absolute;
+                 top: -10px;
+                 left: 0;} 
+                 
+.partnerzy ul {margin: 0;
+              padding: 0;
+              list-style: none;}  
+              
+.partnerzy li {float: left;
+               padding: 20px 1%;
+               width: 12.28% ;} 
+               
+.partnerzy li img {width: 100%;}                                                           
+
+      
+#footer {width: 100%;
+        clear: both;
+        font-size: 12px;
+        padding: 10px 0 15px; 
+        overflow: hidden;
+        border-top: 1px solid #C3C3C3;}
+        
+#footer a {color:  #242736;}         
+
+#footer ul {list-style: none;
+            margin: 0;
+            padding: 0;
+            clear: both;}                       
+                       
+#footer ul.f1 li {float: left;
+                  padding: 0 0 0 55px;}
+               
+#footer ul.f1 li:first-child {padding: 0 0 0 0;}  
+
+#footer ul.f2 li {float: right;
+                  padding: 5px 0 0 54px;}
+
+
+.instr-szukaj  {width: 100%;
+    background: #E4E4E4;
+    margin-top: 20px;
+    overflow: hidden;
+    padding: 0 0 18px 0;}
+
+
+
+.select-box { position: relative;
+    width: 206px;
+    clear: both;
+    margin: 5px 0 0 16px; }
+
+.instr-szukaj span {display: block;
+    float: left;
+    padding: 10px 5px 0 16px;}
+
+
+.instr-szukaj input[type='text'] {width: 190px;
+    float: left;
+    margin: 10px 0 10px 16px;}
+
+
+.instr-szukaj input[type='submit']  {border: none;
+    color: #E4E4E4;
+    background: #6A6162;
+    float: right;
+    clear: both;
+    text-transform: uppercase;
+    padding: 5px 9px;
+    margin: 20px 16px 0 0;
+    font-size: 10px;
+    font-weight: bold;}
+
+.instr-szukaj input[type='checkbox']  {float: left;}
+
+.checkbox-box {clear: both;
+    padding: 0 0 8px 15px;
+    overflow: hidden;}
+
+.checkbox-box span {display: block;
+    float: left;
+    padding: 0 0 0 5px;
+    font-size: 11px;}
+
+/*INSTRUKTORZY LISTA*/
+
+table.personnel {border: 0;
+    width: 740px;
+    margin-top: 20px;
+    border-collapse: collapse;}
+
+table.personnel th {background: #6A6162;
+    color: #fff;
+    font-weight: normal;
+    padding: 8px 0 8px 12px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    text-align: left;}
+
+
+table.personnel td {font-weight: bold;
+    padding: 8px 0 8px 12px;}
+
+table.personnel .bg td {background: #F4F4F4;}
+
+.profil-title {display: block;
+    margin: 20px 20px 0 0;
+    padding: 8px 0 8px 12px;
+    background: #E4E4E4;
+    font-weight: bold;
+    font-size: 14px;}
+
+.profil-foto {clear: both;
+    padding: 12px 0 0 12px;
+    height: 130px;
+    overflow: hidden;
+    position: relative;}
+
+.profil-foto img {float: left;}
+
+.profil-foto-1 {float: left;
+    line-height: 22px;
+    position: absolute;
+    bottom: -3px;
+    left: 152px;}
+
+.profil-box {padding: 0 20px 0 12px;}
+
+.profil-box p {margin: 20px 0 0 0;}

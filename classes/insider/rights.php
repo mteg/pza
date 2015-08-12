@@ -8,6 +8,7 @@
             "short" =>   array("Identyfikator", "regexp" => "[a-z]+(:[a-z0-9_()]+)+"),
             "access" =>   "Prawa dostępu",
             "active" =>  array("Aktywne?", "type" => "select", "options" => array(1 => "Tak", 0 => "Nie")),
+            "public" =>  array("Publiczne?", "type" => "select", "options" => array(1 => "Tak", 0 => "Nie")),
         );
 
         protected $capt = "<name>";
@@ -17,5 +18,7 @@
         {
             if(!access::has("god"))
                 unset($this->fields["access"]);
+
+            parent::__construct($profile);
         }
     }
