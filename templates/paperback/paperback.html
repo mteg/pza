@@ -1,23 +1,29 @@
-{{if $paperback.pdf_thumbnail}}
-<a href="{{$paperback.path}}"><img src="/{{$paperback.id}}.jpg"/></a>
-{{/if}}
-
 {{function name="prop"}}
     {{if $v && $v != "0000-00-00"}}
     <p>{{$k}}: <b>{{$v|escape:'html'}}</b></p>
     {{/if}}
 {{/function}}
 
-<span class="paperback-info">
-    {{prop k="Autorzy" v=$paperback.authors}}
-    {{prop k="Data publikacji" v=$paperback.date}}
-</span>
+<table class="table-top">
+    <tr>
+        <td>
+            {{if $paperback.pdf_thumbnail}}
+            <img src="/{{$paperback.id}}.jpg"/>
+            {{/if}}
+        </td>
+        <td>
+            {{prop k="Autorzy" v=$paperback.authors}}
+            {{prop k="Data publikacji" v=$paperback.date}}
+            <a class="pdf" href="{{$paperback.path}}">Pobierz PDF</a></td>
+    </tr>
+</table>
+
 <div class="paperback-lead">
     {{$paperback.lead|escape:'html'}}
 </div>
 
 {{if $paperback.index}}
-<table class="paperback-index">
+<table class="kluby-lista taternik-pismo">
 <tr>
     <th>Lp.</th>
     <th>Autorzy</th>

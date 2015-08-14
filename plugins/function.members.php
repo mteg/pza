@@ -9,7 +9,7 @@
             (isset($params["profile"]) ? (" AND m.profile LIKE " . vsql::quote("%" . $params["profile"] . "%")) : "") .
                     " ORDER BY m.name", "");
 
-        $out = "<table class='sortable members'>";
+        $out = "<table class='sortable kluby-lista'>";
         $out .= "<thead>\n";
         $out .= "<th>#</th><th>Nazwa</th><th>Miasto</th>";
         $out .= "\n</thead><tbody>\n";

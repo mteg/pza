@@ -23,6 +23,8 @@
             $sassoc = $_REQUEST["sa"];
             $sright = $_REQUEST["sr"];
 
+//            echo "blah";
+
             if(isset($params["selector"]))
             {
                 $srights = array();
@@ -52,14 +54,15 @@
         }
 
         if($sright && (!is_array($sright))) $sright = array($sright);
-        $list = vsql::retr("SELECT u.id, u.surname, u.name, u.login,
+        $list = vsql::retr($qry = "SELECT u.id, u.surname, u.name, u.login,
                     GROUP_CONCAT(CONCAT(r.name, ' ', e.number) ORDER BY r.name SEPARATOR '|') AS entl,
                     GROUP_CONCAT(c.short ORDER BY c.short SEPARATOR '|') AS society,
-                    IF(e.due = '9999-12-31', '---', e.due) AS due
+                    MAX(e.due) AS due,
+                    IF(MAX(e.due) > NOW(), 1, 0) AS status
                     FROM rights AS r
-                    JOIN entitlements AS e ON e.right = r.id AND e.deleted = 0
-                            AND e.starts <= NOW() AND e.due >= NOW()
-                    JOIN users AS u ON u.id = e.user AND u.deleted = 0
+                    JOIN entitlements AS e ON e.right = r.id AND e.deleted = 0 " .
+                    ($_REQUEST["active"] ? " AND e.starts <= NOW() AND e.due >= NOW() " : "") .
+                    "JOIN users AS u ON u.id = e.user AND u.deleted = 0
                     LEFT JOIN memberships AS m ON m.deleted = 0 AND u.id = m.user
                             AND m.starts <= NOW() AND m.due >= NOW()
                             AND m.flags LIKE '%R%'
@@ -69,13 +72,16 @@
                     ($sname ? (" AND u.surname LIKE " . vsql::quote("%" . $sname . "%")) : "") .
                     ($sassoc ? (" AND c.short LIKE " . vsql::quote("%" . $sassoc . "%")) : "") .
                     (count($sright) ? (" AND " . entl_condition($sright, "r.short")) : "") .
-                    " GROUP BY u.id ORDER BY u.surname, u.name", "");
+                    " GROUP BY u.id " .
+                    " ORDER BY u.surname, u.name", "");
+// echo $qry;
 
-
-        $out .= "<table class='sortable personnel'>";
+        $out .= "<table class='kluby-lista instr'>";
         $out .= "<thead>\n";
         $out .= "<th>#</th><th>Nazwisko</th><th>Imię</th><th>Klub</th>";
-        if($params["format"] == 2)
+        if($params["format"] == 3)
+            $out .= "<th>Aktualna licencja</th>";
+        elseif($params["format"] == 2)
             $out .= "<th>Uprawnienia</th>";
         else
             $out .= "<th>Data ważności</th>";
@@ -83,18 +89,24 @@
         $out .= "\n</thead><tbody>\n";
         foreach($list as $c => $e)
         {
-            $userlink = '/~' . ($e["login"] ? $e["login"] : $e["id"]) .
-                    '?category=' . $S->getTemplateVars('category_id');
+            $userlink = '~' . ($e["login"] ? $e["login"] : $e["id"]);
 
             $out .= "<tr>";
             $out .= "<td>" . $c . "</td>";
             $out .= "<td><a href='$userlink'>" . htmlspecialchars($e["surname"]) . "</a></td>";
             $out .= "<td><a href='$userlink'>" . htmlspecialchars($e["name"]) . "</a></td>";
             $out .= "<td>" . strtr(htmlspecialchars($e["society"]), array("|" => "<BR>")) . "</td>";
-            if($params["format"] == 2)
+            if($params["format"] == 3)
+            {
+                $due = substr($e["due"], 0, 4);
+                if($due == "9999") $due = "";
+                if(!$e["status"]) $due = "<strike>$due</strike>";
+                $out .= "<td>" . $due . "</td>";
+            }
+            else if($params["format"] == 2)
                 $out .= "<td>" . strtr(htmlspecialchars($e["entl"]), array("|" => "<BR>")) . "</td>";
             else
-                $out .= "<td>" . htmlspecialchars($e["due"]) . "</td>";
+                $out .= "<td>" . htmlspecialchars($e["due"] == "9999-12-31" ? "---" : $e["due"]) . "</td>";
             $out .= "</tr>\n";
         }
         if(!count($list))

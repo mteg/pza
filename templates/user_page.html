@@ -1,52 +1,50 @@
+<h2 class="ngl-h2">{{if $pub.B}}{{$data.name}} {{$data.surname}}
+{{elseif $data.login}}{{$data.login}}
+{{else}}Użytkownik {{$data.id}}
+{{/if}}</h2>
 
-<span class="profil-title">
-    {{if $pub.B}}{{$data.name}} {{$data.surname}}
-    {{elseif $data.login}}{{$data.login}}
-    {{else}}Użytkownik {{$data.id}}
-    {{/if}}
-</span>
+<table class="table-profil">
+    <tr>
+        <td>
+            <a href="{{if $photo}}/{{$photo}}{{else}}/img/zaslepka_profil.gif{{/if}}" target="_blank"><img style="max-width: 130px;" src="/{{if $photo}}{{$photo}}{{else}}img/zaslepka_profil.gif{{/if}}"></a>
+        </td>
+        <td>
+            {{foreach from=$entitlements item=i key=k}}
+            {{if $i.public}}
+            <strong>{{$i.name}}</strong><br/>
+            <b>Licencja: </b>{{if $i.number}}{{$i.number}}{{/if}} {{if $i.status}}<strong>AKTUALNA</strong>{{if $i.due}} do {{$i.due}}{{/if}}{{else}}<strong>NIEAKTUALNA</strong>{{/if}}
+            <br/>
+            {{/if}}
+            {{/foreach}}
+            {{foreach from=$memberships item=i key=k}}
+            {{if $i.status}}
+            <strong>Klub: </strong> {{$i.short|escape:'html'}}<br/>
+            {{/if}}
+            {{/foreach}}
+        </td>
+</table>
 
-
-{{function name="cd"}}
-{{if $data.$f}}
-<p><strong>{{$descr}}: </strong> {{$data.$f|escape:'html'}}</p>
-{{/if}}
-{{/function}}
-
-<div class="profil-foto">
-
-{{if $photo}}
-<a href="/{{$photo}}" target="_blank"><img style="max-width: 25%;" src="/{{$photo}}"></a>
-{{/if}}
-
-<div class="profil-foto-1">
-{{foreach from=$entitlements item=i key=k}}
-{{if $i.public && $i.status}}
-<p><strong>{{$i.name}}</strong>{{if $i.number}} (Numer: {{$i.number}}){{/if}}</p>
-{{/if}}
-{{/foreach}}
-{{foreach from=$memberships item=i key=k}}
-{{if $i.status}}
-<p><strong>Klub: </strong> {{$i.short|escape:'html'}}</p>
-{{/if}}
-{{/foreach}}
-
-{{if $pub.M}}
-{{cd f="email" descr="E-mail"}}
-{{cd f="skype" descr="Skype"}}
-{{cd f="www" descr="WWW"}}
-{{/if}}
-{{if $pub.T}}
-{{cd f="phone" descr="Telefon"}}
-{{/if}}
-</div>
-</div>
-
-{{if $data.about}}
-<div class="profil-box" style="clear: both;">
 {{$data.about}}
-</div>
-{{/if}}
+
+<ul class="profil-list">
+    {{function name="cd"}}
+    {{if $data.$f}}
+    <li><strong>{{$descr}}: </strong> {{$data.$f|escape:'html'}}</li>
+    {{/if}}
+    {{/function}}
+    {{if $pub.M}}
+    {{cd f="email" descr="E-mail"}}
+    {{cd f="skype" descr="Skype"}}
+    {{cd f="www" descr="WWW"}}
+    {{/if}}
+    {{if $pub.T}}
+    {{cd f="phone" descr="Telefon"}}
+    {{/if}}
+</ul>
+
+
+
+
 
         {{*
 {{if $memberships}}

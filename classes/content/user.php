@@ -28,9 +28,6 @@ class content_user extends content
         if(!($id = $udata["id"]))
             die("Brak takiej osoby");
 
-        if(!$udata["member"])
-            die("Osoba bez potwierdzonego członkostwa - brak informacji");
-
 
         foreach(insider_users::$_fields as $f => $info)
         {
@@ -40,17 +37,22 @@ class content_user extends content
                     continue;
             $i[$f] = $udata[$f];
         }
+        $i["id"] = $udata["id"];
 
         $ss = str_split($udata["flags"]);
         $this->S->assign("data", $i);
         $this->S->assign("pub", array_combine($ss, $ss));
         $this->S->assign("photo", $this->user_photo($id));
 
+        $entls = insider_users::list_entitlements($id);
         if(strstr($udata['flags'], "E"))
-            $this->S->assign("entitlements", insider_users::list_entitlements($id));
+            $this->S->assign("entitlements", $entls);
 
         if(strstr($udata['flags'], "B"))
             $this->S->assign("memberships", insider_users::list_memberships($id));
+
+        if((!$udata["member"]) && !count($entls))
+            die("Osoba bez potwierdzonego członkowstwa - brak informacji");
 
         $this->S->assign("content", $this->S->fetch("user_page.html"));
 

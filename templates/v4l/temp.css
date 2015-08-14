@@ -40,10 +40,10 @@ table.paperback-index td:first-child
     text-align: right;
 }
 
-.article-text img {
+/* .article-text img {
     display: block;
     max-width: 90%;
-}
+} */
 
 div.ll {
     clear: both;
@@ -90,7 +90,7 @@ div.pza-browsepanel input, div.pza-browsepanel select {
 div.pza-browsepanel span {
     margin-left: 20px;
 }
-
+/*
 .article-text a {
     border-bottom: 1px dotted #888;
 }
@@ -98,6 +98,7 @@ div.pza-browsepanel span {
 .article-text a:hover {
     border-bottom: 1px solid #444;
 }
+*/
 
 .phone-sidemenu {
     display: block;

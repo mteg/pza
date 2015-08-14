@@ -97,19 +97,21 @@ class browser extends insider_content
         /* Wyświetl panel */
         $date = htmlspecialchars($_REQUEST["date"]);
 
-        $out  = "<div class='pza-browsepanel'>";
-        $out .= "<form action='" . htmlspecialchars($self) . "' method='GET'>";
-        $out .= "<span><a href='{$prev}'>&laquo; Późniejsze</a></span>";
-        $out .= "<span>Rok: <input type='text' name='date' value='{$date}' size=4 onchange='$(this).parent().parent().find(\"input[name=page]\").val(1);'></span>";
-        $out .= "<span>Strona: <input type='text' name='page' value='{$page}' size=3> z {$count}</span>";
-        $out .= "<span>Na stronie: <select name='limit'>{$limits}</select></span>";
-        $out .= "<span><input type='submit' value='Zmień'></span>";
-        $out .= "<span><a href='{$next}'>Wcześniejsze &raquo;</a></span>";
+
+
+        $out  = "<div id='filtr-box'>";
+        $out .= "<form id='filtr-form' action='" . htmlspecialchars($self) . "' method='GET'>";
+        $out .= "<a class='pozniej' href='{$prev}'>Późniejsze</a>";
+        $out .= "<span class='rok'>Rok:</span> <input class='input inp-rok' type='text' name='date' value='{$date}' size=2 onchange='$(this).parent().parent().find(\"input[name=page]\").val(1);'>";
+        $out .= "<span>Strona:</span> <input class='input' type='text' name='page' value='{$page}' size=2> <span>z {$count}</span>";
+        $out .= "<span class='str-2'>Na stronie:</span> <select id='na-stronie' name='limit'>{$limits}</select>";
+        $out .= "<span><input type='submit' value='Zmień' class='j-lista'></span>";
+        $out .= "<a href='{$next}' class='wczesniej'>Wcześniejsze</a>";
         $out .= $this->extra_panel();
         $out .= "</form>";
         $out .= "</div>";
         return $out;
-    }
+   }
 
     function access($perm)
     {

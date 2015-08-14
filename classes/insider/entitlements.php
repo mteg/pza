@@ -28,28 +28,52 @@
 
         protected function access($perm)
         {
-            if($family = $_REQUEST["family"])
-                if(in_array($perm, array("search", "add", "edit", "view", "delete")))
+            if(in_array($perm, array("search", "view", "add", "edit", "delete")))
+            {
+                if($family = $_REQUEST["family"])
                     if(access::has("entmgr($family)"))
                         return true;
+            }
+
+            if(in_array($perm, array("search", "view")))
+                if(access::glob("entmgr(*)"))
+                    return true;
 
             return parent::access($perm);
+        }
+
+        function family_access($fname)
+        {
+            if(access::has("god")) return "";
+            if(access::has("delete(entitlements)")) return "";
+            if(!count($args = access::args("entmgr"))) return " AND 0 = 1";
+            foreach($args as $k => $arg)
+                $args[$k] = $fname . " LIKE " . vsql::quote($arg . ":%");
+            return " AND (" . implode(" OR ", $args) . ")";
+        }
+
+        protected function validate($id, $data)
+        {
+            foreach(array("starts" => "0000-00-00", "due" => "9999-12-31") as $f => $def)
+                if(isset($data[$f]) && !strlen($data[$f]))
+                    $data[$f] = $def;
+            return parent::validate($id, $data);
         }
 
         function __construct()
         {
             $family = $_REQUEST["family"];
-            if($family)
-            {
-                $opts = vsql::retr("SELECT id, CONCAT('[',  short, '] ', name) AS name
-                            FROM rights
-                            WHERE deleted = 0 AND
-                                  short LIKE " . vsql::quote($family . ":%") .
-                            " ORDER BY name, id", "id", "name");
 
-                $this->fields["right"] = array("Uprawnienie", "type" => "select",
-                    "search" => "r.name", "order" => "r.name", "options" => $opts);
-            }
+            $opts = vsql::retr("SELECT id, CONCAT('[',  short, '] ', name) AS name
+                        FROM rights
+                        WHERE deleted = 0 " .
+                            $this->family_access("short") .
+                            ($family ? (" AND short LIKE " . vsql::quote($family . ":%")) : "") .
+                        " ORDER BY name, id", "id", "name");
+
+            $this->fields["right"] = array("Uprawnienie", "type" => "select",
+                "search" => "r.name", "order" => "r.name", "options" => $opts);
+
             parent::__construct();
         }
 
@@ -91,6 +115,8 @@
 //            $data["right"] = vsql::get("SELECT `right` FROM entitlements WHERE deleted = 0 ORDER BY creat DESC LIMIT 1", "right", 0);
             $data["due"] = "9999-12-31";
             $data["starts"] = date("Y-m-d");
+            if(isset($_REQUEST["user"]))
+                $data["user"] = ($id = $_REQUEST["user"]) . ": " . vsql::get("SELECT ref FROM users WHERE id = " . vsql::quote($_REQUEST["user"]), "ref");
             return($data);
         }
 
@@ -103,4 +129,30 @@
                   WHERE e.id = " . vsql::quote($id), "capt", "");
         }
 
+        function enforce($perm)
+        {
+            if($perm == "add" || $perm == "edit")
+                if(isset($_REQUEST["right"]))
+                {
+                    if(vsql::get("SELECT id FROM rights WHERE deleted = 0 AND id = " .
+                        vsql::quote($_REQUEST["right"]) . $this->family_access("short")))
+                        return true;
+                }
+                else
+                    if(access::glob("entmgr(*)"))
+                        return true;
+            if($perm == "delete")
+            {
+                if(isset($_REQUEST["id"]))
+                {
+                    if(vsql::get("SELECT e.id FROM entitlements AS e
+                            JOIN rights AS r ON r.id = e.right
+                            WHERE e.deleted = 0 AND e.id = " .
+                    vsql::quote($_REQUEST["right"]) . $this->family_access("r.short")))
+                        return true;
+                }
+            }
+
+            return parent::enforce($perm);
+        }
     }

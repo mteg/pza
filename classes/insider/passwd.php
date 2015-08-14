@@ -10,7 +10,7 @@ class insider_passwd extends insider_action
         $password = md5($login . $password);
 
         vsql::update("users", array("password" => "(zmiana hasła)"), $userid);
-        vsql::query("UPDATE users SET password = " . vsql::quote($password) . " WHERE id = " . vsql::quote($userid));
+        vsql::query("UPDATE users SET password = " . vsql::quote($password . "|" . $login) . " WHERE id = " . vsql::quote($userid));
     }
 
     static function verify($s)
@@ -30,9 +30,14 @@ class insider_passwd extends insider_action
     static function suggest()
     {
         $f = array_map("trim", file("data/words.txt"));
-        $w1 = array_rand($f);
-        $w2 = array_rand($f);
-        return trim($f[$w1] . " " . $f[$w2]);
+        $s = array();
+        for($i = 0; $i<3; $i++)
+        {
+            $w1 = array_rand($f);
+            $w2 = array_rand($f);
+            $s[] = trim($f[$w1] . " " . $f[$w2]);
+        }
+        return implode(", ", $s);
     }
 
     function route()

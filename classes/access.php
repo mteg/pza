@@ -76,7 +76,7 @@ class access
 
         /* Aliasy na prawa na tabelach */
         $map2 = array(
-            '/ (read)\(([a-zA-Z0-9_]+)\)/' => ' search(\2) ',
+            '/ (read)\(([a-zA-Z0-9_]+)\)/' => ' search(\2) ref(\2) ',
             '/ (write)\(([a-zA-Z0-9_]+)\)/' => ' add(\2) edit(\2) ',
             '/ (delete)\(([a-zA-Z0-9_]+)\)/' => ' \1(\2) add(\2) edit(\2) search(\2) history(\2) ',
             '/ (search|history)\(([a-zA-Z0-9_]+)\)/' => ' \1(\2) view(\2) ',
@@ -126,6 +126,21 @@ class access
             if(fnmatch($right, $r)) return true;
 
         return false;
+    }
+
+    static function args($right)
+    {
+        $args = array();
+
+        $right .= "(";
+        $n = strlen($right);
+
+        static::load_rights();
+        foreach(static::$rights as $r=> $junk)
+            if(substr($r, 0, $n) == $right && substr($r, -1) == ")")
+                $args[] = substr($r, $n, strlen($r) - $n - 1);
+
+        return $args;
     }
 
     static function ensure($right)

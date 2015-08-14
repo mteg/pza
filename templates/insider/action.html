@@ -87,6 +87,15 @@
     {{block name="header"}}
     <div class="profile-info">
       <span>
+          {{ifaccess perm="search(users)"}}
+          <span class="profile">
+
+              <form action="/insider/users/quicksearch" method="GET">
+              <input type="text" name="q" placeholder="Nazwisko">
+              <input type="submit" value="Szukaj">
+              </form>
+          </span>
+          {{/ifaccess}}
         <span class="profile menu-more">Zalogowany jako: {{$this->username|escape:'html'}}</span>
         <ul class="profile-menu">
           <li><a href="/insider/profile">Moje dane</a></li>

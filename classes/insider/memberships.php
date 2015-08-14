@@ -183,7 +183,7 @@
 
         protected function capt($id)
         {
-            return vsql::get("SELECT CONCAT(u.user, ' * ', m.name) AS capt FROM
+            return vsql::get("SELECT CONCAT(u.id, ' * ', m.name) AS capt FROM
                   memberships AS me
                   LEFT JOIN users AS u ON u.id = me.user
                   LEFT JOIN members AS m ON m.id = me.member

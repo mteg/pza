@@ -28,6 +28,32 @@ body {width: 1100px;}
 #newsletter input[type='text'] {width: 124px;}   
 
 #footer ul.f1 li {padding: 0 0 0 28px;} 
+
+
+/***********nowe 30-07-2015 - jaskinie******/
+
+.kluby-lista {width: 880px;}
+
+#filtr-box {width: 840px;}
+
+.str {margin-left: 180px;} 
+
+.szukaj-instruktor span {padding: 10px 5px 0 8px;}           
+          
+
+.szukaj-instruktor input[type='text'] {width: 176px;
+                            float: left;
+                            margin: 10px 0 10px 8px;}
+                            
+.szukaj-instruktor select {width: 180px;
+                           margin-left: 8px;}   
+                           
+.checkbox-box {padding: 0 0 8px 7px;} 
+               
+.checkbox-box span {padding: 0 0 0 2px;}                                                     
+
+
+
 }
 
 
@@ -59,6 +85,40 @@ body {width: 1000px;}
 #footer {font-size: 11px;}
 
 #footer ul.f1 li {padding: 0 0 0 28px;} 
+
+/***********nowe 30-07-2015 - jaskinie******/
+
+.kluby-lista {width: 800px;}
+
+.kluby-lista td:first-child + td {width: 520px;}
+
+.taternik-pismo td:first-child + td {width: 250px;}
+
+#filtr-box {width: 760px;}
+
+.str {margin-left: 130px;}
+
+.instr td:first-child + td {width: 130px;}
+
+.jaskinie-lista td:first-child + td {width: 90px;}
+
+.rok {margin-left: 50px;} 
+
+.foto-news {width: 180px;}
+
+.szukaj-instruktor span {padding: 10px 5px 0 8px;}           
+          
+
+.szukaj-instruktor input[type='text'] {width: 156px;
+                            float: left;
+                            margin: 10px 0 10px 8px;}
+                            
+.szukaj-instruktor select {width: 160px;
+                           margin-left: 8px;}   
+                           
+.checkbox-box {padding: 0 0 8px 7px;} 
+               
+.checkbox-box span {padding: 0 0 0 2px;}  
 
 }
 
@@ -92,7 +152,39 @@ body {width: 950px;}
 
 #footer ul.f1 li {padding: 0 0 0 16px;} 
 
+/***********nowe 30-07-2015 - jaskinie******/
 
+.kluby-lista {width: 750px;}
+
+.kluby-lista td:first-child + td {width: 500px;}
+
+.taternik-pismo td:first-child + td {width: 250px;}
+
+#filtr-box {width: 710px;}
+
+.str {margin-left: 90px;}
+
+.instr td:first-child + td {width: 130px;}
+
+.jaskinie-lista td:first-child + td {width: 90px;}
+
+.rok {margin-left: 50px;} 
+
+.foto-news {width: 180px;}
+
+.szukaj-instruktor span {padding: 10px 5px 0 8px;}           
+          
+
+.szukaj-instruktor input[type='text'] {width: 156px;
+                            float: left;
+                            margin: 10px 0 10px 8px;}
+                            
+.szukaj-instruktor select {width: 160px;
+                           margin-left: 8px;}   
+                           
+.checkbox-box {padding: 0 0 8px 7px;} 
+               
+.checkbox-box span {padding: 0 0 0 2px;} 
 
 }
 
@@ -124,6 +216,35 @@ body {width: 900px;}
 #footer {font-size: 11px;}
 
 #footer ul.f1 li {padding: 0 0 0 16px;} 
+
+/***********nowe 30-07-2015 - jaskinie******/
+
+.kluby-lista {width: 660px;}
+
+.kluby-lista td:first-child + td {width: 440px;}
+
+.taternik-pismo td:first-child + td {width: 230px;}
+
+
+#filtr-box {width: 620px;}
+
+.str {margin-left: 70px;}
+
+.instr td:first-child + td {width: 130px;}
+
+.jaskinie-lista td:first-child + td {width: 90px;}
+
+.rok {margin-left: 15px;} 
+
+#filtr-box input.inp-rok {margin-right: 10px;}
+
+.str-2 {margin-left: 10px;} 
+
+#filtr-box input.j-lista {margin-left: 10px;}
+
+.foto-news {width: 180px;}
+
+
 
 }
 
@@ -160,7 +281,50 @@ body {width: 850px;}
 
 #footer ul.f1 li {padding: 0 25px 0 0px;}
 
-.none {display: none;}             
+.none {display: none;} 
+
+/***********nowe 30-07-2015 - jaskinie******/
+
+.kluby-lista {width: 630px;}
+
+.kluby-lista td:first-child + td {width: 420px;}  
+
+.taternik-pismo td:first-child + td {width: 200px;} 
+
+#filtr-box {width: 610px;
+             padding: 10px 10px 8px 10px;}
+
+.str {margin-left: 50px;}
+
+.instr td:first-child + td {width: 130px;} 
+
+.jaskinie-lista td:first-child + td {width: 90px;}
+
+.rok {margin-left: 15px;} 
+
+#filtr-box input.inp-rok {margin-right: 10px;}
+
+.str-2 {margin-left: 10px;} 
+
+#filtr-box input.j-lista {margin-left: 10px;} 
+
+.foto-news {width: 180px;} 
+
+.news {padding: 0 10px 0 0;} 
+
+.szukaj-instruktor span {padding: 10px 5px 0 13px;}           
+          
+
+.szukaj-instruktor input[type='text'] {width: 176px;
+                            float: left;
+                            margin: 10px 0 10px 13px;}
+                            
+.szukaj-instruktor select {width: 180px;
+                           margin-left: 13px;}   
+                           
+.checkbox-box {padding: 0 0 8px 12px;} 
+               
+.checkbox-box span {padding: 0 0 0 2px;}      
 
 
 }
@@ -208,6 +372,49 @@ body {width: 800px;}
 #footer ul.f1 li {padding: 0 25px 0 0px;}
 
 .none {display: none;} 
+
+/***********nowe 30-07-2015 - jaskinie******/
+
+.kluby-lista {width: 590px;}
+
+.kluby-lista td:first-child + td {width: 380px;} 
+
+.taternik-pismo td:first-child + td {width: 200px;} 
+
+#filtr-box {width: 570px;
+             padding: 10px 10px 8px 10px;}
+
+.str {margin-left: 30px;}
+
+.instr td:first-child + td {width: 130px;} 
+
+.jaskinie-lista td:first-child + td {width: 90px;}
+
+.rok {margin-left: 10px;} 
+
+#filtr-box input.inp-rok {margin-right: 10px;}
+
+.str-2 {margin-left: 10px;} 
+
+#filtr-box input.j-lista {margin-left: 10px;}  
+
+.foto-news {width: 180px;}  
+
+.news {padding: 0 10px 0 0;}
+
+.szukaj-instruktor span {padding: 10px 5px 0 8px;}           
+          
+
+.szukaj-instruktor input[type='text'] {width: 176px;
+                            float: left;
+                            margin: 10px 0 10px 8px;}
+                            
+.szukaj-instruktor select {width: 180px;
+                           margin-left: 8px;}   
+                           
+.checkbox-box {padding: 0 0 8px 7px;} 
+               
+.checkbox-box span {padding: 0 0 0 2px;} 
  
 }
 
@@ -256,6 +463,53 @@ body {width: 760px;}
 #footer ul.f1 li {padding: 0 25px 0 0px;}
 
 .none {display: none;} 
+
+/***********nowe 30-07-2015 - jaskinie******/
+
+.kluby-lista {width: 550px;}
+
+.kluby-lista td:first-child + td {width: 350px;} 
+
+.taternik-pismo td:first-child + td {width: 180px;} 
+
+#filtr-box {width: 530px;
+             padding: 10px 10px 8px 10px;}
+
+.str {margin-left: 15px;}
+
+.str-1 {margin-left: 10px;}
+
+.instr td:first-child + td {width: 130px;} 
+
+#filtr-box input[type='submit'] {margin-left: 5px;}
+
+.jaskinie-lista td:first-child + td {width: 90px;}
+
+.rok {margin-left: 10px;} 
+
+#filtr-box input.inp-rok {margin-right: 10px;}
+
+.str-2 {margin-left: 10px;} 
+
+#filtr-box input.j-lista {margin-left: 10px;}  
+
+.foto-news {width: 160px;}  
+
+.news {padding: 0 10px 0 0;}
+
+.szukaj-instruktor span {padding: 10px 5px 0 8px;}           
+          
+
+.szukaj-instruktor input[type='text'] {width: 176px;
+                            float: left;
+                            margin: 10px 0 10px 8px;}
+                            
+.szukaj-instruktor select {width: 180px;
+                           margin-left: 8px;}   
+                           
+.checkbox-box {padding: 0 0 8px 7px;} 
+               
+.checkbox-box span {padding: 0 0 0 2px;} 
 
 
 }
@@ -315,7 +569,44 @@ body {width: 560px;}
                   
 .no-desc {display: block;} 
 
-#footer ul li a {display: inline;}                  
+#footer ul li a {display: inline;}   
+
+
+/***********nowe 30-07-2015 - jaskinie******/
+
+.kluby-lista {width: 560px;}
+
+.kluby-lista td:first-child + td {width: 350px;}  
+
+.taternik-pismo td:first-child + td {width: 180px;}  
+
+.col1-content {padding-right: 0;}  
+
+#filtr-box {width: 540px;
+             padding: 10px 10px 8px 10px;}
+
+.str {margin-left: 15px;}
+
+.str-1 {margin-left: 10px;}
+
+.instr td:first-child + td {width: 130px;} 
+
+#filtr-box input[type='submit'] {margin-left: 5px;}   
+
+.jaskinie-lista td:first-child + td {width: 90px;}
+
+.rok {margin-left: 10px;} 
+
+#filtr-box input.inp-rok {margin-right: 10px;}
+
+.str-2 {margin-left: 10px;} 
+
+#filtr-box input.j-lista {margin-left: 10px;} 
+
+.foto-news {width: 160px;}  
+
+.news {padding: 0;
+        margin: 10px 0 0 0;}       
 
 }
 
@@ -331,7 +622,6 @@ body {width: 560px;}
 body {width: 100%;}
 
 #header, .col2, .partnerzy, .no-phone {display: none;}
-
 
 #header-phone {display: block;
                width: 98%;
@@ -376,7 +666,46 @@ body {width: 100%;}
                   
 .no-desc {display: block;} 
 
-#footer ul li a {display: inline;}
+#footer ul li a {display: inline;} 
+
+
+/***********nowe 30-07-2015 - jaskinie******/
+
+.kluby-lista {width: 100%;}
+
+.kluby-lista td:first-child + td {width: 65%;}  
+
+.taternik-pismo td:first-child + td {width: 30%;}  
+
+.col1-content {padding-right: 0;} 
+
+#filtr-box {width: 96%;
+             padding: 10px 2% 8px 2%;}
+
+.str {margin-left: 15px;}
+
+.str-1 {margin-left: 10px;}
+
+.instr td:first-child + td {width: 120px;} 
+
+#filtr-box input[type='submit'] {margin-left: 5px;} 
+
+
+.jaskinie-lista td:first-child + td {width: 90px;}
+
+.rok {margin-left: 10px;} 
+
+#filtr-box input.inp-rok {margin-right: 10px;}
+
+.str-2 {margin-left: 10px;} 
+
+#filtr-box input.j-lista {margin-left: 10px;} 
+
+
+.foto-news {width: 160px;} 
+
+.news {padding: 0;
+        margin: 10px 0 0 0;} 
 
 }
 
@@ -431,8 +760,43 @@ body {width: 100%;}
                   
 .no-desc {display: block;} 
 
-#footer ul li a {display: inline;}
+#footer ul li a {display: inline;} 
 
+/***********nowe 30-07-2015 - jaskinie******/
+
+.kluby-lista {width: 100%;}
+
+.kluby-lista td:first-child + td {width: 65%;} 
+
+.taternik-pismo td:first-child + td {width: 30%;} 
+
+.col1-content {padding-right: 0;} 
+
+#filtr-box {width: 96%;
+             padding: 10px 2% 8px 2%;}
+
+.str {margin-left: 15px;}
+
+.str-1 {margin-left: 10px;}
+
+.instr td:first-child + td {width: 120px;} 
+
+#filtr-box input[type='submit'] {margin-left: 5px;} 
+
+.jaskinie-lista td:first-child + td {width: 90px;}
+
+.rok {margin-left: 10px;} 
+
+#filtr-box input.inp-rok {margin-right: 10px;}
+
+.str-2 {margin-left: 10px;} 
+
+#filtr-box input.j-lista {margin-left: 10px;}  
+
+.foto-news {display: none;} 
+
+.news {padding: 0;
+        margin: 10px 0 0 0;}
 
 }
 

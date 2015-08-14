@@ -1,6 +1,5 @@
 <?
 
-
 class insider_register extends insider_table
 {
     public $fields = array(

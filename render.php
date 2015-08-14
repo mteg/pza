@@ -78,10 +78,12 @@
                         " ORDER BY cat.id DESC LIMIT 1"))
             dispatch_category($o["id"], $o["type"]);
     }
-    /* Username */
-    else if(preg_match('#^~([a-zA-Z0-9_.]+)$#', $q, $m))
+    /* Ścieżka kategorii zakończona username */
+    else if(preg_match('#^(([a-z][a-z0-9_]*/)*)~([a-zA-Z0-9_.]+)$#', $q, $m))
     {
-        co($m[1], "users", "user")->render_object($m[1], $q);
+        if(!isset($_REQUEST["category"]))
+            $_REQUEST["category"] = vsql::get("SELECT id FROM categories WHERE path = " . vsql::quote("/" . trim($m[2], "/")), "id");
+        co($m[3], "users", "user")->render_object($m[3], $q);
         exit;
 
     }

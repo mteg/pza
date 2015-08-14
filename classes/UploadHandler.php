@@ -99,7 +99,7 @@ class UploadHandler
             // Set to 0 to use the GD library to scale and orient images,
             // set to 1 to use imagick (if installed, falls back to GD),
             // set to 2 to use the ImageMagick convert binary directly:
-            'image_library' => 1,
+            'image_library' => 0,
             // Uncomment the following to define an array of resource limits
             // for imagick:
             /*
@@ -141,10 +141,10 @@ class UploadHandler
                     //'upload_url' => $this->get_full_url().'/thumb/',
                     // Uncomment the following to force the max
                     // dimensions and e.g. create square thumbnails:
-                    //'crop' => true,
+                    'crop' => true,
 
-                    'max_width' => 225,
-                    'max_height' => 225
+                    'max_width' => 198,
+                    'max_height' => 198
                 )
             )
         );
@@ -712,16 +712,19 @@ class UploadHandler
             $dst_y = 0;
             $new_img = imagecreatetruecolor($new_width, $new_height);
         } else {
-            if (($img_width / $img_height) >= ($max_width / $max_height)) {
+            $new_width = $img_width * $scale;
+            $new_height = $img_height * $scale;
+/*            if (($img_width / $img_height) >= ($max_width / $max_height)) {
                 $new_width = $img_width / ($img_height / $max_height);
                 $new_height = $max_height;
             } else {
                 $new_width = $max_width;
                 $new_height = $img_height / ($img_width / $max_width);
-            }
+            }*/
             $dst_x = 0 - ($new_width - $max_width) / 2;
             $dst_y = 0 - ($new_height - $max_height) / 2;
             $new_img = imagecreatetruecolor($max_width, $max_height);
+            imagefilledrectangle($new_img, 0, 0, $max_width - 1, $max_height -1, imagecolorallocate($new_img, 255, 255, 255));
         }
         // Handle transparency in GIF and PNG images:
         switch ($type) {

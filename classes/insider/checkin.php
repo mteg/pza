@@ -34,15 +34,20 @@ class insider_checkin
 
     private function auth($login, $pw)
     {
-        if($uid = vsql::get("SELECT id FROM users WHERE deleted = 0 AND login = " . vsql::quote($login) .
-                        " AND password = " . vsql::quote(md5($login . $pw)), "id"))
+        if($udata = vsql::get("SELECT id, login, password FROM users WHERE deleted = 0 AND login = " . vsql::quote($login)))
         {
-            session_start();
-            $_SESSION["user_id"] = $uid;
-            $_SESSION["adm_of"] = insider_memberships::adm_of();
+            $a = explode("|", $udata["password"]);
+            if(!isset($a[1])) $a[1] = $udata["login"];
 
-            header("Location: /insider/welcome");
-            exit;
+            if($a[0] == md5($a[1] . $pw))
+            {
+                session_start();
+                $_SESSION["user_id"] = $udata["id"];
+                $_SESSION["adm_of"] = insider_memberships::adm_of();
+                header("Location: /insider/welcome");
+                exit;
+            }
+
         }
 
         return false;

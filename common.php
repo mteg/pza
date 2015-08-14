@@ -77,7 +77,9 @@ if(get_magic_quotes_gpc()) {
 
 // todo pamiętać, żeby usunąć ten środek tymczasowy
 /* Środek tymczasowy */
+/*
 ob_start(function($content) {
     return str_replace("http://pza.org.pl/", "http://test.jaszczur.org/", $content);
 });
+*/
 

@@ -22,8 +22,8 @@
             "skype" =>      array("Skype", "suppress" => true, "pub" => "M"),
             "www" =>        array("Strona WWW", "suppress" => true, "pub" => "M"),
             "about" =>      array("O sobie", "type" => "html", "no" => "view,hist,register", "pub" => "*"),
-            "access" =>     array("Prawa dostępu", "type" => "area", "no" => "register"),
-            "fav_categories" => array("Ulubione kategorie", "ref" => "categories", "by" => "path", "no" => "search", "multiple" => true, "empty" => true),
+            "access" =>     array("Prawa dostępu", "type" => "area", "no" => "register", "suppress" => true),
+            "fav_categories" => array("Ulubione kategorie", "ref" => "categories", "by" => "path", "no" => "search", "multiple" => true, "empty" => true, "suppress" => true),
             "flags" =>      array("Profil", "type" => "flags", "no" => "register", "pub" => "B",
                     "options" => array(
                         "B" => "Publiczne imię, nazwisko, płeć, przynależność, data urodzenia",
@@ -51,7 +51,10 @@
             parent::__construct();
             $this->fields["country"]["options"] = placelist::get("countries");
             $this->fields["district"]["options"] = placelist::get("regions");
-            $this->actions["/insider/users/edit?about=1&"] = array("name" => "Edytuj 'o sobie'");
+            if(access::has("edit(users)"))
+                $this->actions["/insider/users/edit?about=1&"] = array("name" => "Edytuj 'o sobie'");
+            if(access::glob("entmgr(*)"))
+                $this->actions["/insider/users/addentl?&"] = array("name" => "Dodaj uprawnienie");
             $this->actions["/insider/users/achievements"] = array("name" => "Osiągnięcia", "target" => "_self");
 
             /* "passwd" as a separate priviledge does not make sense,
@@ -83,6 +86,10 @@
         {
             $err = parent::validate($id, $data);
 
+            if(isset($data["about"]))
+                if(strlen($data["about"]) > 11000)
+                    $err["data"] = "Maksymalna długość opisu przekroczona. Opis ma " . strlen($data["about"]) . " znaków, a może być max. 10 000";
+
             foreach(array("login" => "Ten login jest już zajęty", "pesel" => "Ten PESEL występuje już w bazie")
                         as $f => $msg)
                 if($data[$f])
@@ -96,7 +103,21 @@
         function update($id, $data)
         {
             $data["ref"] = trim($data["surname"] . " " . $data["name"]);
-            return parent::update($id, $data);
+            $newid = parent::update($id, $data);
+            if((!$id) && isset($_REQUEST["soc"]))
+                if(is_numeric($_REQUEST["soc"]))
+                {
+                    /* Create new membership */
+                    vsql::insert("memberships", array(
+                        "member" => $_REQUEST["soc"],
+                        "user" => $newid,
+                        "starts" => "0000-00-00",
+                        "due" => "9999-12-31",
+                        "flags" => "R"
+                    ));
+                }
+
+            return $newid;
         }
 
         public function achievements()
@@ -117,7 +138,7 @@
 
         static function list_entitlements($id, $extra_sql = "")
         {
-            $m = vsql::retr("SELECT e.starts, e.due, IF(e.due >= NOW(), 1, 0) AS status, r.name, e.number, r.public
+            $m = vsql::retr("SELECT e.starts, IF(e.due = '9999-12-31', '', e.due) AS due, IF(e.due >= NOW(), 1, 0) AS status, r.name, e.number, r.public
                             FROM entitlements AS e
                             JOIN rights AS r ON r.id = e.right
                             WHERE e.user = " . vsql::quote($id) . $extra_sql .
@@ -189,4 +210,28 @@
 
             return $r;
         }
+
+        function quicksearch()
+        {
+            $a = explode(" ", trim(preg_replace('/\s+/', ' ', $_REQUEST["q"])));
+            if(!isset($a[1])) $a[1] = "";
+            header("Location: /insider/users#surname=" . htmlspecialchars($a[0]) . "&name=" . htmlspecialchars($a[1]));
+            exit;
+        }
+
+        function addentl()
+        {
+            header("Location: /insider/entitlements/add?user=" . $_REQUEST["id"]);
+            exit;
+        }
+
+        function add()
+        {
+            $this->fields["soc"] =
+                array("name" => "Aktualny klub", "type" => "select", "options" =>
+                insider_checkin::member_list());
+            parent::add();
+        }
+
+
     }

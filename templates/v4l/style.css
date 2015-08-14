@@ -37,7 +37,7 @@ a {text-decoration: none;}
 .menu {width: 769px;
        height: 40px;
        float: right;
-       background: url(/img/menu_top.jpg) no-repeat;
+       background: url(img/menu_top.jpg) no-repeat;
        margin: 39px 0 0 0; }
        
 .menu ul {list-style: none;
@@ -68,9 +68,13 @@ a {text-decoration: none;}
 .box {width: 225px;
       float: left;
       margin: 0 20px 0 0;
-      padding-top: 18px;} 
+      padding-top: 18px;
+      /*height: 300px;*/
+      overflow: hidden;
+      position: relative;
+      z-index: 5;} 
       
-.box a.ngl {background: url(/img/dzial_naglowek_linia.gif) no-repeat 0 8px;
+.box a.ngl {background: url(img/dzial_naglowek_linia.gif) no-repeat 0 8px;
              color: #B82626;
              display: block;} 
              
@@ -82,11 +86,22 @@ a {text-decoration: none;}
            padding: 8px;
            color: #242736;
            text-align: justify;
-           margin-top: -2px;}            
+           margin-top: -2px;
+           height: 99px;
+           position: relative;
+           z-index: 7;} 
+           
+.box .bg-bottom {width: 100%;
+                 position: absolute;
+                 height: 20px;
+                 bottom: 0;
+                 background: red;
+                 z-index: 20; }                      
 
 .box h2 {text-transform: uppercase;
          font-size: 14px;
-         margin: 12px 0 3px 0;}
+         margin: 12px 0 3px 0;
+         background-color: #fff;}
          
 .box img {width: 100%;}         
              
@@ -97,19 +112,10 @@ a {text-decoration: none;}
      
        
 #search {width: 220px;
-         height: 29px;
-         margin-top: 16px;}  
-         
-#search input[type='text'] {width: 182px;
-                            height: 19px;
-                            float: left;
-                            font-family: Ubuntu, verdana, sans-serif;
-                            border: none;
-                            padding: 4px 4px;
-                            border-left: 1px solid #CCCCCC;
-                            border-top: 1px solid #CCCCCC;
-                            border-bottom: 1px solid #CCCCCC;}        
-         
+}
+
+
+
 .submit {float: right;}
 
 
@@ -134,9 +140,7 @@ a {text-decoration: none;}
 .col2 ul li > ul {margin: 5px 0 5px 0;
                   display: none;
                   padding: 0;}
-
-.col2 ul.persistent li > ul { display: block !important; }
-
+                  
 .col2 ul li:hover > ul {display: block;}            
 
 
@@ -229,135 +233,224 @@ a {text-decoration: none;}
 #footer ul.f1 li:first-child {padding: 0 0 0 0;}  
 
 #footer ul.f2 li {float: right;
-                  padding: 5px 0 0 54px;}
+                  padding: 5px 0 0 54px;} 
+                  
+                  
+/***********nowe 30-07-2015 - jaskinie******/
+
+.ngl-h2 {font-size: 24px;
+         margin: 13px 0 13px 0;}
+         
+#filtr span {display: block;
+             float: left;
+             padding: 2px 7px 0 0;} 
+             
+#filtr select {border: 1px solid #C0C6D2;
+               background: #EEEEEE;
+               padding: 1px 0 1px 4px;
+               margin-right: 8px;} 
+               
+        
+               
+#filtr input[type='submit'] {border: none;
+               background: #1A1D2C;
+               color: #fff;
+               padding: 2px 7px;} 
+               
+.kluby-lista {width: 960px;
+              border: 0;
+              border-collapse: collapse;
+              margin-top: 15px;
+              font-size: 14px;}
+
+.kluby-lista th {background: #697488;
+                 color: #fff;
+                 font-weight: bold;
+                 padding: 10px ;
+                 text-align: left;
+                 border: 0;}  
+                 
+.kluby-lista td {border-bottom: 1px solid #E5E8F1;
+                 padding: 5px 10px 5px 10px;}                 
+                 
+.kluby-lista td:first-child {background: #8B92A2;
+                             border: none;
+                             width: 20px;}
+                             
+.kluby-lista tr:last-child td {border: none;}
+                             
+                             
+.kluby-lista td:first-child + td {width: 550px;}
 
 
-.instr-szukaj  {width: 100%;
-    background: #E4E4E4;
-    margin-top: 20px;
-    overflow: hidden;
-    padding: 0 0 18px 0;}
+.kluby-lista a {color: #242736;}
+
+                                                                                             
+.kluby-lista a:hover {color: #F12737;}
+
+.taternik-pismo td:first-child + td {width: 250px;}
+
+.table-top td {vertical-align: bottom;}
+
+.pdf {background: url(img/pdf.jpg) no-repeat scroll 0 10px;
+      color: #000;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 25px 0 0 38px;
+      margin-left: 13px;}
+      
+.col1-content {padding-right: 20px;}   
+
+.col1-content ul {margin: 0 0 0 12px;
+                  padding: 0;
+                  list-style: none;} 
+                  
+.col1-content li {background: url(img/lista_ico.gif) no-repeat scroll 0 8px;
+                  padding: 3px 0 3px 16px;} 
+                  
+.col1-content li a {color: #242736;}   
+
+.table-profil td {vertical-align: bottom;
+                  line-height: 22px;} 
+
+.table-profil img {margin-right: 10px;}  
+
+.profil-list {font-weight: bold;}                            
+      
+                              
+.instr td:first-child + td {width: 130px;}
+
+.instr tr:hover {color: #F12737;}
+
+.instr tr:hover a {color: #F12737;}
+
+.instr tr:hover td:first-child {color: #242736;}
+
+#filtr-box {width: 920px;
+            background: #4A4C59;
+            color: #fff;
+            padding: 10px 20px 8px 20px;
+            overflow: hidden;}
+            
+.pozniej {float: left;
+          background: url(img/pozniejsze_ico.jpg) no-repeat scroll 0 4px;
+          color: #fff;
+          font-weight: bold;
+          padding: 0 0 0 18px;}  
+          
+.wczesniej {float: right;
+          background: url(img/wczesniejsze_ico.jpg) no-repeat scroll 98px 4px;
+          color: #fff;
+          font-weight: bold;
+          padding: 0 20px 0 0;} 
+          
+#filtr-box span {display: block;
+             float: left;
+             padding: 0 7px 0 0; } 
+             
+.str {margin-left: 230px;} 
+
+.str-1, .str-2 {margin-left: 20px;}             
+             
+#filtr-box select {border: 1px solid #C0C6D2;
+               background: #EEEEEE;
+               padding: 1px 0 1px 4px;
+               margin-right: 8px;
+               float: left;} 
+               
+               
+#filtr-box input[type='text'] {border: 1px solid #BCC2CE;
+                               color: #fff;
+                               background: #8C93A3;
+                               float: left;
+                               width: 20px;
+                               text-align: center;
+                               margin-right: 5px;}              
+        
+               
+#filtr-box input[type='submit'] {border: none;
+               background: #1A1D2C;
+               color: #fff;
+               padding: 2px 7px;
+               float: left;
+               margin-left: 25px;}  
+               
+.podtytul {display: block;
+           font-weight: bold;
+           font-size: 18px;
+           margin: -18px 0 15px 0;}  
+           
+.rok {margin-left: 116px;}                                        
+
+#filtr-box input.inp-rok {width: 38px;
+                         margin-right: 25px;}
 
 
 
-.select-box { position: relative;
-    width: 206px;
-    clear: both;
-    margin: 5px 0 0 16px; }
-
-.instr-szukaj span {display: block;
-    float: left;
-    padding: 10px 5px 0 16px;}
+.jaskinie-lista td:first-child + td {width: 90px;}
 
 
-.instr-szukaj input[type='text'] {width: 190px;
-    float: left;
-    margin: 10px 0 10px 16px;}
+.news {padding: 0 20px 0 0;
+       clear: both;
+       overflow: hidden;
+       margin: 20px 0 0 0;}
+       
+       
+.foto-news {float: left;
+            padding: 0 12px 0 0;}   
+            
+.foto-news img {width: 100%}  
 
+.news h2 {color: #242736;
+          margin: 0 0 12px 0}  
+          
+.szukaj-instruktor  {width: 100%;
+          background: #E4E4E4;
+          margin-top: 20px;
+          overflow: hidden;
+          padding: 0 0 18px 0;}
+          
 
-.instr-szukaj input[type='submit']  {border: none;
-    color: #E4E4E4;
-    background: #6A6162;
-    float: right;
-    clear: both;
-    text-transform: uppercase;
-    padding: 5px 9px;
-    margin: 20px 16px 0 0;
-    font-size: 10px;
-    font-weight: bold;}
+          
+.szukaj-instruktor span {display: block;
+              float: left;
+              padding: 10px 5px 0 16px;}           
+          
 
-.instr-szukaj input[type='checkbox']  {float: left;}
+.szukaj-instruktor input[type='text'] {width: 186px;
+                            float: left;
+                            margin: 10px 0 10px 16px;
+                            border: 1px solid #ccc;
+                            padding: 2px;}   
+
+                            
+.szukaj-instruktor input[type='submit']  {border: none;
+                               color: #E4E4E4;
+                               background: #6A6162;
+                               float: right;
+                               clear: both;
+                               text-transform: uppercase;
+                               padding: 5px 9px;
+                               margin: 20px 16px 0 0;
+                               font-size: 10px;
+                               font-weight: bold;} 
+                               
+.szukaj-instruktor input[type='checkbox']  {float: left;} 
+
+.szukaj-instruktor select {border: 1px solid #ccc;
+                           height: 20px;
+                           padding: 2px 0 2px 2px;
+                           width: 188px;
+                           margin-left: 16px;}
 
 .checkbox-box {clear: both;
-    padding: 0 0 8px 15px;
-    overflow: hidden;}
-
+               padding: 0 0 8px 15px;
+               overflow: hidden;} 
+               
 .checkbox-box span {display: block;
-    float: left;
-    padding: 0 0 0 5px;
-    font-size: 11px;}
-
-/*INSTRUKTORZY LISTA*/
-
-table.personnel {border: 0;
-    width: 740px;
-    margin-top: 20px;
-    border-collapse: collapse;}
-
-table.personnel th {background: #6A6162;
-    color: #fff;
-    font-weight: normal;
-    padding: 8px 0 8px 12px;
+                    float: left;
+                    padding: 0 0 0 5px;
+                    font-size: 11px;}            
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    text-align: left;}
-
-
-table.personnel td {font-weight: bold;
-    padding: 8px 0 8px 12px;}
-
-table.personnel .bg td {background: #F4F4F4;}
-
-.profil-title {display: block;
-    margin: 20px 20px 0 0;
-    padding: 8px 0 8px 12px;
-    background: #E4E4E4;
-    font-weight: bold;
-    font-size: 14px;}
-
-.profil-foto {clear: both;
-    padding: 12px 0 0 12px;
-    height: 130px;
-    overflow: hidden;
-    position: relative;}
-
-.profil-foto img {float: left;}
-
-.profil-foto-1 {float: left;
-    line-height: 22px;
-    position: absolute;
-    bottom: -3px;
-    left: 152px;}
-
-.profil-box {padding: 0 20px 0 12px;}
-
-.profil-box p {margin: 20px 0 0 0;}
+                                                                                            
