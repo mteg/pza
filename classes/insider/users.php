@@ -5,20 +5,22 @@
     class insider_users extends insider_table
     {
         public $fields;
+
         static public $_fields = array(
             "surname" =>    array("Nazwisko", "regexp" => ".+", "pub" => "B"),
             "name" =>       array("Imię", "pub" => "B"),
             "login" =>      array("Login", "regexp" => "[a-z][a-z0-9_.]+", "suppress" => true, "empty" => true, "pub" => "*"),
+            "birthdate" =>  array("Data urodzenia", "type" => "date", "suppress" => true, "empty" => true),
+            "deathdate" =>  array("Data śmierci", "type" => "date", "suppress" => true, "empty" => true, "no" => "register,add"),
+            "phone" =>      array("Numer telefonu", "suppress" => true, "pub" => "T"),
             "email" =>      array("Adres e-mail", "suppress" => true, "pub" => "M"),
             "sex"   =>      array("Płeć", "type" => "list", "options" => array("M", "K"), "suppress" => true, "pub" => "B"),
-            "phone" =>      array("Numer telefonu", "suppress" => true, "pub" => "T"),
             "country" =>    array("Kraj", "type" => "list", "suppress" => true, "empty" => true),
             "district" =>   array("Województwo", "type" => "list", "suppress" => true, "empty" => true),
             "zip" =>        array("Kod pocztowy", "suppress" => true),
             "town" =>       array("Miasto", "consistency" => true, "suppress" => true),
             "street" =>     array("Ulica i adres", "suppress" => true),
             "pesel" =>      array("PESEL", "suppress" => true),
-            "birthdate" =>  array("Data urodzenia", "type" => "date", "suppress" => true, "empty" => true),
             "skype" =>      array("Skype", "suppress" => true, "pub" => "M"),
             "www" =>        array("Strona WWW", "suppress" => true, "pub" => "M"),
             "about" =>      array("O sobie", "type" => "html", "no" => "view,hist,register", "pub" => "*"),
@@ -97,6 +99,12 @@
                         vsql::quote($data[$f]) . " AND id != " . vsql::quote($id)))
                         $err[$f] = $msg;
 
+            if(!$id)
+                if(vsql::get($qry = "SELECT id FROM users WHERE deleted = 0
+                            AND surname = " . vsql::quote($data["surname"]) .
+                          " AND name = " . vsql::quote($data["name"]) .
+                          " AND birthdate = " . vsql::quote($data["birthdate"])))
+                    $err["birthdate"] = "Użytkownik o takim imieniu, nazwisku i dacie urodzenia występuje już w bazie. Być może Twoje konto zostało przeniesione ze starej bazy PZA. <a href='/insider/checkin/recover'>Kliknij, aby spróbować procedury odzyskiwania hasła</a>.";
             return $err;
         }
 

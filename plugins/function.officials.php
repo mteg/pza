@@ -62,7 +62,7 @@
                     FROM rights AS r
                     JOIN entitlements AS e ON e.right = r.id AND e.deleted = 0 " .
                     ($_REQUEST["active"] ? " AND e.starts <= NOW() AND e.due >= NOW() " : "") .
-                    "JOIN users AS u ON u.id = e.user AND u.deleted = 0
+                    "JOIN users AS u ON u.id = e.user AND u.deleted = 0 AND u.deathdate = 0
                     LEFT JOIN memberships AS m ON m.deleted = 0 AND u.id = m.user
                             AND m.starts <= NOW() AND m.due >= NOW()
                             AND m.flags LIKE '%R%'
@@ -74,7 +74,7 @@
                     (count($sright) ? (" AND " . entl_condition($sright, "r.short")) : "") .
                     " GROUP BY u.id " .
                     " ORDER BY u.surname, u.name", "");
-// echo $qry;
+        if($_REQUEST['debug']) echo $qry;
 
         $out .= "<table class='kluby-lista instr'>";
         $out .= "<thead>\n";
@@ -98,8 +98,9 @@
             $out .= "<td>" . strtr(htmlspecialchars($e["society"]), array("|" => "<BR>")) . "</td>";
             if($params["format"] == 3)
             {
-                $due = substr($e["due"], 0, 4);
-                if($due == "9999") $due = "";
+//                $due = substr($e["due"], 0, 4);
+                $due = $e["due"];
+                if($due == "9999-12-31") $due = "";
                 if(!$e["status"]) $due = "<strike>$due</strike>";
                 $out .= "<td>" . $due . "</td>";
             }

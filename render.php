@@ -67,11 +67,11 @@
                         JOIN category_map AS cm ON cm.article = a.id AND cm.main = 1
                         JOIN categories AS cat ON cat.id = cm.category
                         WHERE cat.path = " . vsql::quote("/" . $catpath) .
-                        " AND a.short = " . vsql::quote($m[3]) .
+                        " AND a.short = " . vsql::quote(trim($m[3], "/")) .
                         " AND a.deleted = 0 LIMIT 1"))
             dispatch_object($o["id"], $o["type"]);
 
-        $S->assign("urlpath", $catpath = "/" . $q);
+        $S->assign("urlpath", $catpath = "/" . trim($q, "/"));
         if($o = vsql::get($qry = "SELECT cat.id, cat.type
                         FROM categories AS cat
                         WHERE cat.path = " . vsql::quote($catpath) .
@@ -96,3 +96,4 @@
     }
 
     fail(404, "Nieznana składnia zasobu: $q");
+

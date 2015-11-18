@@ -68,27 +68,27 @@ abstract class insider_action
             "Rodzaje uprawnień" => "/insider/rights|search(rights)",
             "Wszystkie uprawnienia" => "/insider/entitlements|search(entitlements)"
         ),
-        "Osiągnięcia" => array(
+/*        "Osiągnięcia" => array(
             "Szranki" => "/insider/grounds|delete(grounds)",
             "Osiągnięcia" => "/insider/achievements|search(achievements)"
-        ),
+        ),*/
         "Wspinaczka górska" => array(
             "Instruktorzy" => "/insider/entitlements?family=i:w#current=1|entmgr(i:w)",
-            "Lista dróg" => "/insider/grounds?type=nature:climb",
+/*            "Lista dróg" => "/insider/grounds?type=nature:climb",
             "Baza przejść" => "/insider/achievements?type=nature:climb",
             "Moje przejścia" => "/insider/achievements?type=nature:climb#user=self",
-            "Wyprawy himalajskie PZA" => "/insider/grounds?type=exp:h|search(grounds)",
+            "Wyprawy himalajskie PZA" => "/insider/grounds?type=exp:h|search(grounds)",*/
         ),
         "Alpinizm jaskiniowy" => array(
             "Instruktorzy" => "/insider/entitlements?family=i:j#current=1|entmgr(i:j)",
             "Kadra narodowa" => "/insider/entitlements?family=r:tj#current=1|entmgr(r:tj)",
             "Badania lekarskie" => "/insider/entitlements?family=med:j#current=1|entmgr(med:j)",
-            "Lista jaskiń" => "/insider/grounds?type=nature:cave",
+/*            "Lista jaskiń" => "/insider/grounds?type=nature:cave",
             "Przejścia jaskiniowe" => "/insider/achievements?type=nature:cave",
             "Moje przejścia" => "/insider/achievements?type=nature:cave#user=self",
-            "Wyprawy jaskiniowe PZA" => "/insider/grounds?type=exp:cave|search(grounds)",
+            "Wyprawy jaskiniowe PZA" => "/insider/grounds?type=exp:cave|search(grounds)",*/
         ),
-        "Wspinaczka sportowa" => array(
+/*        "Wspinaczka sportowa" => array(
             "Zawody PZA" => "/insider/grounds?type=comp:s:pza",
             "Zawody inne" => "/insider/grounds?type=comp:s:other",
             "Trenerzy" => "/insider/entitlements?family=i:s#current=1|entmgr(i:s)",
@@ -97,7 +97,6 @@ abstract class insider_action
             "Kadra narodowa" => "/insider/entitlements?family=r:s#current=1|entmgr(r:s)",
             "Badania lekarskie" => "/insider/entitlements?family=med:r#current=1|entmgr(med:r)",
             "Moje wyniki" => "/insider/achievements?type=comp:s#user=self",
-
             // todo moje wyniki jedne i drugie
         ),
         "Narciarstwo wysokogórskie" => array(
@@ -109,6 +108,7 @@ abstract class insider_action
             "Badania lekarskie" => "/insider/entitlements?family=med:j#current=1|entmgr(med:nw)",
             "Moje wyniki" => "/insider/achievements?type=comp:nw#user=self",
         ),
+*/
     );
 
     /**

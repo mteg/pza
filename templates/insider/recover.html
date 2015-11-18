@@ -1,0 +1,74 @@
+{{extends "insider/action.html"}}
+
+{{block name="header"}}
+  <div class="header-links"><a href="/insider/checkin">Logowanie</a></div>
+{{/block}}
+
+{{block name="body"}}
+
+<h1 class="register-header">Odzyskiwanie hasła</h1>
+{{strip}}
+<section class="gray-panel">
+  
+  <div class="register-center">
+    <form action="/insider/checkin/recover" method="post">
+      
+      {{if $err}}
+      <div class="notification error">
+        <h3>Błędnie wypełniony formularz!</h3>
+        <p>
+            {{if $showcode}}
+            Nie można dokończyć procedury odzyskiwania hasła! Zapoznaj się z komunikatami o błędach poniżej, popraw wprowadzone informacje i spróbuj ponownie.
+            {{else}}
+          Nie jesteśmy w stanie rozpocząć procedury odzyskiwania hasła! Zapoznaj się z komunikatami o błędach poniżej, popraw wprowadzone informacje i spróbuj ponownie.
+            {{/if}}
+        </p>      
+      </div>
+      {{/if}}
+      
+      
+      <div class="fields-section">
+      {{if $showcode}}
+          {{if !$err}}
+            <span class="notification desc">
+              <p><B>Na numer {{$number}} wysłany został kod SMS. </B>Wprowadź go poniżej, aby ustawić nowe hasło dostępowe.</p>
+            </span>
+          {{/if}}
+      {{else}}
+        <span class="notification desc">
+          <p>Aby uzyskać dostęp do systemu, wprowadź poniżej swoje imię, nazwisko, datę urodzenia i numer telefonu, który podałeś do bazy PZA. Otrzymasz SMSem kod, przy pomocy którego będziesz mógł ustawić nowe hasło.</p>
+        </span>
+      {{/if}}
+        
+        {{include file="insider/field.html" nofit=1 i=["name" => "Nazwisko", "type" => "text"] k="surname"}}
+        {{include file="insider/field.html" nofit=1 i=["name" => "Imię", "type" => "text"] k="name"}}
+        {{include file="insider/field.html" nofit=1 i=["name" => "Numer telefonu", "type" => "text"] k="phone"}}
+        {{include file="insider/field.html" nofit=1 i=["name" => "Data urodzenia", "type" => "date"] k="birthdate"}}
+        {{if $showcode}}
+          {{include file="insider/field.html" nofit=1 i=["name" => "Kod dostępowy", "type" => "text"] k="code"}}
+          {{if $nologin}}
+              {{include file="insider/field.html" nofit=1 i=["name" => "Nowy login", "type" => "text"] k="login"}}
+          {{/if}}
+          {{if $pw_suggestion}}
+          <span class="notification desc">{{include file="insider/passwd_info.html"}}</span>
+          {{/if}}
+          {{include file="insider/field.html" i=[name => "Nowe hasło", "type" => "password"] k="pw1" nofit=1 size=15}}
+          {{include file="insider/field.html" i=[name => "Potwierdzenie hasła", "type" => "password"] k="pw2" nofit=1 size=15}}
+        {{/if}}
+      </div>
+      
+      <div class="form-btns">
+          {{if $showcode}}
+              <input type="submit" value="Ustaw hasło!" class="btn">
+          {{else}}
+              <input type="submit" value="Wyślij kod SMS!" class="btn">
+          {{/if}}
+      </div>
+    
+    </form>
+    
+  </div>
+{{/strip}}
+</section>
+
+{{/block}}

@@ -31,6 +31,17 @@
         </span>
         
         {{foreach from=$u->fields item=i key=k}}
+          {{if $k == "birthdate"}}
+          <span class="notification desc">
+              <p>Potrzebujemy Twojej daty urodzenia, żeby sprawdzić, czy przypadkiem nie jesteś zarejestrowany już w naszej bazie.</p>
+          </span>
+          {{/if}}
+          {{if $k == "phone"}}
+          <span class="notification desc">
+              <p>Numer telefonu komórkowego jest niezbędny, aby odzyskać hasło w razie jego zapomnienia.</p>
+          </span>
+          {{/if}}
+
           {{if !$i.noregister}}
             {{include file="insider/field.html" nofit=1}}
           {{/if}}

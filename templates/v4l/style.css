@@ -112,10 +112,19 @@ a {text-decoration: none;}
      
        
 #search {width: 220px;
-}
-
-
-
+         height: 29px;
+         margin-top: 16px;}  
+         
+#search input[type='text'] {width: 182px;
+                            height: 19px;
+                            float: left;
+                            font-family: Ubuntu, verdana, sans-serif;
+                            border: none;
+                            padding: 4px 4px;
+                            border-left: 1px solid #CCCCCC;
+                            border-top: 1px solid #CCCCCC;
+                            border-bottom: 1px solid #CCCCCC;}        
+         
 .submit {float: right;}
 
 
@@ -256,37 +265,6 @@ a {text-decoration: none;}
                background: #1A1D2C;
                color: #fff;
                padding: 2px 7px;} 
-               
-.kluby-lista {width: 960px;
-              border: 0;
-              border-collapse: collapse;
-              margin-top: 15px;
-              font-size: 14px;}
-
-.kluby-lista th {background: #697488;
-                 color: #fff;
-                 font-weight: bold;
-                 padding: 10px ;
-                 text-align: left;
-                 border: 0;}  
-                 
-.kluby-lista td {border-bottom: 1px solid #E5E8F1;
-                 padding: 5px 10px 5px 10px;}                 
-                 
-.kluby-lista td:first-child {background: #8B92A2;
-                             border: none;
-                             width: 20px;}
-                             
-.kluby-lista tr:last-child td {border: none;}
-                             
-                             
-.kluby-lista td:first-child + td {width: 550px;}
-
-
-.kluby-lista a {color: #242736;}
-
-                                                                                             
-.kluby-lista a:hover {color: #F12737;}
 
 .taternik-pismo td:first-child + td {width: 250px;}
 
@@ -318,13 +296,6 @@ a {text-decoration: none;}
 .profil-list {font-weight: bold;}                            
       
                               
-.instr td:first-child + td {width: 130px;}
-
-.instr tr:hover {color: #F12737;}
-
-.instr tr:hover a {color: #F12737;}
-
-.instr tr:hover td:first-child {color: #242736;}
 
 #filtr-box {width: 920px;
             background: #4A4C59;
@@ -389,20 +360,29 @@ a {text-decoration: none;}
 
 .jaskinie-lista td:first-child + td {width: 90px;}
 
-
-.news {padding: 0 20px 0 0;
-       clear: both;
+       
+.news {margin: 0;
+       padding: 0;
+       list-style: none;}       
+       
+.news li {width: 470px;
+       float: left;
        overflow: hidden;
-       margin: 20px 0 0 0;}
+       margin: 20px 20px 0 0;} 
+       
+.news li:nth-child(odd)  { clear: both;}      
        
        
 .foto-news {float: left;
-            padding: 0 12px 0 0;}   
+            padding: 0 12px 0 0;
+            clear: both;}   
             
 .foto-news img {width: 100%}  
 
 .news h2 {color: #242736;
-          margin: 0 0 12px 0}  
+          margin: 0 0 5px 0;}  
+          
+.news p {margin-top: 0;}          
           
 .szukaj-instruktor  {width: 100%;
           background: #E4E4E4;
@@ -452,5 +432,45 @@ a {text-decoration: none;}
                     padding: 0 0 0 5px;
                     font-size: 11px;}            
 
+.lead a, .article-text a {font-weight: bold;
+                          color: #b82626;}
 
-                                                                                            
+
+
+.kluby-lista {width: 960px;
+    border: 0;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px;}
+
+.kluby-lista th {background: #697488;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px ;
+    text-align: left;
+    border: 0;}
+
+.kluby-lista td {border-bottom: 1px solid #E5E8F1;
+    padding: 5px 10px 5px 10px;}
+
+.kluby-lista td:first-child {background: #8B92A2;
+    border: none;
+    width: 20px;}
+
+.kluby-lista tr:last-child td {border: none;}
+
+
+.kluby-lista td:first-child + td {width: 550px;}
+
+
+.kluby-lista a {color: #242736;}
+
+.kluby-lista a:hover {color: #F12737;}
+
+.instr td:first-child + td {width: 130px;}
+
+.instr tr:hover {color: #F12737;}
+
+.instr tr:hover a {color: #F12737;}
+
+.instr tr:hover td:first-child {color: #242736;}

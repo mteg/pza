@@ -21,6 +21,8 @@
         /* Wypisz treść leadów samą w sobie */
         if($params["syntax"] == "box")
             $out .= "<div class='pza-leads'>";
+        else
+            $out .= "<ul class='news'>";
         foreach($arts as $n => $e)
         {
             if($e["thumbnail"])
@@ -48,16 +50,18 @@
                     "</div>";
             else
                 $art =
-                    "<div class='news'>
-                     <div class='foto-news'>$thumb</div>
+                    "<li>
                      <a href='" . $e["art_path"] . "'><h2>" . $e["title"] . "</h2></a>
+                     <div class='foto-news'>$thumb</div>
                      <p>" . htmlspecialchars($e["lead"]) . "</p>
-                     </div>";
+                     </li>";
 
             $arts[$n] = $art;
         }
         $out .= implode("", $arts);
         if($params["syntax"] == "box")
             $out .= "</div>";
+        else
+            $out .= "</ul>";
         return $out;
     }

@@ -692,7 +692,7 @@ class UploadHandler
         if (!empty($options['max_height'])) {
             $max_height = $options['max_height'];
         }
-        $scale = min(
+        $scale = max(
             $max_width / $img_width,
             $max_height / $img_height
         );
