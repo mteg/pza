@@ -37,7 +37,7 @@ class insider_profile extends insider_users
         $this->S->display("insider/profile.html");
     }
 
-    protected function transfer($mindue = "0000-00-00")
+    protected function do_transfer($mindue = "0000-00-00")
     {
         $data = $_POST; $err = array();
 
@@ -64,7 +64,9 @@ class insider_profile extends insider_users
 
     function membership()
     {
-        $this->S->assign("memberships", $this->list_memberships($id = access::getuid()));
+        $id = access::getuid();
+
+        $this->S->assign("memberships", $this->list_memberships($id));
 
         $due = vsql::get("SELECT MAX(due) AS due FROM memberships WHERE " .
             " deleted = 0 AND deleted = 0 " .
@@ -77,7 +79,7 @@ class insider_profile extends insider_users
             $this->S->assign("member_list", insider_checkin::member_list());
 
             if(isset($_POST["member"]))
-                $this->transfer($due);
+                $this->do_transfer($due);
             else
                 $this->S->assign("data", array("member_from" => date("Y-m-d", time() - 86400)));
         }

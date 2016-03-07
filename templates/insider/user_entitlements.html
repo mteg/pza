@@ -10,7 +10,12 @@
     <td>{{$k}}.</td>
     <td>{{$i.starts}}</td>
     <td>{{if $i.due == "9999-12-31"}}<i>bezterminowo</i>{{else}}{{$i.due}}{{/if}}</td>
-    <td>{{$i.name|escape:'html'}}</td>
+    <td>
+        {{$i.name|escape:'html'}}
+        {{ifaccess perm="edit(entitlements)"}}
+        <a class="dialog-action" href="/insider/entitlements/edit?id={{$i.id}}">(Edytuj)</a>
+        {{/ifaccess}}
+    </td>
     </tr>
     {{foreachelse}}
     <tr>

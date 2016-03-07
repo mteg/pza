@@ -43,10 +43,24 @@ function table_modal(o, action)
                 click: function() {
                     var src  = $(this).find("input[name=source]").val();
                     var params = $(this).find("input[name=params]").val();
+                    var method = $(this).find("input[name=method]").val();
+                    var url;
+                    if(method == null) method = "save";
+                    if(params == null) params = "";
+
+                    url = src + "/" + method + "?" + params;
+                    if(method != "save")
+                    {
+                        url += "&" + $(this).find("form").serialize() + "&" + $('textarea.html').serialize();
+                        table_modal(null, url);
+                        return;
+                    }
+
+
 
                     $.ajax({
                             type: "POST",
-                            url: src + "/save?" + params,
+                            url: url,
                             data: $(this).find("form").serialize() + "&" + $('textarea.html').serialize(),
                             success: function (data) {
                                 if(Object.keys(data).length > 0)
@@ -73,12 +87,13 @@ function table_modal(o, action)
                                     d.dialog("close");
                                 }
                             },
-                            "dataType": "json"
-                        });
+                            dataType: "json"
+                    });
                 }
             }]);
 
         });
+
 
         /* Uruchomienie pól typu autocomplete, date itd. */
         init_controls(this);
@@ -357,6 +372,24 @@ $(function() {
             url = table_append_id(this, url);
             if(!url) return false;
         }
+
+        /* Schowaj menu */
+        $("body").trigger("click");
+
+        /* Wykonaj operację, w zależności od atrybutu target */
+        var target = $(this).attr("target");
+        table_action($(this), target, url);
+
+        return false;
+    });
+
+    /* Oprogramowanie przycisków funkcyjnych */
+    $("body").on("click", ".dialog-action", function(event, ui) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        /* URL akcji */
+        var url = $(this).attr("href");
 
         /* Schowaj menu */
         $("body").trigger("click");

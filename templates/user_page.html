@@ -2,6 +2,7 @@
 {{elseif $data.login}}{{$data.login}}
 {{else}}Użytkownik {{$data.id}}
 {{/if}}</h2>
+<input type="hidden" name="usid" value="{{$data.id}}">
 
 <table class="table-profil">
     <tr>
@@ -12,7 +13,7 @@
             {{foreach from=$entitlements item=i key=k}}
             {{if $i.public}}
             <strong>{{$i.name}}</strong><br/>
-            <b>Licencja: </b>{{if $i.number}}{{$i.number}}{{/if}} {{if $i.status}}<strong>AKTUALNA</strong>{{if $i.due}} do {{$i.due}}{{/if}}{{else}}<strong>NIEAKTUALNA</strong>{{/if}}
+            <b>Licencja: </b>{{if $i.number}}{{$i.number}}{{/if}} {{if $i.status}}<strong>AKTUALNA</strong>{{if $i.due}} do {{$i.due}}{{else}} (BEZTERMINOWO){{/if}}{{else}}<strong>NIEAKTUALNA</strong>{{/if}}
             <br/>
             {{/if}}
             {{/foreach}}

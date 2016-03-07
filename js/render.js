@@ -10,6 +10,7 @@ $(function() {
         if(!$(event.target).is("body, a")) return;
 
         var artid = $('input[name=artid]').val(),
+            usid = $('input[name=usid]').val(),
             op = false;
 
         if(event.which == 69)
@@ -19,8 +20,10 @@ $(function() {
         else if(event.which == 72)
             op = "html";
 
-        if(!(artid && op)) return;
-        window.open("/insider/content?type=article#id=" + artid + "&modal=" + op);
+        if(artid && op)
+            window.open("/insider/content?type=article#id=" + artid + "&modal=" + op);
+        if(usid && op)
+            window.open("/insider/users?#id=" + usid + "&modal=" + op);
     });
 
     $('div#back').on("click", "a", function (event) {

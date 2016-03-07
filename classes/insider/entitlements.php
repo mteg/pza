@@ -7,6 +7,7 @@
             "number" =>  array("Numer uprawnienia"),
             "starts" =>  array("Data uzyskania", "type" => "date"),
             "due" =>     array("Data wygaśnięcia", "type" => "date"),
+            "public" =>     array("Uprawnienie publiczne", "type" => "select", "options" => array(1 => "Tak", 0 => "Nie")),
         );
 
         public $columns = array(
@@ -21,7 +22,7 @@
             "right",
             "surname" => array("Nazwisko", "search" => "u.surname"),
             "name" => array("Imię", "search" => "u.name"),
-            "short" => array("Skrót uprawnienia", "search" => "e.short"),
+            "short" => array("Skrót uprawnienia", "search" => "r.short"),
             "starts", "due");
 
         public $order = "right, surname, name";
@@ -57,6 +58,11 @@
             foreach(array("starts" => "0000-00-00", "due" => "9999-12-31") as $f => $def)
                 if(isset($data[$f]) && !strlen($data[$f]))
                     $data[$f] = $def;
+
+            if(isset($data["due"]))
+                if((!strlen($data["due"])) || $data["due"] == "0000-00-00")
+                    $date["due"] = "9999-12-31";
+
             return parent::validate($id, $data);
         }
 
@@ -75,6 +81,8 @@
                 "search" => "r.name", "order" => "r.name", "options" => $opts);
 
             parent::__construct();
+            if(access::has("edit(entitlements)"))
+                $this->actions["/insider/entitlements/prolong?&"] = array("name" => "Przedłuż", "multiple" => true);
         }
 
         protected function retr_query($filters)
@@ -154,5 +162,36 @@
             }
 
             return parent::enforce($perm);
+        }
+
+        function prolong()
+        {
+            access::ensure("edit(entitlements)");
+            $entids = $_REQUEST["id"];
+            $entids = explode(" ", $entids);
+            $this->S->assign("entl_list",
+                vsql::id_retr($entids, "e.id",
+                    "SELECT e.id, CONCAT(u.surname, ' ', u.name, ' ** ', r.name) AS ref
+                        FROM entitlements AS e
+                             JOIN rights AS r ON r.id = e.right
+                             JOIN users AS u ON u.id = e.user
+                             WHERE e.deleted = 0 AND ", "id", "ORDER BY ref", "ref"));
+
+            if(isset($_REQUEST["date"]))
+            {
+                $date = $_REQUEST["date"];
+                if(!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date))
+                    $err["date"] = "Nieprawidłowa data wygaśnięcia uprawnienia";
+                else
+                {
+                    foreach($entids as $id)
+                        if($id)
+                             vsql::update("entitlements", array("due" => $date), $id);
+
+                    die("Przedłużono uprawnień: " . count($entids));
+                }
+                $this->S->assign("err", $err);
+            }
+            $this->w_action("prolong");
         }
     }

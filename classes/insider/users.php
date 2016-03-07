@@ -57,6 +57,8 @@
                 $this->actions["/insider/users/edit?about=1&"] = array("name" => "Edytuj 'o sobie'");
             if(access::glob("entmgr(*)"))
                 $this->actions["/insider/users/addentl?&"] = array("name" => "Dodaj uprawnienie");
+            if(access::has("edit(memberships)"))
+                $this->actions["/insider/users/transfer?&"] = array("name" => "Zmiana klubu");
             $this->actions["/insider/users/achievements"] = array("name" => "Osiągnięcia", "target" => "_self");
 
             /* "passwd" as a separate priviledge does not make sense,
@@ -146,7 +148,7 @@
 
         static function list_entitlements($id, $extra_sql = "")
         {
-            $m = vsql::retr("SELECT e.starts, IF(e.due = '9999-12-31', '', e.due) AS due, IF(e.due >= NOW(), 1, 0) AS status, r.name, e.number, r.public
+            $m = vsql::retr("SELECT e.id, e.starts, IF(e.due = '9999-12-31', '', e.due) AS due, IF(e.due >= NOW(), 1, 0) AS status, r.name, e.number, r.public
                             FROM entitlements AS e
                             JOIN rights AS r ON r.id = e.right
                             WHERE e.user = " . vsql::quote($id) . $extra_sql .
@@ -239,6 +241,36 @@
                 array("name" => "Aktualny klub", "type" => "select", "options" =>
                 insider_checkin::member_list());
             parent::add();
+        }
+
+        function transfer()
+        {
+            access::ensure("edit(memberships)");
+            $userid = $_REQUEST["id"];
+            $this->S->assign("user_ref", vsql::get("SELECT ref FROM users WHERE id = " . vsql::quote($userid), "ref"));
+            if(isset($_REQUEST["member"]))
+            {
+                $member = $_REQUEST["member"];
+                $date = $_REQUEST["member_from"];
+                $err = array();
+                if(!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date))
+                    $err["member_from"] = "Nieprawidłowa data zmiany przynależności";
+                else if(!vsql::query("SELECT id FROM members WHERE deleted = 0 AND id = " . vsql::quote($member)))
+                    $err["member"] = "Nieznany klub";
+                else if(!vsql::query("SELECT id FROM users WHERE deleted = 0 AND id = " . vsql::quote($userid)))
+                    $err["member"] = "Nieznana osoba";
+                else
+                {
+                    insider_checkin::subscribe($member, $date, $userid);
+                    header("Location: /insider/users/view?id=" . $userid);
+                    exit;
+                }
+                $this->S->assign("err", $err);
+            }
+
+            $this->S->assign("member_list", insider_checkin::member_list());
+            $this->S->assign("date", date("Y-m-d"));
+            $this->w_action("transfer");
         }
 
 

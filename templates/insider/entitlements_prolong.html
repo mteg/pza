@@ -1,0 +1,22 @@
+{{block name="dialog"}}
+<input type="hidden" class="dialog-title" value="Zmiana przynależności">
+
+<div class="source-domain">
+<input type="hidden" name="source" value="/insider/entitlements">
+<input type="hidden" name="method" value="prolong">
+<form>
+    <div class="table-edit table-form">
+        <input type="hidden" name="id" value="{{$request.id}}">
+        <div class="field">
+            <label>Uprawnienia</label>
+            <span>
+                {{foreach from=$entl_list item=i key=k}}
+                {{$i|escape:'html'}}<br/>
+                {{/foreach}}
+            </span>
+        </div>
+        {{include file="insider/field.html" nofit=1 i=["name" => "Data wygaśnięcia", "type" => "date"] k="date" data=$request}}
+    </div>
+</form>
+</div>
+{{/block}}

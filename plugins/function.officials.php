@@ -56,13 +56,13 @@
         if($sright && (!is_array($sright))) $sright = array($sright);
         $list = vsql::retr($qry = "SELECT u.id, u.surname, u.name, u.login,
                     GROUP_CONCAT(CONCAT(r.name, ' ', e.number) ORDER BY r.name SEPARATOR '|') AS entl,
-                    GROUP_CONCAT(c.short ORDER BY c.short SEPARATOR '|') AS society,
+                    GROUP_CONCAT(DISTINCT c.short ORDER BY c.short SEPARATOR '|') AS society,
                     MAX(e.due) AS due,
                     IF(MAX(e.due) > NOW(), 1, 0) AS status
                     FROM rights AS r
-                    JOIN entitlements AS e ON e.right = r.id AND e.deleted = 0 " .
+                    JOIN entitlements AS e ON e.right = r.id AND e.deleted = 0 AND e.public = 1 " .
                     ($_REQUEST["active"] ? " AND e.starts <= NOW() AND e.due >= NOW() " : "") .
-                    "JOIN users AS u ON u.id = e.user AND u.deleted = 0 AND u.deathdate = 0
+                    "JOIN users AS u ON u.id = e.user AND u.deleted = 0 AND u.deathdate = 0 AND u.flags LIKE '%E%'
                     LEFT JOIN memberships AS m ON m.deleted = 0 AND u.id = m.user
                             AND m.starts <= NOW() AND m.due >= NOW()
                             AND m.flags LIKE '%R%'
@@ -100,7 +100,10 @@
             {
 //                $due = substr($e["due"], 0, 4);
                 $due = $e["due"];
-                if($due == "9999-12-31") $due = "";
+                if($due == "9999-12-31")
+                    $due = "TAK";
+                else
+                    $due = "do " . $due;
                 if(!$e["status"]) $due = "<strike>$due</strike>";
                 $out .= "<td>" . $due . "</td>";
             }

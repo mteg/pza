@@ -1,0 +1,21 @@
+{{block name="dialog"}}
+<input type="hidden" class="dialog-title" value="Przedłużenie uprawnień">
+
+<div class="source-domain">
+<input type="hidden" name="source" value="/insider/users">
+<input type="hidden" name="method" value="transfer">
+<form>
+    <div class="table-edit table-form">
+        <input type="hidden" name="id" value="{{$request.id}}">
+        <div class="field">
+            <label>Osoba</label>
+            <span>
+                {{$user_ref|escape:'html'}}
+            </span>
+        </div>
+        {{include file="insider/field.html" nofit=1 i=["name" => "Nowy klub", "type" => "select", "options" => $member_list] k="member" data=$request}}
+        {{include file="insider/field.html" nofit=1 i=["name" => "Data zmiany", "type" => "date"] k="member_from" data=$request}}
+    </div>
+</form>
+</div>
+{{/block}}

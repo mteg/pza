@@ -44,7 +44,7 @@ class content_user extends content
         $this->S->assign("pub", array_combine($ss, $ss));
         $this->S->assign("photo", $this->user_photo($id));
 
-        $entls = insider_users::list_entitlements($id);
+        $entls = insider_users::list_entitlements($id, " AND e.public = 1");
         if(strstr($udata['flags'], "E"))
             $this->S->assign("entitlements", $entls);
 

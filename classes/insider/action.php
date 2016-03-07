@@ -88,18 +88,18 @@ abstract class insider_action
             "Moje przejścia" => "/insider/achievements?type=nature:cave#user=self",
             "Wyprawy jaskiniowe PZA" => "/insider/grounds?type=exp:cave|search(grounds)",*/
         ),
-/*        "Wspinaczka sportowa" => array(
-            "Zawody PZA" => "/insider/grounds?type=comp:s:pza",
-            "Zawody inne" => "/insider/grounds?type=comp:s:other",
-            "Trenerzy" => "/insider/entitlements?family=i:s#current=1|entmgr(i:s)",
+        "Wspinaczka sportowa" => array(
+/*            "Zawody PZA" => "/insider/grounds?type=comp:s:pza",
+            "Zawody inne" => "/insider/grounds?type=comp:s:other",*/
+            "Instruktorzy" => "/insider/entitlements?family=i:s#current=1|entmgr(i:s)",
             "Sędziowie" => "/insider/entitlements?family=s:s#current=1|entmgr(s:s)",
             "Konstruktorzy" => "/insider/entitlements?family=k:j#current=1|entmgr(k:s)",
             "Kadra narodowa" => "/insider/entitlements?family=r:s#current=1|entmgr(r:s)",
-            "Badania lekarskie" => "/insider/entitlements?family=med:r#current=1|entmgr(med:r)",
-            "Moje wyniki" => "/insider/achievements?type=comp:s#user=self",
+/*            "Badania lekarskie" => "/insider/entitlements?family=med:r#current=1|entmgr(med:r)",
+            "Moje wyniki" => "/insider/achievements?type=comp:s#user=self",*/
             // todo moje wyniki jedne i drugie
         ),
-        "Narciarstwo wysokogórskie" => array(
+/*        "Narciarstwo wysokogórskie" => array(
             "Zawody PZA" => "/insider/grounds?type=comp:nw:pza",
             "Zawody inne" => "/insider/grounds?type=comp:nw:other",
             "Instruktorzy" => "/insider/entitlements?family=i:nw#current=1|entmgr(i:nw)",

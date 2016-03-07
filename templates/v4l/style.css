@@ -149,8 +149,9 @@ a {text-decoration: none;}
 .col2 ul li > ul {margin: 5px 0 5px 0;
                   display: none;
                   padding: 0;}
-                  
-.col2 ul li:hover > ul {display: block;}            
+
+/*.col2 ul li:hover > ul {display: block;}*/
+.col2 ul li > ul {display: block;}
 
 
 .col2 ul li > ul li a {padding: 5px 0 5px 32px;}  

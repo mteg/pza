@@ -81,9 +81,14 @@ class insider_checkin
         $this->S->display("insider/login.html");
     }
 
-    static function subscribe($to = false, $starting_from = false)
+    static function subscribe($to = false, $starting_from = false, $requested_id = 0)
     {
-        $id = access::getuid();
+        $id = access::getuid(); $admin_flags = "";
+        if(access::has("edit(entitlements)") && $requested_id)
+        {
+            $id = $requested_id;
+            $admin_flags = "R";
+        }
 
         if($starting_from && $starting_from != "0000-00-00")
         {
@@ -110,6 +115,7 @@ class insider_checkin
                 "user" => $id,
                 "starts" => $starting_from,
                 "due" => "9999-12-31",
+                "flags" => $admin_flags,
             ));
         }
     }
