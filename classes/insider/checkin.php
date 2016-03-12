@@ -205,7 +205,8 @@ class insider_checkin
                     $_POST["name"],
                     $_POST["phone"],
                     $_POST["birthdate"],
-                    "keyword PZZA"))), 0, 8);
+                    vsql::$smsapi_salt
+                    ))), 0, 8);
 
             $phone = substr(preg_replace('/[^0-9]/', '', $_POST["phone"]), -9);
             $us = vsql::retr("SELECT id, login, phone FROM users WHERE deleted = 0 AND
@@ -283,7 +284,7 @@ class insider_checkin
                 $msg .= "Kod SMS: " . $code;
                 $this->sms_send(array(
                     'username' => 'pezeta',
-                    'password' => 'f9dc66a5935d98efa2cd954da6dfdcf6',
+                    'password' => vsql::$smsapi_pass,
                     'to' => $phone,
                     'from' => 'Eco',
                     'message' => $msg,

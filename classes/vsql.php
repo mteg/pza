@@ -10,6 +10,9 @@ class vsql
         "db" => "pza",
     );
 
+    static $smsapi_pass = "";
+    static $smsapi_salt = "";
+
     static function init()
     {
         /* Głównie konfiguracja bazy SQL */
