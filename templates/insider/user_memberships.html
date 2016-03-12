@@ -8,7 +8,7 @@
     {{foreach from=$memberships item=i key=k}}
     <tr {{if $i.status == 0}}class="inactive"{{/if}}>
     <td>{{$k}}.</td>
-    <td>{{$i.starts}}</td>
+    <td>{{if $i.starts == "0000-00-00"}}<i>od zawsze</i>{{else}}{{$i.starts}}{{/if}}</td>
     <td>{{if $i.due == "9999-12-31"}}<i>bezterminowo</i>{{else}}{{$i.due}}{{/if}}</td>
     <td>{{$i.short|escape:'html'}}</td>
     </tr>

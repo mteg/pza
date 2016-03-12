@@ -6,6 +6,11 @@
     <input type="hidden" name="source" value="{{$source|escape:'html'}}">
     <input type="hidden" name="params" value="{{$params|escape:'html'}}">
     {{block name="fields"}}
+    <div>
+        <span>Numer w systemie</span>
+        <span class="fit">{{$data.id}}</span>
+        <div></div>
+    </div>
     {{foreach from=$this->fields item=i key=k}}
     {{if !$i.noview}}
     {{if (!$i.suppress) || (($data.$k != "") && ($data.$k != "0") && ($data.$k != "0000-00-00"))}}

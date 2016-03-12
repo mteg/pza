@@ -12,7 +12,28 @@
 <div>
     <span>Uprawnienia</span>
     <span class="fit">
-        {{include file="insider/user_entitlements.html"}}
+        {{include file="insider/user_entitlements.html" entitlements=$entitlements.other}}
+    </span>
+    <div></div>
+</div>
+<div>
+    <span>Badania</span>
+    <span class="fit">
+        {{include file="insider/user_entitlements.html" entitlements=$entitlements.med}}
+    </span>
+    <div></div>
+</div>
+<div>
+    <span>Klasy sportowe</span>
+    <span class="fit">
+        {{include file="insider/user_entitlements.html" entitlements=$entitlements.c}}
+    </span>
+    <div></div>
+</div>
+<div>
+    <span>Udział w kadrze</span>
+    <span class="fit">
+        {{include file="insider/user_entitlements.html" entitlements=$entitlements.ka}}
     </span>
     <div></div>
 </div>

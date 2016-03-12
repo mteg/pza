@@ -4,22 +4,30 @@
         <th>Od</th>
         <th>Do</th>
         <th>Uprawnienie</th>
+        <th>Op</th>
     </tr>
     {{foreach from=$entitlements item=i key=k}}
     <tr {{if $i.status == 0}}class="inactive"{{/if}}>
     <td>{{$k}}.</td>
-    <td>{{$i.starts}}</td>
+    <td>{{if $i.starts == "0000-00-00"}}<i>od zawsze</i>{{else}}{{$i.starts}}{{/if}}</td>
     <td>{{if $i.due == "9999-12-31"}}<i>bezterminowo</i>{{else}}{{$i.due}}{{/if}}</td>
     <td>
         {{$i.name|escape:'html'}}
+    <td>
+        &nbsp;
         {{ifaccess perm="edit(entitlements)"}}
-        <a class="dialog-action" href="/insider/entitlements/edit?id={{$i.id}}">(Edytuj)</a>
+        <a class="dialog-action" href="/insider/entitlements/edit?id={{$i.id}}">Edytuj</a>
+        {{if $i.status == 0}}
+        <a class="dialog-action" href="/insider/entitlements/prolong?id={{$i.id}}">| Przedłuż</a>
+        {{else}}
+        <a class="dialog-action" href="/insider/entitlements/prolong?fin=1&id={{$i.id}}">| Zakończ</a>
+        {{/if}}
         {{/ifaccess}}
     </td>
     </tr>
     {{foreachelse}}
     <tr>
-        <td colspan=4><i>Brak uprawnień</i></td>
+        <td colspan=4><i>Brak wpisów</i></td>
     </tr>
     {{/foreach}}
 

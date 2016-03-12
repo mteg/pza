@@ -9,7 +9,7 @@
         static public $_fields = array(
             "surname" =>    array("Nazwisko", "regexp" => ".+", "pub" => "B"),
             "name" =>       array("Imię", "pub" => "B"),
-            "login" =>      array("Login", "regexp" => "[a-z][a-z0-9_.]+", "suppress" => true, "empty" => true, "pub" => "*"),
+            "login" =>      array("Login", "regexp" => "[a-z][a-z0-9_.]+", "suppress" => true, "empty" => true, "no" => "add", "pub" => "*"),
             "birthdate" =>  array("Data urodzenia", "type" => "date", "suppress" => true, "empty" => true),
             "deathdate" =>  array("Data śmierci", "type" => "date", "suppress" => true, "empty" => true, "no" => "register,add"),
             "phone" =>      array("Numer telefonu", "suppress" => true, "pub" => "T"),
@@ -21,11 +21,11 @@
             "town" =>       array("Miasto", "consistency" => true, "suppress" => true),
             "street" =>     array("Ulica i adres", "suppress" => true),
             "pesel" =>      array("PESEL", "suppress" => true),
-            "skype" =>      array("Skype", "suppress" => true, "pub" => "M"),
-            "www" =>        array("Strona WWW", "suppress" => true, "pub" => "M"),
-            "about" =>      array("O sobie", "type" => "html", "no" => "view,hist,register", "pub" => "*"),
-            "access" =>     array("Prawa dostępu", "type" => "area", "no" => "register", "suppress" => true),
-            "fav_categories" => array("Ulubione kategorie", "ref" => "categories", "by" => "path", "no" => "search", "multiple" => true, "empty" => true, "suppress" => true),
+            "skype" =>      array("Skype", "suppress" => true, "pub" => "M", "no" => "add"),
+            "www" =>        array("Strona WWW", "suppress" => true, "pub" => "M", "no" => "add"),
+            "about" =>      array("O sobie", "type" => "html", "no" => "view,hist,register,add", "pub" => "*"),
+            "access" =>     array("Prawa dostępu", "type" => "area", "no" => "register,add", "suppress" => true),
+            "fav_categories" => array("Ulubione kategorie", "ref" => "categories", "by" => "path", "no" => "search,register,add", "multiple" => true, "empty" => true, "suppress" => true),
             "flags" =>      array("Profil", "type" => "flags", "no" => "register", "pub" => "B",
                     "options" => array(
                         "B" => "Publiczne imię, nazwisko, płeć, przynależność, data urodzenia",
@@ -59,7 +59,7 @@
                 $this->actions["/insider/users/addentl?&"] = array("name" => "Dodaj uprawnienie");
             if(access::has("edit(memberships)"))
                 $this->actions["/insider/users/transfer?&"] = array("name" => "Zmiana klubu");
-            $this->actions["/insider/users/achievements"] = array("name" => "Osiągnięcia", "target" => "_self");
+            $this->actions["/insider/users/achievements"] = array("name" => "Aktywność", "target" => "_self");
 
             /* "passwd" as a separate priviledge does not make sense,
                since it is possible to hijack "god" */
@@ -84,6 +84,7 @@
             }
             else if(!isset($_REQUEST["about"]))
                 unset($this->fields["about"]);
+
         }
 
         function validate($id, &$data)
@@ -108,6 +109,18 @@
                           " AND birthdate = " . vsql::quote($data["birthdate"])))
                     $err["birthdate"] = "Użytkownik o takim imieniu, nazwisku i dacie urodzenia występuje już w bazie. Być może Twoje konto zostało przeniesione ze starej bazy PZA. <a href='/insider/checkin/recover'>Kliknij, aby spróbować procedury odzyskiwania hasła</a>.";
             return $err;
+        }
+
+        function dupcheck()
+        {
+            $name = $_REQUEST['name'];
+            $surname = $_REQUEST['surname'];
+            if($ui = vsql::get("SELECT id, surname, name FROM users WHERE deleted = 0 AND surname = " .
+                vsql::quote($surname) . " AND name = " . vsql::quote($name) . " LIMIT 1"))
+                echo "<span class='dupcheck'>Uwaga: W bazie występuje już osoba <a class='table-action' href='/insider/users/view?id=" .
+                    $ui["id"] . "'>" .
+                    $ui["id"] . ": " . $ui["surname"] . " " . $ui["name"] .
+                    "</a></span>";
         }
 
         function update($id, $data)
@@ -148,11 +161,13 @@
 
         static function list_entitlements($id, $extra_sql = "")
         {
-            $m = vsql::retr("SELECT e.id, e.starts, IF(e.due = '9999-12-31', '', e.due) AS due, IF(e.due >= NOW(), 1, 0) AS status, r.name, e.number, r.public
+            $m = vsql::retr("SELECT e.id, e.starts, IF(e.due = '9999-12-31', '', e.due) AS due, IF(e.due >= NOW(), 1, 0) AS status, r.name, e.number, r.public, r.short
                             FROM entitlements AS e
                             JOIN rights AS r ON r.id = e.right
                             WHERE e.user = " . vsql::quote($id) . $extra_sql .
             " AND e.deleted = 0 ORDER BY e.starts, e.due, r.name", "");
+
+
             return $m;
         }
 
@@ -161,9 +176,19 @@
             $id = $_REQUEST["id"];
             if(access::has("view(users)"))
             {
+                $entls = array("med" => array(), "c" => array(), "ka" => array(), "other" => array());
+                foreach($this->list_entitlements($id) as $id => $e)
+                {
+                    list($class, $junk) = explode(":", $e["short"], 2);
+                    if(isset($entls[$class]))
+                        $entls[$class][$id] = $e;
+                    else
+                        $entls["other"][$id] = $e;
+                }
+
                 $this->S->assign(array(
                     "memberships" => $this->list_memberships($id),
-                    "entitlements" => $this->list_entitlements($id)
+                    "entitlements" => $entls,
                 ));
             }
             else

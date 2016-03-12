@@ -296,7 +296,8 @@ class vsql
 
 }
 
-if(strstr($_SERVER["SERVER_NAME"], "test"))
+if(strstr($_SERVER["SERVER_NAME"], "test") || $_SESSION["user_id"] == 9004)
     vsql::$conf["db"] = "pza_test";
 
 require_once "db_passwd.php";
+

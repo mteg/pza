@@ -9,7 +9,7 @@
 <input type="hidden" name="source" value="{{$source|escape:'html'}}">
 <input type="hidden" name="params" value="{{$params|escape:'html'}}">
 <form>
-    <div class="table-edit table-form">
+    <div class="table-edit table-form table-{{$this->table_name()}}-{{if $data.id}}edit{{else}}add{{/if}}">
         {{if $data.id}}
         <input type="hidden" name="id" value="{{$data.id}}">
         {{/if}}

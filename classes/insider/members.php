@@ -41,6 +41,11 @@
         public function memberships()
         {
             $id = $_REQUEST["id"];
-            header("Location: /insider/memberships?org={$id}#status=1&current=1");
+            header("Location: /insider/memberships?restrict=1#selector={$id}&current=1");
+        }
+
+        public static function get_members()
+        {
+            return vsql::retr("SELECT id, short FROM members WHERE deleted = 0 ORDER BY short", "id", "short");
         }
     }

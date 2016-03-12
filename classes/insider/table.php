@@ -156,6 +156,20 @@ abstract class insider_table extends insider_action
 
 
     /**
+     * Jeśli są określone, komponenty interfejsu pracują zawsze
+     * przy polu SQL 'main_selector' ograniczonym do jednego z
+     * listy wyboru 'main_selection'. W liście rekordów udostępniany
+     * jest <select> pozwalający na wybranie jednej z pozycji
+     * z main_selection. Ponadto, za pomocą parametru
+     * GET selector= ... można ustalić, co będzie wybrane.
+     */
+
+    public $main_selector = false;
+    public $main_selection = false;
+    public $main_caption = "";
+
+
+    /**
      * Odpowiada na pytanie, czy na tej tablicy wolno wykonać $perm
      * $perm może być nazwą metody, nazwą operacji z $this->actions
      * lub nazwą operacji z $this->buttons
@@ -261,14 +275,14 @@ abstract class insider_table extends insider_action
      */
     protected function process_refs($arr)
     {
+        $res_arr = array();
         foreach($arr as $n => $id)
             if(is_numeric($n))
-            {
-                unset($arr[$n]);
-                $arr[$id] = $this->fields[$id];
-            }
+                $res_arr[$id] = $this->fields[$id];
+            else
+                $res_arr[$n] = $id;
 
-        return $arr;
+        return $res_arr;
     }
 
     /**
@@ -444,6 +458,13 @@ abstract class insider_table extends insider_action
      */
     protected function build_date_atom($date, $enddate = false)
     {
+        $trans_tbl = array(
+            "boy" => date("Y-01-01"),
+            "eoy" => date("Y-12-31"),
+        );
+
+        if(isset($trans_tbl[$date])) return vsql::quote($trans_tbl[$date]);
+
         if(!strlen($date))
             return vsql::quote($enddate ? "2086-01-01" : "0000-00-00");
 
@@ -1224,6 +1245,29 @@ abstract class insider_table extends insider_action
             $this->S->display("insider/table_{$action}.html");
     }
 
+
+    /**
+     *
+     * Wygeneruj informację o sukcesie i zgiń.
+     *
+     */
+    protected function w_success($msg)
+    {
+        $this->S->assign("message", $msg);
+        $this->w_action("success");
+        die();
+    }
+
+    /**
+     *
+     * Przefiltruj podgląd tuż przed wyświetleniem
+     *
+     */
+    protected function filter_view($data)
+    {
+        return $data;
+    }
+
     /**
      *
      * Wygeneruj dialog podglądu obiektu.
@@ -1233,7 +1277,7 @@ abstract class insider_table extends insider_action
     {
         $this->enforce("view");
 
-        $this->S->assign("data", $this->fetch($_REQUEST["id"], true, true, " AND deleted = 0"));
+        $this->S->assign("data", $this->filter_view($this->fetch($_REQUEST["id"], true, true, " AND deleted = 0")));
         $this->w_action("view");
     }
 
@@ -1337,6 +1381,83 @@ abstract class insider_table extends insider_action
     {
         echo json_encode(array("msg" => $msg));
         exit;
+    }
+
+    function prolong()
+    {
+        $this->enforce("edit");
+        $entids = $_REQUEST["id"];
+        $entids = explode(" ", $entids);
+        if(!isset($_REQUEST["date"]))
+            $_REQUEST["date"] = $_REQUEST["fin"] ? date("Y-m-d", time() - 86400) :  date("Y-12-31");
+        $this->S->assign("request", $_REQUEST);
+        $this->S->assign("entl_list", $this->prolong_get_list($entids));
+
+        $this->w_action("prolong");
+    }
+
+    function saveprolong()
+    {
+        $this->enforce("edit");
+        $entids = $_REQUEST["id"];
+        $entids = explode(" ", $entids);
+        $err = array();
+        if(isset($_REQUEST["date"]))
+        {
+            $date = $_REQUEST["date"];
+            if(!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date))
+                $err["date"] = "Nieprawidłowa data wygaśnięcia";
+            else
+            {
+                $old_dates = $this->prolong_get_dates($entids);
+
+                $prolongs = 0; $shortens = 0; $ends = 0; $deleteds = 0;
+                $today = date("Y-m-d");
+                foreach($entids as $id)
+                    if($id)
+                    {
+                        if($old_dates[$id])
+                        {
+                            if($old_dates[$id]["starts"] >= $date)
+                            {
+                                $deleteds++;
+                                vsql::delete($this->table, $id);
+                                continue;
+                            }
+                            else if($date <= $today)
+                                $ends++;
+                            if($old_dates[$id]["due"] > $date)
+                                $shortens++;
+                            else
+                                $prolongs++;
+                        }
+                        vsql::update($this->table, array("due" => $date), $id);
+                    }
+
+                if(count($entids) == 1)
+                    header("Location: /insider/users/view?id=" . vsql::get("SELECT user FROM " . $this->table . " WHERE id = " . vsql::quote($id), "user"));
+                else
+                {
+                    $msg = "Przetworzono: " . count($entids) . " pozycji";
+                    $msg .= "<br><br>Przedłużono: " . $prolongs;
+                    if($ends)
+                        $msg .= "<br><br>Zakonczono: " . $ends;
+                    if($shortens)
+                        $msg .= "<br>Skrócono: " . $shortens;
+                    if($deleteds)
+                        $msg .= "<br>Usunięto: " . $deleteds;
+
+                    $this->w_success($msg);
+                }
+            }
+            $this->S->assign("err", $err);
+        }
+        $this->prolong();
+    }
+
+    function table_name()
+    {
+        return $this->table;
     }
 
 

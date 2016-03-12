@@ -52,10 +52,10 @@ function table_modal(o, action)
                     if(method != "save")
                     {
                         url += "&" + $(this).find("form").serialize() + "&" + $('textarea.html').serialize();
+                        $(".table-container > input[name=source]").trigger("change");
                         table_modal(null, url);
                         return;
                     }
-
 
 
                     $.ajax({
@@ -93,6 +93,7 @@ function table_modal(o, action)
             }]);
 
         });
+
 
 
         /* Uruchomienie pól typu autocomplete, date itd. */
@@ -264,12 +265,20 @@ $(function() {
         /* Schowaj menu w bezpieczne miejsce */
         $(".table-op-menu").appendTo($(".table-op-menu").closest(".table-container"));
 
-        var url = $(this).val() + "/table";
+        var url = $(this).val() + "/table", sselect;
         url += "?" + q_all() + "&" + $(this).siblings("input[name=params]").val();
         $(this).nextAll("table.table-table").first().load(url, function() {
             $(window).scrollTop(0);
         });
     });
+
+    /* a może trzeba ustawić selektor */
+    var s = $("span#main_selector select[name=selector]");
+    if(s.size())
+    {
+        s.val(q_get("selector", 0));
+        q_set("selector", s.val());
+    }
 
     /* Załaduj początkową zawartość tabeli */
     $("table.table-table").each(function() {
@@ -347,6 +356,13 @@ $(function() {
         return false;
     });
 
+    /* Oprogramowanie głównego pola wyboru */
+    $("body").on("change", "span#main_selector select", function (event, ui)
+    {
+        q_set("selector", $(this).val());
+        $(".table-container > input[name=source]").trigger("change");
+    });
+
     /* Oprogramowanie przycisków funkcyjnych */
     $("body").on("click", ".table-action", function(event, ui) {
         event.stopPropagation();
@@ -358,7 +374,7 @@ $(function() {
                 return false;
 
         /* URL akcji */
-        var url = $(this).attr("href");
+        var url = $(this).attr("href"), selector = $(this).closest(".source-domain").find("select[name=selector]");
         url += '?';
 
         // + "?" + q_all(); (filtry przeszkadzają - czy to jest potrzebne?)
@@ -372,6 +388,10 @@ $(function() {
             url = table_append_id(this, url);
             if(!url) return false;
         }
+
+        /* Dodaj selektor jeśli jest */
+        if(selector.size())
+            url += "&selector=" + selector.val();
 
         /* Schowaj menu */
         $("body").trigger("click");
@@ -437,12 +457,14 @@ $(function() {
     });
 
     /* Klawisz ENTER wciska pierwszy przycisk dialogu */
-    $(document).on('keyup', '.ui-dialog', function(e) {
+    $(document).on('keypress', '.ui-dialog', function(e) {
         var tagName= e.target.tagName.toLowerCase();
 
         tagName= (tagName == 'input' && e.target.type == 'button') ? 'button' : tagName;
 
         if (e.which == $.ui.keyCode.ENTER && tagName != 'textarea' && tagName != 'select' && tagName != 'button') {
+            e.stopPropagation();
+            e.preventDefault();
             $(this).find('.ui-dialog-buttonset button').eq(0).trigger('click');
             return false;
         }
@@ -469,4 +491,17 @@ $(function() {
                     "&" + $("input[name=params]").val();
         table_modal(null, url);
     }
+
+    /* sprawdzanie, czy użytkownik nie występuje już */
+    $('body').on('change',
+        '.table-users-add input[name=name], .table-users-add input[name=surname]',
+        function() {
+            var name = $('.table-users-add input[name=name]');
+            var surname = $('.table-users-add input[name=surname]');
+            if(name.val().length > 0 && surname.val().length > 0)
+                name.siblings("div.error").
+                   load("/insider/users/dupcheck?name=" +
+                   encodeURIComponent(name.val()) +
+                    "&surname=" + encodeURIComponent(surname.val()));
+        });
 });

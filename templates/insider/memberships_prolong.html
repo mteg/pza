@@ -1,25 +1,25 @@
 {{block name="dialog"}}
 {{if $request.fin}}
-<input type="hidden" class="dialog-title" value="Zakończ uprawnienie">
+<input type="hidden" class="dialog-title" value="Wypisz z klubu">
 {{else}}
-<input type="hidden" class="dialog-title" value="Przedłuż uprawnienie">
+<input type="hidden" class="dialog-title" value="Przedłuż członkostwo">
 {{/if}}
 
 <div class="source-domain">
-<input type="hidden" name="source" value="/insider/entitlements">
+<input type="hidden" name="source" value="/insider/memberships">
 <input type="hidden" name="method" value="saveprolong">
 <form>
     <div class="table-edit table-form">
         <input type="hidden" name="id" value="{{$request.id}}">
         <div class="field">
-            <label>Uprawnienia</label>
+            <label>Członkostwa</label>
             <span>
                 {{foreach from=$entl_list item=i key=k}}
                 {{$i|escape:'html'}}<br/>
                 {{/foreach}}
             </span>
         </div>
-        {{include file="insider/field.html" nofit=1 i=["name" => "Data wygaśnięcia", "type" => "date"] k="date" data=$request}}
+        {{include file="insider/field.html" nofit=1 i=["name" => "Data wypisania", "type" => "date"] k="date" data=$request}}
     </div>
 </form>
 </div>

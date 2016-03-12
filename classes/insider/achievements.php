@@ -25,7 +25,7 @@
          */
         public $fields = array(
             "creat" =>   array("Data wpisu", "no" => "add,edit"),
-            "ground" =>  array("Szranka", "ref" => "grounds", "by" => "name", "search" => "g.name", "order" => "g.name"),
+            "ground" =>  array("Szranka", "ref" => "grounds_view", "by" => "groundref", "search" => "g.name", "order" => "g.name"),
             "user" =>    array("Osoba", "ref" => "users", "by" => "ref"),
             "date" =>    array("Data", "type" => "date", "suppress" => true),
             "position" =>array("Miejsce", "regexp" => "[0-9]+", "empty" => true, "order" => "IF(CAST(t.position AS signed) = 0, 1, 0) <dir>, CAST(t.position AS signed) <dir>, t.position"),
@@ -40,7 +40,8 @@
                 "V" => "Widoczne publicznie",
                 "K" => "Kierownik akcji",
                 "N" => "Nurek",
-                "C" => "Opłacone wpisowe")),
+            /*    "C" => "Opłacone wpisowe"*/
+            )),
             "place" =>   array("Osiągnięty punkt", "consistency" => true, "suppress" => true),
             "comments" =>array("Uwagi", "type" => "area", "suppress" => true),
         );
@@ -134,6 +135,9 @@
             list($family, $fine) = explode(":", $type);
             if($family != "event")
                 $this->remove_fields("creat");
+
+            if($_REQUEST["user"] == "self")
+                unset($this->fields["user"]);
 
             switch($family)
             {
@@ -406,6 +410,8 @@
                         return array("user" => "Nie masz prawa do edytowania tego wpisu");
 
             }
+            else if((!$id) && !$data["user"])
+                $data["user"] = access::getuid();
 
             if(is_numeric($ground = $_REQUEST["ground"]))
             {
@@ -589,6 +595,7 @@
 
         private function has_signup_restrictions()
         {
+            return false;
             return (fnmatch("comp:*:pza", $this->ground_type) ||
                     fnmatch("event:*", $this->ground_type));
         }

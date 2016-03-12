@@ -2,8 +2,9 @@
 <div class="field">
   <label>{{$i.name|escape:'html'}}</label>
   <span {{if !$nofit}}class="fit"{{/if}}>
-    
-    {{if $i.type == "html"}}
+    {{if $i.type == "static"}}
+        {{$data.$k|escape:'html'}}{{$i.data|escape:'html'}}
+    {{elseif $i.type == "html"}}
       <textarea  {{if $disabled.$k}}disabled{{/if}} rows=5 cols=50 name="{{$k|escape:'html'}}" class="html {{if $err.$k}}err{{/if}}">{{$data.$k|escape:'html'}}</textarea>
     
     {{elseif $i.type == "area"}}

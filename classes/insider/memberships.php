@@ -5,7 +5,7 @@
             "member" =>  array("Klub PZA", "ref" => "members", "by" => "short", "search" => "m.short"),
             "user" =>    array("Osoba", "ref" => "users", "by" => "ref"),
             "starts" =>  array("Data przystąpienia", "type" => "date"),
-            "due" =>     array("Data wygaśnięcia", "type" => "date"),
+            "due" =>     array("Data opuszczenia", "type" => "date", "no" => "add"),
             "flags" =>   array("Opcje", "type" => "flags", "options" => array(
                         "Z" => "Zarząd klubu",
                         "A" => "Administrator klubowy",
@@ -16,7 +16,8 @@
         public $columns = array(
             "member" => "Klub PZA",
             "surname" => array("Nazwisko", "order" => "u.surname"),
-            "name" => array("Imię", "order" => "u.name")
+            "name" => array("Imię", "order" => "u.name"),
+            "starts" => array("Od", "type" => "date"), "due" => array("Do", "type" => "date"),
         );
 
         public $filters = array(
@@ -42,10 +43,12 @@
 
         protected function retr_query($filters)
         {
-            $org = $_REQUEST["org"];
+            $org = $_REQUEST["selector"];
 
             $query = "SELECT SQL_CALC_FOUND_ROWS " .
-                " t.id, m.short AS member, u.surname, u.name " .
+                " t.id, m.short AS member, u.surname, u.name,
+                 IF(t.starts = '0000-00-00', '-- zawsze --', t.starts) AS starts,
+                 IF(t.due = '9999-12-31', '---', t.due) AS due " .
                 " FROM memberships AS t " .
                 " LEFT JOIN users AS u ON t.user = u.id " .
                 " LEFT JOIN members AS m ON t.member = m.id " .
@@ -55,14 +58,23 @@
             return $query;
         }
 
+        protected function filter_view($data)
+        {
+            if($data["due"] == "9999-12-31")
+                $data["due"] = "-- bezterminowo --";
+            if($data["starts"] == "0000-00-00")
+                $data["starts"] = "-- nieznana --";
+            return $data;
+        }
+
         function access($perm)
         {
             if(parent::access($perm)) return true;
 
-            if(isset($_REQUEST["org"]) &&
+            if(isset($_REQUEST["selector"]) &&
                     in_array($perm, array("export", "edit", "search", "view", "delete", "confirm")
                 ))
-                return(in_array($_REQUEST["org"], array_keys(static::adm_of())));
+                return(in_array($_REQUEST["selector"], array_keys(static::adm_of())));
 
             return false;
         }
@@ -75,12 +87,21 @@
             parent::__construct();
 
 
-            if(isset($_REQUEST["org"]))
+            if(isset($_REQUEST["restrict"]))
             {
                 unset($this->filters["member"]);
                 unset($this->columns["member"]);
-                unset($this->fields["member"]);
+                if(!in_array($_REQUEST["method"], array("click", "view")))
+                    unset($this->fields["member"]);
                 $this->order = "surname, name";
+                $this->main_selector = "member";
+                $this->main_selection = insider_members::get_members();
+                unset($this->actions["<classpath>/delete"]);
+            }
+            if(access::has("edit(memberships)"))
+            {
+                $this->actions["/insider/memberships/prolong?&"] = array("name" => "Przedłuż", "multiple" => true);
+                $this->actions["/insider/memberships/prolong?fin=1&"] = array("name" => "Wypisz", "multiple" => true);
             }
         }
 
@@ -95,11 +116,11 @@
 
         protected function update($id, $data)
         {
-            $org = $_REQUEST["org"];
-            if(is_numeric($org))
+            $selector = $_REQUEST["selector"];
+            if(is_numeric($selector))
             {
                 if((!$id) || isset($data["member"]))
-                    $data["member"] = $org;
+                    $data["member"] = $selector;
 
                 if(!access::has("edit(memberships)"))
                 {
@@ -126,7 +147,10 @@
             else if($id)
                 $org = vsql::get("SELECT member FROM memberships WHERE id = " . vsql::quote($id), "member", 0);
             else
-                $org = $_REQUEST["org"];
+                $org = $_REQUEST["selector"];
+
+            if((!$id) && (!$data["due"]))
+                $data["due"] = "9999-12-31";
 
             if(vsql::get("SELECT id FROM memberships WHERE deleted = 0
                           AND  user = " . vsql::quote($data["user"]) .
@@ -136,7 +160,7 @@
                         " AND  due >= " . vsql::quote($data["starts"]) . ")" .
                         " OR  (starts <= " . vsql::quote($data["due"]) .
                         " AND  due >= " . vsql::quote($data["due"]) . "))"))
-                $err["starts"] = "Podwójne członkostwo, ta osoba jest już zapisana w tym okresie";
+                $err["starts"] = "Podwójne członkostwo, osoba jest już zapisana do innego klubu w tym okresie";
 
             return $err;
         }
@@ -169,7 +193,7 @@
         {
             if($this->access("confirm"))
             {
-                if($org = $_REQUEST["org"])
+                if($org = $_REQUEST["selector"])
                     $xcond = " AND member = " . vsql::quote($org);
                 else
                     $xcond = "";
@@ -181,6 +205,13 @@
             echo json_encode(array());
         }
 
+        function add()
+        {
+            if($member = $_REQUEST["selector"])
+                $this->S->assign("membername", vsql::get("SELECT name FROM members WHERE id = " . vsql::quote($member), "name"));
+            parent::add();
+        }
+
         protected function capt($id)
         {
             return vsql::get("SELECT CONCAT(u.id, ' * ', m.name) AS capt FROM
@@ -190,4 +221,20 @@
                   WHERE me.id = " . vsql::quote($id), "capt", "");
         }
 
+        function prolong_get_dates($entids)
+        {
+            return vsql::id_retr($entids,
+                "e.id",
+                "SELECT e.id, e.due, e.starts FROM memberships AS e WHERE e.deleted = 0 AND ");
+        }
+
+        function prolong_get_list($entids)
+        {
+            return vsql::id_retr($entids, "e.id",
+                "SELECT e.id, CONCAT(u.surname, ' ', u.name, ' ** ', m.short) AS ref
+                    FROM memberships AS e
+                         JOIN members AS m ON m.id = e.member
+                         JOIN users AS u ON u.id = e.user
+                         WHERE e.deleted = 0 AND ", "id", "ORDER BY ref", "ref");
+        }
     }

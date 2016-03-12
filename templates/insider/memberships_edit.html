@@ -1,0 +1,6 @@
+{{extends "insider/table_edit.html"}}
+{{block name="fields" prepend}}
+{{if $membername}}
+{{include file="insider/field.html" i=["type" => "static", "name" => "Klub", "data" => $membername]}}
+{{/if}}
+{{/block}}

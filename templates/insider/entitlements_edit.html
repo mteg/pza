@@ -1,0 +1,6 @@
+{{extends "insider/table_edit.html"}}
+{{block name="fields" prepend}}
+{{if $rightname}}
+{{include file="insider/field.html" i=["type" => "static", "name" => "Uprawnienie", "data" => $rightname]}}
+{{/if}}
+{{/block}}

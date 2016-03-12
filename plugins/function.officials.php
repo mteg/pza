@@ -37,12 +37,16 @@
 
                 $srights = "<option value=''>-- wszystkie --</option>" . implode("", $srights);
 
+                if(isset($params["getto"]))
+                    $self = $params["getto"];
+
                 $out  = "<div class='pza-browsepanel'>";
                 $out .= "<form action='" . htmlspecialchars($self) . "' class='onchangesubmit' method='GET'>";
                 $out .= "<span>Nazwisko <input type='text' name='sn' value='" . urlencode($sname) . "' size=10></span>";
                 $out .= "<span>Klub <input type='text' name='sa' value='" . urlencode($sassoc) . "' size=10></span>";
+                $out .= "<select name='active'><option value='1'>Ważne</option><option value=''>Wszystkie</option></select>";
                 $out .= "<span>Uprawnienie <select name='sr'>$srights</select></span>";
-                $out .= "<span><input type='submit' value='Zmień'></span>";
+                $out .= "<span><input type='submit' value='Szukaj'></span>";
                 $out .= "</form>";
                 $out .= "</div>";
             }
@@ -54,7 +58,12 @@
         }
 
         if($sright && (!is_array($sright))) $sright = array($sright);
-        $list = vsql::retr($qry = "SELECT u.id, u.surname, u.name, u.login,
+        if(!$sright) $sright = array();
+
+        $list = vsql::retr($qry = "SELECT u.id,
+                    IF(u.flags LIKE '%E%', u.surname, CONCAT(SUBSTR(u.surname, 1, 1), '...')) AS surname,
+                    IF(u.flags LIKE '%E%', u.name, CONCAT(SUBSTR(u.name, 1, 1), '...')) AS name,
+                    u.login,
                     GROUP_CONCAT(CONCAT(r.name, ' ', e.number) ORDER BY r.name SEPARATOR '|') AS entl,
                     GROUP_CONCAT(DISTINCT c.short ORDER BY c.short SEPARATOR '|') AS society,
                     MAX(e.due) AS due,
@@ -62,7 +71,7 @@
                     FROM rights AS r
                     JOIN entitlements AS e ON e.right = r.id AND e.deleted = 0 AND e.public = 1 " .
                     ($_REQUEST["active"] ? " AND e.starts <= NOW() AND e.due >= NOW() " : "") .
-                    "JOIN users AS u ON u.id = e.user AND u.deleted = 0 AND u.deathdate = 0 AND u.flags LIKE '%E%'
+                    "JOIN users AS u ON u.id = e.user AND u.deleted = 0 AND u.deathdate = 0 " . ($_REQUEST["anon"] ? "" : " AND u.flags LIKE '%E%'") . "
                     LEFT JOIN memberships AS m ON m.deleted = 0 AND u.id = m.user
                             AND m.starts <= NOW() AND m.due >= NOW()
                             AND m.flags LIKE '%R%'

@@ -28,9 +28,6 @@ abstract class insider_action
      */
     public $_menu = array(
         "Wyloguj" => "/insider/checkout",
-        "System" => array(
-            "Dziennik zmian" => "/insider/register|search(register)",
-        ),
         "Moje konto" => array(
             "Moje dane" => "/insider/profile",
             "Moje zdjęcie" => "/insider/photo",
@@ -42,73 +39,92 @@ abstract class insider_action
             "Moje kategorie" => "/insider/favcats?type=article|search(categories)",
             "Wszystkie kategorie" => "/insider/categories?type=article|search(categories)",
             "Artykuły" =>  "/insider/content?type=article#order=mod+DESC|search(content)",
-        ),
-        "Zdjęcia" => array(
             "Galerie" => "/insider/categories?type=photo|search(categories)",
             "Zdjęcia" =>  "/insider/content?type=photo|search(content)",
-        ),
-        "Dokumenty do pobrania" => array(
             "Kategorie" =>  "/insider/categories?type=file|search(content)",
             "Pliki" =>  "/insider/content?type=file|search(content)",
-        ),
-        "Publikacje" => array(
             "Serie" =>  "/insider/categories?type=paperback|search(categories)",
             "Zeszyty" =>  "/insider/content?type=paperback|search(content)",
-            "Artykuły" =>  "/insider/content?type=paperback_article|search(content)",
+            "Teksty" =>  "/insider/content?type=paperback_article|search(content)",
         ),
+/*        "Zdjęcia" => array(
+        ),
+        "Dokumenty do pobrania" => array(
+        ),
+        "Publikacje" => array(
+        ),*/
         "Kluby" => array(
             "Lista klubów" => "/insider/members|search(members)",
-            "Wszystkie członkostwa" => "/insider/memberships#status=1&current=1|search(memberships)",
+            "Członkowie klubów" => "/insider/memberships?restrict=1#&current=1|search(memberships)",
         ),
         "Osoby" => "/insider/users",
-        "Wydarzenia" => array(
-            "Szkolenia i unifikacje" => "/insider/grounds?type=event:s",
-        ),
-        "Uprawnienia" => array(
-            "Rodzaje uprawnień" => "/insider/rights|search(rights)",
-            "Wszystkie uprawnienia" => "/insider/entitlements|search(entitlements)"
-        ),
+/*       "Wydarzenia" => array(
+           "Szkolenia i unifikacje" => "/insider/grounds?type=event:s",
+        ),*/
 /*        "Osiągnięcia" => array(
             "Szranki" => "/insider/grounds|delete(grounds)",
             "Osiągnięcia" => "/insider/achievements|search(achievements)"
         ),*/
         "Wspinaczka górska" => array(
-            "Instruktorzy" => "/insider/entitlements?family=i:w#current=1|entmgr(i:w)",
-/*            "Lista dróg" => "/insider/grounds?type=nature:climb",
-            "Baza przejść" => "/insider/achievements?type=nature:climb",
-            "Moje przejścia" => "/insider/achievements?type=nature:climb#user=self",
-            "Wyprawy himalajskie PZA" => "/insider/grounds?type=exp:h|search(grounds)",*/
+            "Instruktorzy" => "/insider/entitlements?family=i:w|entmgr(i:w)",
+            "Licencje zawodników" => "/insider/entitlements?family=l:w|entmgr(l:w)",
+            "Kadra narodowa" => "/insider/entitlements?family=ka:kn:ww#due=eoy|entmgr(ka:kn:ww)",
+            "Lista dróg" => "/insider/grounds?type=nature:climb",
+            "Moje przejścia" => "/insider/achievements?user=self&type=nature:climb",
+            "Wszystkie przejścia" => "/insider/achievements?type=nature:climb|search(grounds)",
+        ),
+        "Wspinaczka skalna" => array(
+            "Ekiperzy" => "/insider/entitlements?family=e:sk|entmgr(e:sk)",
+            "Kadra narodowa" => "/insider/entitlements?family=ka:kn:sk#due=eoy|entmgr(ka:kn:sk)",
+            "Klasy sportowe" => "/insider/entitlements?family=c:sk|entmgr(c:sk)",
+        ),
+        "Wszystkie dyscypliny" => array(
+            "Kadra narodowa - bieżąca" => "/insider/entitlements?family=ka:kn&open=1#due=eoy|entmgr(ka:kn)",
+            "Kadra narodowa - archiwum" => "/insider/entitlements?family=ka:kn&open=1|entmgr(ka:kn)",
+            "Badania lekarskie - aktualne" => "/insider/entitlements?family=med&open=1#due=eoy|entmgr(med)",
+            "Badania lekarskie - wszystkie" => "/insider/entitlements?family=med&open=1|entmgr(med)",
         ),
         "Alpinizm jaskiniowy" => array(
-            "Instruktorzy" => "/insider/entitlements?family=i:j#current=1|entmgr(i:j)",
-            "Kadra narodowa" => "/insider/entitlements?family=r:tj#current=1|entmgr(r:tj)",
-            "Badania lekarskie" => "/insider/entitlements?family=med:j#current=1|entmgr(med:j)",
-/*            "Lista jaskiń" => "/insider/grounds?type=nature:cave",
-            "Przejścia jaskiniowe" => "/insider/achievements?type=nature:cave",
-            "Moje przejścia" => "/insider/achievements?type=nature:cave#user=self",
-            "Wyprawy jaskiniowe PZA" => "/insider/grounds?type=exp:cave|search(grounds)",*/
+            "Instruktorzy" => "/insider/entitlements?family=i:j|entmgr(i:j)",
+            "Kadra narodowa" => "/insider/entitlements?family=ka:kn:aj#due=eoy|entmgr(ka:kn:aj)",
+            "Badania lekarskie" => "/insider/entitlements?family=med:j|entmgr(med:j)",
+            "Lista jaskiń" => "/insider/grounds?type=nature:cave",
+            "Moje przejścia" => "/insider/achievements?type=nature:cave&user=self|search(grounds)",
+            "Wszystkie przejścia" => "/insider/achievements?type=nature:cave",
         ),
         "Wspinaczka sportowa" => array(
 /*            "Zawody PZA" => "/insider/grounds?type=comp:s:pza",
             "Zawody inne" => "/insider/grounds?type=comp:s:other",*/
-            "Instruktorzy" => "/insider/entitlements?family=i:s#current=1|entmgr(i:s)",
-            "Sędziowie" => "/insider/entitlements?family=s:s#current=1|entmgr(s:s)",
-            "Konstruktorzy" => "/insider/entitlements?family=k:j#current=1|entmgr(k:s)",
-            "Kadra narodowa" => "/insider/entitlements?family=r:s#current=1|entmgr(r:s)",
+            "Badania lekarskie" => "/insider/entitlements?family=med:s|entmgr(med:s)",
+            "Licencje" => "/insider/entitlements?family=l:s|entmgr(l:s)",
+            "Kadra narodowa" => "/insider/entitlements?family=ka:kn:s#due=eoy|entmgr(ka:kn:s)",
+            "Sędziowie" => "/insider/entitlements?family=s:s|entmgr(s:s)",
+            "Trenerzy" => "/insider/entitlements?family=t:s|entmgr(t:s)",
+            "Klasy sportowe" => "/insider/entitlements?family=c:s|entmgr(c:s)",
+            "Konstruktorzy" => "/insider/entitlements?family=k:s|entmgr(k:s)",
 /*            "Badania lekarskie" => "/insider/entitlements?family=med:r#current=1|entmgr(med:r)",
             "Moje wyniki" => "/insider/achievements?type=comp:s#user=self",*/
             // todo moje wyniki jedne i drugie
         ),
-/*        "Narciarstwo wysokogórskie" => array(
+        "Narciarstwo wysokogórskie" => array(
             "Zawody PZA" => "/insider/grounds?type=comp:nw:pza",
             "Zawody inne" => "/insider/grounds?type=comp:nw:other",
-            "Instruktorzy" => "/insider/entitlements?family=i:nw#current=1|entmgr(i:nw)",
-            "Sędziowie" => "/insider/entitlements?family=s:nw#current=1|entmgr(s:nw)",
-            "Kadra narodowa" => "/insider/entitlements?family=r:nw#current=1|entmgr(r:nw)",
-            "Badania lekarskie" => "/insider/entitlements?family=med:j#current=1|entmgr(med:nw)",
-            "Moje wyniki" => "/insider/achievements?type=comp:nw#user=self",
+            "Moje wyniki - zawody PZA" => "/insider/achievements?user=self&type=comp:nw:pza",
+            "Moje wyniki - zawody inne" => "/insider/achievements?user=self&type=comp:nw:other",
+            "Wszystkie wyniki" => "/insider/achievements?type=comp:nw",
+            "Kadra narodowa" => "/insider/entitlements?family=ka:kn:nw#due=eoy|entmgr(ka:kn:nw)",
+            "Instruktorzy" => "/insider/entitlements?family=i:nw|entmgr(i:nw)",
+            "Sędziowie" => "/insider/entitlements?family=s:nw|entmgr(s:nw)",
+            "Klasy sportowe" => "/insider/entitlements?family=c:nw|entmgr(c:s)",
+            "Badania lekarskie" => "/insider/entitlements?family=med:j|entmgr(med:nw)",
         ),
-*/
+        "System" => array(
+            "Rodzaje uprawnień" => "/insider/rights|search(rights)",
+            "Wszystkie uprawnienia" => "/insider/entitlements|search(entitlements)",
+            "Wszystkie członkostwa" => "/insider/memberships|search(memberships)",
+            "Dziennik zmian" => "/insider/register|search(register)",
+        ),
+
     );
 
     /**

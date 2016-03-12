@@ -20,7 +20,7 @@
 
 
 require_once "common.php";
-
+require_once "classes/access.php";
 
 if(!($action = $_REQUEST["action"]))
 {

@@ -395,7 +395,8 @@ a.btn {
 .field input[type="text"].err + .error,
 .field input[type="password"].err + .error,
 .field select.err + .error,
-.field textarea.err + .error {
+.field textarea.err + .error,
+span.dupcheck {
   color: #bc2220;
   margin-top: 5px;
 }
