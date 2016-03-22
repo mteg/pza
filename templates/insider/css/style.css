@@ -468,6 +468,20 @@ span.dupcheck {
   content: "!";
   background: #bc2220;
 }
+
+.autocomplete-multiple-option {
+  border: 1px solid black;
+  border-radius: 5px;
+  margin-left: 2px;
+  margin-bottom: 2px;
+  padding: 4px;
+  background-color: #eeeeee;
+}
+
+.autocomplete-multiple-option > img {
+  cursor: pointer;
+  margin-top: 5px;
+}
 /* **********************************************************************
  * tables
  */

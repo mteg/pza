@@ -60,6 +60,9 @@
             if(access::has("edit(memberships)"))
                 $this->actions["/insider/users/transfer?&"] = array("name" => "Zmiana klubu");
             $this->actions["/insider/users/achievements"] = array("name" => "Aktywność", "target" => "_self");
+            
+            if(access::has("mailing"))
+                $this->actions["/insider/mailing/users&"] = array("name" => "Wyślij email/sms", "multiple" => true, "target" => "_self");
 
             /* "passwd" as a separate priviledge does not make sense,
                since it is possible to hijack "god" */
