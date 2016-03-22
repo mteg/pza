@@ -151,7 +151,7 @@
 
         static function list_memberships($id, $extra_sql = "")
         {
-            $m = vsql::retr("SELECT m.starts, m.due, IF(m.due >= NOW() AND m.flags LIKE '%R%', 1, 0) AS status, o.short
+            $m = vsql::retr($qry = "SELECT m.starts, m.due, IF(m.due >= NOW() AND m.flags LIKE '%R%', 1, 0) AS status, o.short
                                 FROM memberships AS m
                                 JOIN members AS o ON o.id = m.member
                                 WHERE m.user = " . vsql::quote($id) . $extra_sql .
@@ -177,13 +177,13 @@
             if(access::has("view(users)"))
             {
                 $entls = array("med" => array(), "c" => array(), "ka" => array(), "other" => array());
-                foreach($this->list_entitlements($id) as $id => $e)
+                foreach($this->list_entitlements($id) as $entid => $e)
                 {
                     list($class, $junk) = explode(":", $e["short"], 2);
                     if(isset($entls[$class]))
-                        $entls[$class][$id] = $e;
+                        $entls[$class][$entid] = $e;
                     else
-                        $entls["other"][$id] = $e;
+                        $entls["other"][$entid] = $e;
                 }
 
                 $this->S->assign(array(
