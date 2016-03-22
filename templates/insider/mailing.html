@@ -1,0 +1,28 @@
+{{extends "insider/action.html"}}
+{{block name="content"}}
+<h2>Wyślij wiadomość</h2>
+
+<div class="source-domain">
+    <input type="hidden" name="source" value="{{$source|escape:'html'}}">
+    <input type="hidden" name="params" value="{{$params|escape:'html'}}">
+
+    <form action="/insider/mailing" method="POST">
+    <input type="hidden" name="id" value="{{$request.id|escape:'html'}}">
+        <div class="table-form checkin-form">
+            {{include file="insider/field.html" i=[name => "Typ wiadomości", "type" => "select", "options" => array('email', 'sms')] k="type" nofit=1 size=15}}
+
+            {{include file="insider/field.html" i=[name => "Wyślij do klubów:", "ref" => "members", "multiple" => 1] k="members" nofit=1 size=15}}
+            {{include file="insider/field.html" i=[name => "Adresaci z uprawnieniem:", "ref" => "rights", "multiple" => 1] k="rights" nofit=1 size=15}}
+            {{include file="insider/field.html" i=[name => "Do osoby:", "ref" => "users", "multiple" => 1] k="users" nofit=1 size=15}}
+
+            {{include file="insider/field.html" i=[name => "Tytuł wiadomości"] k="title" nofit=1 size=15}}
+            {{include file="insider/field.html" i=[name => "Treść", "type" => "html"] k="message" nofit=1 size=15}}
+
+            <div>
+                <input type="submit" value="Wyślij wiadomość">
+            </div>
+        </div>
+    </form>
+</div>
+
+{{/block}}

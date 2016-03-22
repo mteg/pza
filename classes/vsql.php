@@ -13,6 +13,20 @@ class vsql
     static $smsapi_pass = "";
     static $smsapi_salt = "";
 
+    /*
+     * Konfiguracja Swift mailer
+     * transport - smtp, gmail, default
+     */
+    static $email_conf = array(
+        "sender_email" => "",
+        "transport" => "gmail",
+        "smtp_host" => "173.194.71.108",
+        "smtp_port" => 465,
+        "smtp_encryption" => "ssl",
+        "smtp_username" => "",
+        "smtp_password" => "",
+    );
+
     static function init()
     {
         /* Głównie konfiguracja bazy SQL */

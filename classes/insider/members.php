@@ -36,6 +36,9 @@
             $this->fields["country"]["options"] = placelist::get("countries");
             $this->fields["district"]["options"] = placelist::get("regions");
             $this->actions["/insider/members/memberships"] = array("target" => "_self", "name" => "Członkowie klubu");
+
+            if(access::has("mailing"))
+                $this->actions["/insider/mailing/members&"] = array("name" => "Wyślij email/sms", "multiple" => true, "target" => "_self");
         }
 
         public function memberships()

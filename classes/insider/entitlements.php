@@ -125,6 +125,9 @@
                 $this->actions["/insider/entitlements/prolong?fin=1&"] = array("name" => "Zakończ", "multiple" => true);
             }
 
+            if(access::has("mailing"))
+                $this->actions["/insider/mailing/entitlements&"] = array("name" => "Wyślij email/sms", "multiple" => true, "target" => "_self");
+
             if($this->root == "ka")
                 $this->filters["due"]["name"] = "Kadra na rok";
         }
