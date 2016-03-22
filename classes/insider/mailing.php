@@ -1,5 +1,5 @@
 <?
-require_once "/opt/pza/www/swiftmailer/lib/swift_required.php";
+require_once "swiftmailer/lib/swift_required.php";
 
 //class insider_mailing extends insider_action
 class insider_mailing extends insider_table
