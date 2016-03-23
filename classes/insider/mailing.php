@@ -18,16 +18,16 @@ class insider_mailing extends insider_table
      */
     protected function get_users($ids, $type)
     {
-        $u = vsql::get($q = "SELECT group_concat(" . $type . ") as result " .
+        $u = vsql::retr($q = "SELECT u.ref, $type as result " .
             " FROM users AS u" .
-            " WHERE u.id in (" . implode(",", $ids) . ") and length(" . $type . ")>0" .
+            " WHERE u.id in (" . implode(",", $ids) . ")" .
             " AND u.deleted = 0", "");
 
-        if (strlen($u['result']) > 0) {
-            return explode(",", $u['result']);
-        }
+//        if (strlen($u['result']) > 0) {
+//            return explode(",", $u['result']);
+//        }
 
-        return array();
+        return $u;
     }
 
     /*
@@ -37,18 +37,18 @@ class insider_mailing extends insider_table
      */
     protected function get_members($ids, $type)
     {
-        $u = vsql::get($q = "SELECT group_concat(u." . $type . ") as result " .
+        $u = vsql::retr($q = "SELECT u.ref u.$type as result " .
             " FROM members AS m " .
             " LEFT JOIN memberships AS ms on ms.member=m.id" .
             " LEFT JOIN users AS u on u.id=ms.user" .
-            " WHERE m.id in (" . implode(",", $ids) . ") and length(u." . $type . ")>0" .
+            " WHERE m.id in (" . implode(",", $ids) . ")" .
             " AND u.deleted = 0", "");
 
-        if (strlen($u['result']) > 0) {
-            return explode(",", $u['result']);
-        }
+//        if (strlen($u['result']) > 0) {
+//            return explode(",", $u['result']);
+//        }
 
-        return array();
+        return $u;
     }
 
     /*
@@ -59,18 +59,18 @@ class insider_mailing extends insider_table
      */
     protected function get_rights($ids, $type)
     {
-        $u = vsql::get($q = "SELECT group_concat(u." . $type . ") as result " .
+        $u = vsql::retr($q = "SELECT u.ref, u.$type as result " .
             " FROM rights AS r " .
             " LEFT JOIN entitlements AS e on e.right=r.id" .
             " LEFT JOIN users AS u on u.id=e.user" .
-            " WHERE r.id in (" . implode(",", $ids) . ") and length(u." . $type . ")>0" .
+            " WHERE r.id in (" . implode(",", $ids) . ")" .
             " AND u.deleted = 0", "");
 
-        if (strlen($u['result']) > 0) {
-            return explode(",", $u['result']);
-        }
+//        if (strlen($u['result']) > 0) {
+//            return explode(",", $u['result']);
+//        }
 
-        return array();
+        return $u;
     }
 
     /*
@@ -84,8 +84,7 @@ class insider_mailing extends insider_table
         }
 
         if (isset($_POST['type'])) {
-
-
+            $errors = array();
 
             $types = array('email', 'phone');
 
@@ -102,17 +101,27 @@ class insider_mailing extends insider_table
                     continue;
                 }
 
-//                $obj_list = explode(",", $_REQUEST[$field]);
+                $field_elements = $_REQUEST[$field];
+
                 $ids = array();
-                foreach ($_REQUEST[$field] as $item) {
-                    list($id, $ref) = array_map("trim", explode(":", $item, 2));
-                    if (ctype_digit($id)) {
-                        $ids[] = $id;
+                if (is_array($field_elements)) {
+                    foreach ($field_elements as $item) {
+                        list($id, $ref) = array_map("trim", explode(":", $item, 2));
+                        if (ctype_digit($id)) {
+                            $ids[] = $id;
+                        }
                     }
                 }
 
                 if (count($ids)) {
-                    $recipients = array_merge($recipients, $this->$extractor_name($ids, $type));
+                    $users = $this->$extractor_name($ids, $type);
+                    foreach ($users as $user) {
+                        if (strlen($user['result']) > 0) {
+                            $recipients[] = $user['result'];
+                        } else {
+                            $errors[] = "Nie można wysłać wiadomości do " . $user['ref'] . " (" . $user['result'] .")";
+                        }
+                    }
                 }
             }
 
@@ -121,7 +130,7 @@ class insider_mailing extends insider_table
 
             // Teraz możemy wyslać wiasomości.
             $sender_name = 'send_to_' . $type;
-            $errors = $this->$sender_name($recipients, $title, $message);
+            $errors = array_merge($errors, $this->$sender_name($recipients, $title, $message));
 
             foreach (array('title', 'message', 'errors', 'recipients') as $item) {
                 $this->S->assign($item, $$item);
@@ -139,6 +148,7 @@ class insider_mailing extends insider_table
     protected function send_to_phone($recipients, $title, $message)
     {
         foreach ($recipients as $recipient) {
+
             $this->send_sms($a = array(
                 'username' => 'pezeta',
                 'password' => vsql::$smsapi_pass,

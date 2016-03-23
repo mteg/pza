@@ -4,7 +4,7 @@
 
 
     {{if count($errors) > 0}}
-        <h4>Wystąpiły błędy. Prześlij poniższą treść administratorowi:</h4>
+        <h4>Wystąpiły błędy:</h4><br/><br/>
         {{foreach from=$errors item=error}}
             {{$error}}<br />
         {{/foreach}}
