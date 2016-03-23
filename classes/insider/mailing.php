@@ -10,7 +10,6 @@ class insider_mailing extends insider_table
         "users" => array("Osoby", "ref" => "users", "by" => "ref"),
     );
 
-
     /*
      * Metoda pomocnicza dla route()
      * W zależności od wartości type (sms, phone) zwraca właściwy
@@ -23,30 +22,20 @@ class insider_mailing extends insider_table
             " WHERE u.id in (" . implode(",", $ids) . ")" .
             " AND u.deleted = 0", "");
 
-//        if (strlen($u['result']) > 0) {
-//            return explode(",", $u['result']);
-//        }
-
         return $u;
     }
 
     /*
      * Metoda pomocnicza dla route()
      * W zależności od wartości type (sms, phone) zwraca właściwy
-     * adres email lub nr. tel dla użytkowników należących do podanych klubów.
+     * adres email dla klubu
      */
     protected function get_members($ids, $type)
     {
-        $u = vsql::retr($q = "SELECT u.ref u.$type as result " .
+        $u = vsql::retr($q = "SELECT m.name, m.$type as result " .
             " FROM members AS m " .
-            " LEFT JOIN memberships AS ms on ms.member=m.id" .
-            " LEFT JOIN users AS u on u.id=ms.user" .
             " WHERE m.id in (" . implode(",", $ids) . ")" .
-            " AND u.deleted = 0", "");
-
-//        if (strlen($u['result']) > 0) {
-//            return explode(",", $u['result']);
-//        }
+            " AND m.deleted = 0", "");
 
         return $u;
     }
@@ -65,10 +54,6 @@ class insider_mailing extends insider_table
             " LEFT JOIN users AS u on u.id=e.user" .
             " WHERE r.id in (" . implode(",", $ids) . ")" .
             " AND u.deleted = 0", "");
-
-//        if (strlen($u['result']) > 0) {
-//            return explode(",", $u['result']);
-//        }
 
         return $u;
     }
@@ -130,6 +115,7 @@ class insider_mailing extends insider_table
 
             // Teraz możemy wyslać wiasomości.
             $sender_name = 'send_to_' . $type;
+
             $errors = array_merge($errors, $this->$sender_name($recipients, $title, $message));
 
             foreach (array('title', 'message', 'errors', 'recipients') as $item) {

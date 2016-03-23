@@ -124,6 +124,7 @@ abstract class insider_action
             "Wszystkie członkostwa" => "/insider/memberships|search(memberships)",
             "Dziennik zmian" => "/insider/register|search(register)",
         ),
+        "Wyślij email" => "/insider/mailing",
 
     );
 
