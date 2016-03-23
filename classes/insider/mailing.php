@@ -116,7 +116,7 @@ class insider_mailing extends insider_table
                 if (count($ids)) {
                     $users = $this->$extractor_name($ids, $type);
                     foreach ($users as $user) {
-                        if (strlen($user['result']) > 0) {
+                        if (strlen($user['result']) > 0 && filter_var($user['result'], FILTER_VALIDATE_EMAIL)) {
                             $recipients[] = $user['result'];
                         } else {
                             $errors[] = "Nie można wysłać wiadomości do " . $user['ref'] . " (" . $user['result'] .")";
