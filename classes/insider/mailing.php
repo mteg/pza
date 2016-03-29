@@ -71,7 +71,6 @@ class insider_mailing extends insider_table
             $ids[$k] = "'" . $v . "'";
         }
 
-        echo "checking profile";
         $u = vsql::retr($q = "SELECT m.name as ref, m.$type as result " .
             " FROM members AS m " .
             " WHERE m.profile in (" . implode(",", $ids) . ")" .
@@ -273,7 +272,6 @@ class insider_mailing extends insider_table
             " AND e.deleted = 0", "");
 
         if (isset($u['users'])) {
-            print_r($u);
             $data = $this->expandIdsToFormList($u['users'], 'users');
             $this->S->assign("data", $data);
         }
