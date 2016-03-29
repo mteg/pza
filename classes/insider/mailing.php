@@ -5,7 +5,14 @@ require_once "swiftmailer/lib/swift_required.php";
 class insider_mailing extends insider_table
 {
     public $fields = array(
+        "from" => array("options" => array("mailing@pza.org.pl" => "mailing@pza.org.pl")),
         "members" => array("Kluby", "ref" => "members", "by" => "name"),
+        "member_profile"   =>  array("Profil klubu", "type" => "flags", "options" =>
+            array("J" => "Jaskiniowy",
+                "W" => "Wysokogórski",
+                "K" => "Kanioningowy",
+                "N" => "Narciarski",
+                "S" => "Sportowy")),
         "rights" => array("Uprawnienia", "ref" => "rights", "by" => "name"),
         "users" => array("Osoby", "ref" => "users", "by" => "ref"),
     );
@@ -32,7 +39,7 @@ class insider_mailing extends insider_table
      */
     protected function get_members($ids, $type)
     {
-        $u = vsql::retr($q = "SELECT m.name, m.$type as result " .
+        $u = vsql::retr($q = "SELECT m.name as ref, m.$type as result " .
             " FROM members AS m " .
             " WHERE m.id in (" . implode(",", $ids) . ")" .
             " AND m.deleted = 0", "");
@@ -58,6 +65,21 @@ class insider_mailing extends insider_table
         return $u;
     }
 
+    protected function get_member_profile($ids, $type)
+    {
+        foreach ($ids as $k=>$v) {
+            $ids[$k] = "'" . $v . "'";
+        }
+
+        echo "checking profile";
+        $u = vsql::retr($q = "SELECT m.name as ref, m.$type as result " .
+            " FROM members AS m " .
+            " WHERE m.profile in (" . implode(",", $ids) . ")" .
+            " AND m.deleted = 0", "");
+
+        return $u;
+    }
+
     /*
      * Główna metoda klasy.
      */
@@ -73,13 +95,18 @@ class insider_mailing extends insider_table
 
             $types = array('email', 'phone');
 
+            $from = $_REQUEST['from'];
+            if (!isset($this->fields['from']['options'][$from])) {
+                $from = reset($this->fields['from']['options']);
+            }
+
             $type = 'email';
             if (isset($types[$_REQUEST['type']])) {
                 $type = $types[$_REQUEST['type']];
             }
 
             $recipients = array();
-            foreach (array('users', 'rights', 'members') as $field) {
+            foreach (array('users', 'rights', 'members', 'member_profile') as $field) {
                 $extractor_name = 'get_' . $field;
 
                 if (!method_exists($this, $extractor_name) || !isset($_REQUEST[$field])) {
@@ -96,6 +123,12 @@ class insider_mailing extends insider_table
                             $ids[] = $id;
                         }
                     }
+                }
+
+                // TODO: fix
+                //member profile? solution for now....
+                if ($field == 'member_profile') {
+                    $ids = str_split($field_elements);
                 }
 
                 if (count($ids)) {
@@ -116,8 +149,9 @@ class insider_mailing extends insider_table
             // Teraz możemy wyslać wiasomości.
             $sender_name = 'send_to_' . $type;
 
-            $errors = array_merge($errors, $this->$sender_name($recipients, $title, $message));
+            $errors = array_merge($errors, $this->$sender_name($recipients, $title, $message, $from));
 
+            $this->S->assign('fields', $this->fields);
             foreach (array('title', 'message', 'errors', 'recipients') as $item) {
                 $this->S->assign($item, $$item);
             }
@@ -131,7 +165,7 @@ class insider_mailing extends insider_table
     /*
      * Metoda wysyłająca smsy do listy osób.
      */
-    protected function send_to_phone($recipients, $title, $message)
+    protected function send_to_phone($recipients, $title, $message, $from = null)
     {
         foreach ($recipients as $recipient) {
 
@@ -150,11 +184,11 @@ class insider_mailing extends insider_table
     /*
      * Metoda wysyłająca emaile do listy osób.
      */
-    protected function send_to_email($recipients, $title, $message)
+    protected function send_to_email($recipients, $title, $message, $from)
     {
         $errors = array();
         foreach ($recipients as $recipient) {
-            $rval = $this->send_email($recipient, $title, $message);
+            $rval = $this->send_email($recipient, $title, $message, $from);
             if ($rval !== true) {
                 $errors[] = $rval;
             }
@@ -279,7 +313,7 @@ class insider_mailing extends insider_table
     /*
    * Metoda pomocnicza dla send_to_email - faktyczna wysyłka emaila
    */
-    protected function send_email($recipient, $messageTitle, $messageBody)
+    protected function send_email($recipient, $messageTitle, $messageBody, $from)
     {
         switch (vsql::$email_conf['transport']) {
             case 'smtp':
@@ -300,7 +334,8 @@ class insider_mailing extends insider_table
 
         $message = Swift_Message::newInstance($messageTitle)
             ->setContentType('text/html')
-            ->setFrom(array(vsql::$email_conf['sender_email']))
+//            ->setFrom(array(vsql::$email_conf['sender_email']))
+            ->setFrom(array($from => 'Test'))
             ->setTo(array($recipient))
             ->setBody(strip_tags($messageBody))
             ->addPart($messageBody, 'text/html');
