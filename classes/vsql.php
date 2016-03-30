@@ -19,7 +19,7 @@ class vsql
      */
     static $email_conf = array(
         "sender_email" => "",
-        "transport" => "gmail",
+        "transport" => "default",
         "smtp_host" => "173.194.71.108",
         "smtp_port" => 465,
         "smtp_encryption" => "ssl",

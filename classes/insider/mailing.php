@@ -5,11 +5,17 @@ require_once "swiftmailer/lib/swift_required.php";
 class insider_mailing extends insider_table
 {
     public $fields = array(
+        "from" => array("options" => array("mailing@pza.org.pl" => "mailing@pza.org.pl")),
         "members" => array("Kluby", "ref" => "members", "by" => "name"),
+        "member_profile"   =>  array("Profil klubu", "type" => "flags", "options" =>
+            array("J" => "Jaskiniowy",
+                "W" => "Wysokogórski",
+                "K" => "Kanioningowy",
+                "N" => "Narciarski",
+                "S" => "Sportowy")),
         "rights" => array("Uprawnienia", "ref" => "rights", "by" => "name"),
         "users" => array("Osoby", "ref" => "users", "by" => "ref"),
     );
-
 
     /*
      * Metoda pomocnicza dla route()
@@ -18,37 +24,27 @@ class insider_mailing extends insider_table
      */
     protected function get_users($ids, $type)
     {
-        $u = vsql::get($q = "SELECT group_concat(" . $type . ") as result " .
+        $u = vsql::retr($q = "SELECT u.ref, $type as result " .
             " FROM users AS u" .
-            " WHERE u.id in (" . implode(",", $ids) . ") and length(" . $type . ")>0" .
+            " WHERE u.id in (" . implode(",", $ids) . ")" .
             " AND u.deleted = 0", "");
 
-        if (strlen($u['result']) > 0) {
-            return explode(",", $u['result']);
-        }
-
-        return array();
+        return $u;
     }
 
     /*
      * Metoda pomocnicza dla route()
      * W zależności od wartości type (sms, phone) zwraca właściwy
-     * adres email lub nr. tel dla użytkowników należących do podanych klubów.
+     * adres email dla klubu
      */
     protected function get_members($ids, $type)
     {
-        $u = vsql::get($q = "SELECT group_concat(u." . $type . ") as result " .
+        $u = vsql::retr($q = "SELECT m.name as ref, m.$type as result " .
             " FROM members AS m " .
-            " LEFT JOIN memberships AS ms on ms.member=m.id" .
-            " LEFT JOIN users AS u on u.id=ms.user" .
-            " WHERE m.id in (" . implode(",", $ids) . ") and length(u." . $type . ")>0" .
-            " AND u.deleted = 0", "");
+            " WHERE m.id in (" . implode(",", $ids) . ")" .
+            " AND m.deleted = 0", "");
 
-        if (strlen($u['result']) > 0) {
-            return explode(",", $u['result']);
-        }
-
-        return array();
+        return $u;
     }
 
     /*
@@ -59,18 +55,28 @@ class insider_mailing extends insider_table
      */
     protected function get_rights($ids, $type)
     {
-        $u = vsql::get($q = "SELECT group_concat(u." . $type . ") as result " .
+        $u = vsql::retr($q = "SELECT u.ref, u.$type as result " .
             " FROM rights AS r " .
             " LEFT JOIN entitlements AS e on e.right=r.id" .
             " LEFT JOIN users AS u on u.id=e.user" .
-            " WHERE r.id in (" . implode(",", $ids) . ") and length(u." . $type . ")>0" .
+            " WHERE r.id in (" . implode(",", $ids) . ")" .
             " AND u.deleted = 0", "");
 
-        if (strlen($u['result']) > 0) {
-            return explode(",", $u['result']);
+        return $u;
+    }
+
+    protected function get_member_profile($ids, $type)
+    {
+        foreach ($ids as $k=>$v) {
+            $ids[$k] = "'" . $v . "'";
         }
 
-        return array();
+        $u = vsql::retr($q = "SELECT m.name as ref, m.$type as result " .
+            " FROM members AS m " .
+            " WHERE m.profile in (" . implode(",", $ids) . ")" .
+            " AND m.deleted = 0", "");
+
+        return $u;
     }
 
     /*
@@ -84,10 +90,14 @@ class insider_mailing extends insider_table
         }
 
         if (isset($_POST['type'])) {
-
-
+            $errors = array();
 
             $types = array('email', 'phone');
+
+            $from = $_REQUEST['from'];
+            if (!isset($this->fields['from']['options'][$from])) {
+                $from = reset($this->fields['from']['options']);
+            }
 
             $type = 'email';
             if (isset($types[$_REQUEST['type']])) {
@@ -95,24 +105,40 @@ class insider_mailing extends insider_table
             }
 
             $recipients = array();
-            foreach (array('users', 'rights', 'members') as $field) {
+            foreach (array('users', 'rights', 'members', 'member_profile') as $field) {
                 $extractor_name = 'get_' . $field;
 
                 if (!method_exists($this, $extractor_name) || !isset($_REQUEST[$field])) {
                     continue;
                 }
 
-//                $obj_list = explode(",", $_REQUEST[$field]);
+                $field_elements = $_REQUEST[$field];
+
                 $ids = array();
-                foreach ($_REQUEST[$field] as $item) {
-                    list($id, $ref) = array_map("trim", explode(":", $item, 2));
-                    if (ctype_digit($id)) {
-                        $ids[] = $id;
+                if (is_array($field_elements)) {
+                    foreach ($field_elements as $item) {
+                        list($id, $ref) = array_map("trim", explode(":", $item, 2));
+                        if (ctype_digit($id)) {
+                            $ids[] = $id;
+                        }
                     }
                 }
 
+                // TODO: fix
+                //member profile? solution for now....
+                if ($field == 'member_profile') {
+                    $ids = str_split($field_elements);
+                }
+
                 if (count($ids)) {
-                    $recipients = array_merge($recipients, $this->$extractor_name($ids, $type));
+                    $users = $this->$extractor_name($ids, $type);
+                    foreach ($users as $user) {
+                        if (strlen($user['result']) > 0 && filter_var($user['result'], FILTER_VALIDATE_EMAIL)) {
+                            $recipients[] = $user['result'];
+                        } else {
+                            $errors[] = "Nie można wysłać wiadomości do " . $user['ref'] . " (" . $user['result'] .")";
+                        }
+                    }
                 }
             }
 
@@ -121,8 +147,10 @@ class insider_mailing extends insider_table
 
             // Teraz możemy wyslać wiasomości.
             $sender_name = 'send_to_' . $type;
-            $errors = $this->$sender_name($recipients, $title, $message);
 
+            $errors = array_merge($errors, $this->$sender_name($recipients, $title, $message, $from));
+
+            $this->S->assign('fields', $this->fields);
             foreach (array('title', 'message', 'errors', 'recipients') as $item) {
                 $this->S->assign($item, $$item);
             }
@@ -136,9 +164,10 @@ class insider_mailing extends insider_table
     /*
      * Metoda wysyłająca smsy do listy osób.
      */
-    protected function send_to_phone($recipients, $title, $message)
+    protected function send_to_phone($recipients, $title, $message, $from = null)
     {
         foreach ($recipients as $recipient) {
+
             $this->send_sms($a = array(
                 'username' => 'pezeta',
                 'password' => vsql::$smsapi_pass,
@@ -154,11 +183,11 @@ class insider_mailing extends insider_table
     /*
      * Metoda wysyłająca emaile do listy osób.
      */
-    protected function send_to_email($recipients, $title, $message)
+    protected function send_to_email($recipients, $title, $message, $from)
     {
         $errors = array();
         foreach ($recipients as $recipient) {
-            $rval = $this->send_email($recipient, $title, $message);
+            $rval = $this->send_email($recipient, $title, $message, $from);
             if ($rval !== true) {
                 $errors[] = $rval;
             }
@@ -243,7 +272,6 @@ class insider_mailing extends insider_table
             " AND e.deleted = 0", "");
 
         if (isset($u['users'])) {
-            print_r($u);
             $data = $this->expandIdsToFormList($u['users'], 'users');
             $this->S->assign("data", $data);
         }
@@ -283,7 +311,7 @@ class insider_mailing extends insider_table
     /*
    * Metoda pomocnicza dla send_to_email - faktyczna wysyłka emaila
    */
-    protected function send_email($recipient, $messageTitle, $messageBody)
+    protected function send_email($recipient, $messageTitle, $messageBody, $from)
     {
         switch (vsql::$email_conf['transport']) {
             case 'smtp':
@@ -304,7 +332,8 @@ class insider_mailing extends insider_table
 
         $message = Swift_Message::newInstance($messageTitle)
             ->setContentType('text/html')
-            ->setFrom(array(vsql::$email_conf['sender_email']))
+//            ->setFrom(array(vsql::$email_conf['sender_email']))
+            ->setFrom(array($from => 'Test'))
             ->setTo(array($recipient))
             ->setBody(strip_tags($messageBody))
             ->addPart($messageBody, 'text/html');

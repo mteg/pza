@@ -9,10 +9,25 @@
     <form action="/insider/mailing" method="POST">
     <input type="hidden" name="id" value="{{$request.id|escape:'html'}}">
         <div class="table-form checkin-form">
-            {{include file="insider/field.html" i=[name => "Typ wiadomości", "type" => "select", "options" => array('email', 'sms')] k="type" nofit=1 size=15}}
+            {{include file="insider/field.html" i=[
+            name => "Od:",
+            "type" => "select",
+            "multiple" => 1,
+            "options" =>["mailing@pza.org.pl" => "mailing@pza.org.pl"]
+            ]
+            k="from" nofit=1 size=15}}
+
+            {{include file="insider/field.html" i=[name => "Typ wiadomości", "type" => "select", "options" => array('email')] k="type" nofit=1 size=15}}
 
             {{include file="insider/field.html" i=[name => "Wyślij do klubów:", "ref" => "members", "multiple" => 1] k="members" nofit=1 size=15}}
-            {{include file="insider/field.html" i=[name => "Adresaci z uprawnieniem:", "ref" => "rights", "multiple" => 1] k="rights" nofit=1 size=15}}
+            {{include file="insider/field.html" i=[
+                name => "Do klubów o profilu:",
+                "type" => "flags",
+                "multiple" => 1,
+                "options" =>["J" => "Jaskiniowy", "W" => "Wysokogórski", "K" => "Kanioningowy", "N" => "Narciarski", "S" => "Sportowy"]
+            ]
+            k="member_profile" nofit=1 size=15}}
+            {{include file="insider/field.html" i=[name => "Grupa adresatów:", "ref" => "rights", "multiple" => 1] k="rights" nofit=1 size=15}}
             {{include file="insider/field.html" i=[name => "Do osoby:", "ref" => "users", "multiple" => 1] k="users" nofit=1 size=15}}
 
             {{include file="insider/field.html" i=[name => "Tytuł wiadomości"] k="title" nofit=1 size=15}}

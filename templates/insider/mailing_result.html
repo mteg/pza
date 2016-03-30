@@ -4,13 +4,13 @@
 
 
     {{if count($errors) > 0}}
-        <h4>Wystąpiły błędy. Prześlij poniższą treść administratorowi:</h4>
+        <h4>Wystąpiły błędy:</h4><br/><br/>
         {{foreach from=$errors item=error}}
             {{$error}}<br />
         {{/foreach}}
 
     {{else}}
-        <h4>Brak błędów. Wiaomości zostały poprawnie wysłane do adresatów.</h4>
+        <h4>Brak błędów. Wiadomości zostały poprawnie wysłane do adresatów.</h4>
     {{/if}}
 
 {{/block}}
