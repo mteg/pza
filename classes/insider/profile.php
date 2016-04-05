@@ -73,13 +73,13 @@ class insider_profile extends insider_users
             " AND flags LIKE '%R%' AND user = " . vsql::quote($id), "due",
             "0000-00-00");
 
-        if($due < "9999-12-31")
+//        if($due < "9999-12-31")
         {
             /* Może zapisać się do innego klubu */
             $this->S->assign("member_list", insider_checkin::member_list());
 
             if(isset($_POST["member"]))
-                $this->do_transfer($due);
+                $this->do_transfer();
             else
                 $this->S->assign("data", array("member_from" => date("Y-m-d", time() - 86400)));
         }

@@ -130,6 +130,7 @@
                         die("ERR Brakujące prawa dostępu");
                 }
             }
+            if(!$data["flags"]) $data["flags"] = "R";
 
             parent::update($id, $data);
         }

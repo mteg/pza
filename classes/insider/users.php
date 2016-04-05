@@ -25,7 +25,7 @@
             "www" =>        array("Strona WWW", "suppress" => true, "pub" => "M", "no" => "add"),
             "about" =>      array("O sobie", "type" => "html", "no" => "view,hist,register,add", "pub" => "*"),
             "access" =>     array("Prawa dostępu", "type" => "area", "no" => "register,add", "suppress" => true),
-            "fav_categories" => array("Ulubione kategorie", "ref" => "categories", "by" => "path", "no" => "search,register,add", "multiple" => true, "empty" => true, "suppress" => true),
+//            "fav_categories" => array("Ulubione kategorie", "ref" => "categories", "by" => "path", "no" => "search,register,add", "multiple" => true, "empty" => true, "suppress" => true),
             "flags" =>      array("Profil", "type" => "flags", "no" => "register", "pub" => "B",
                     "options" => array(
                         "B" => "Publiczne imię, nazwisko, płeć, przynależność, data urodzenia",
@@ -154,7 +154,7 @@
 
         static function list_memberships($id, $extra_sql = "")
         {
-            $m = vsql::retr("SELECT m.starts, m.due, IF(m.due >= NOW() AND m.flags LIKE '%R%', 1, 0) AS status, o.short
+            $m = vsql::retr($qry = "SELECT m.starts, m.due, IF(m.due >= NOW() AND m.flags LIKE '%R%', 1, 0) AS status, o.short
                                 FROM memberships AS m
                                 JOIN members AS o ON o.id = m.member
                                 WHERE m.user = " . vsql::quote($id) . $extra_sql .
@@ -180,13 +180,13 @@
             if(access::has("view(users)"))
             {
                 $entls = array("med" => array(), "c" => array(), "ka" => array(), "other" => array());
-                foreach($this->list_entitlements($id) as $id => $e)
+                foreach($this->list_entitlements($id) as $entid => $e)
                 {
                     list($class, $junk) = explode(":", $e["short"], 2);
                     if(isset($entls[$class]))
-                        $entls[$class][$id] = $e;
+                        $entls[$class][$entid] = $e;
                     else
-                        $entls["other"][$id] = $e;
+                        $entls["other"][$entid] = $e;
                 }
 
                 $this->S->assign(array(

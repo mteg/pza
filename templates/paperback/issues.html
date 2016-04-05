@@ -13,7 +13,7 @@
 {{foreach from=$paperindex item=i}}
     <tr>
         <td>{{$i@iteration + $br->browser_params["offset"]}}.</td>
-        <td>{{if $i.pdf_thumbnail}}<a href="/{{$i.id}}"><img src="/{{$i.id}}.jpg" style="width: 125px;"/></a>{{/if}}</td>
+        <td>{{if $i.pdf_thumbnail}}<a href="/{{$i.id}}"><img src="/jpg.nowe/{{$i.id}}.thumb.jpg" style="width: 125px;"/></a>{{/if}}</td>
         <td><a href="/{{$i.id}}">{{$i.title|escape:'html'}}</a></td>
         <td>{{if $i.date == "0000-00-00"}}&nbsp;{{else}}{{$i.date|escape:'html'}}{{/if}}</td>
         <td>{{$i.authors|escape:'html'}}</td>

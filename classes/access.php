@@ -11,7 +11,7 @@ class access
     static function aliases()
     {
         return array(
-            " default " => " -default- ref(grounds) ref(members) ref(rights) search(grounds) ",
+            " default " => " -default- ref(grounds) ref(members) ref(rights) search(grounds) ref(grounds_view) search(grounds_view) ",
             " member " => " -member- ",
             " ro " => "-ro- ",
         );

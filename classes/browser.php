@@ -89,6 +89,9 @@ class browser extends insider_content
         /* Pobierz nazwę skryptu */
         $self = current(explode("?", $_SERVER["REQUEST_URI"], 2));
 
+        if(isset($_REQUEST["getto"]))
+            $self = $_REQUEST["getto"];
+
         /* Przygotuj linki poprzedni/następny */
         $date = urlencode($_REQUEST["date"]);
         $prev = ($page > 1 ?      ("{$self}?date={$date}&limit={$limit}&page=" . ($page - 1) . $this->extra_self()) : "javascript:void(0);");
