@@ -93,6 +93,7 @@ function init_controls(element) {
         dateFormat: "yy-mm-dd",
         changeMonth: true,
         changeYear: true,
+        yearRange: "1900:2030",
         constrainInput: false
     });
 
@@ -102,7 +103,10 @@ function init_controls(element) {
         src += "/complete?f=" + encodeURIComponent($(this).attr("name"));
         src += "&" +
             $(this).closest(".source-domain").children("input[name=params]").val();
+        $(this).autocomplete({source: src, minLength: 2});
 
+        if(0)
+        {
         // TODO: remove
         $(this).autocomplete({
             minLength: 2,
@@ -164,6 +168,7 @@ function init_controls(element) {
 
             }
         });
+        }
     });
 
     /* Checkbox-y z flagami */

@@ -24,10 +24,10 @@
       <div class="form-btns">
         <a href="/insider/checkin/register" class="btn">Zarejestruj się</a>
       </div>
-    </div>
+    </div> 
     <div class="register-panel">
-      <h2>Logowanie do portalu</h2>
-      <form action="http://press.pza.org.pl/wp-login.php" method="post">
+      <h2>Zarządzanie stroną WWW</h2>
+      <form action="http://pza.org.pl/wp-login.php" method="post">
         {{include file="insider/field.html" i=[name => "Nazwa użytkownika"] k="log" data=["login" => $request.login] nofit=1 size=15}}
         {{include file="insider/field.html" i=[name => "Hasło", "type" => "password"] k="pwd" nofit=1 size=15}}
         <input type="hidden" name="redirect_to" value="http://press.pza.org.pl/wp-admin/">

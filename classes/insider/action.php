@@ -93,8 +93,8 @@ abstract class insider_action
             "Wszystkie przejścia" => "/insider/achievements?type=nature:cave",
         ),
         "Wspinaczka sportowa" => array(
-/*            "Zawody PZA" => "/insider/grounds?type=comp:s:pza",
-            "Zawody inne" => "/insider/grounds?type=comp:s:other",*/
+            "Zawody PZA" => "/insider/grounds?type=comp:s:pza",
+            "Zawody inne" => "/insider/grounds?type=comp:s:other",
             "Badania lekarskie" => "/insider/entitlements?family=med:s|entmgr(med:s)",
             "Licencje" => "/insider/entitlements?family=l:s|entmgr(l:s)",
             "Kadra narodowa" => "/insider/entitlements?family=ka:kn:s#due=eoy|entmgr(ka:kn:s)",
@@ -102,8 +102,8 @@ abstract class insider_action
             "Trenerzy" => "/insider/entitlements?family=t:s|entmgr(t:s)",
             "Klasy sportowe" => "/insider/entitlements?family=c:s|entmgr(c:s)",
             "Konstruktorzy" => "/insider/entitlements?family=k:s|entmgr(k:s)",
-/*            "Badania lekarskie" => "/insider/entitlements?family=med:r#current=1|entmgr(med:r)",
-            "Moje wyniki" => "/insider/achievements?type=comp:s#user=self",*/
+/*            "Badania lekarskie" => "/insider/entitlements?family=med:r#current=1|entmgr(med:r)", */
+            "Moje wyniki" => "/insider/achievements?type=comp:s#user=self",
             // todo moje wyniki jedne i drugie
         ),
         "Narciarstwo wysokogórskie" => array(

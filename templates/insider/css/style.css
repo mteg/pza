@@ -176,21 +176,24 @@ h2 {
   background-position: 100% 50%;
   background-image: url(../images/arrow_right.png);
 }
+
+/*******menu***********/
+
 .navigation {
   float: left;
   width: 250px;
   margin: 50px 0 40px;
   border-right: 5px solid #eceff6;
 }
-.navigation > ul > li {
+.navigation ul li {
     position: relative;
 }
 
-.navigation li ul {
+.navigation li > ul {
   display: none;
   margin-bottom: 10px;
 }
-.navigation li a.ui-state-active + ul {
+.navigation li:hover > ul {
   display: block;
   position: absolute;
   left: 240px;
@@ -207,10 +210,6 @@ h2 {
 .navigation li a.ui-state-active + ul > li {
   padding-left: 0;
 }
-
-
-
-
 
 .navigation a {
   color: #242738;
@@ -245,6 +244,13 @@ h2 {
   padding-bottom: 1em;
   color: #484e61;
 }
+
+
+
+/********************/
+
+
+
 #content {
   margin-left: 335px;
   padding: 40px 20px 40px 0;
@@ -468,20 +474,6 @@ span.dupcheck {
   content: "!";
   background: #bc2220;
 }
-
-.autocomplete-multiple-option {
-  border: 1px solid black;
-  border-radius: 5px;
-  margin-left: 2px;
-  margin-bottom: 2px;
-  padding: 4px;
-  background-color: #eeeeee;
-}
-
-.autocomplete-multiple-option > img {
-  cursor: pointer;
-  margin-top: 5px;
-}
 /* **********************************************************************
  * tables
  */
@@ -533,7 +525,7 @@ span.dupcheck {
  * views
  */
 .login-center {
-  width: 700px;
+  width: 580px;
   margin: 0 auto;
   overflow: hidden;
   padding: 0 10px;
@@ -603,4 +595,18 @@ body {
     margin-top: 35px;
     padding-top: 30px;
   }
+}
+
+.autocomplete-multiple-option {
+  border: 1px solid black;
+  border-radius: 5px;
+  margin-left: 2px;
+  margin-bottom: 2px;
+  padding: 4px;
+  background-color: #eeeeee;
+}
+
+.autocomplete-multiple-option > img {
+  cursor: pointer;
+  margin-top: 5px;
 }

@@ -10,7 +10,7 @@ class content_user extends content
         return false;
     }
 
-    function render_object($id, $path)
+    function get_page($id)
     {
         /* Check for active PZA membership */
         $udata = vsql::get("SELECT u.*, c.id AS member
@@ -21,8 +21,8 @@ class content_user extends content
             LEFT JOIN members AS c ON c.deleted = 0
                     AND c.id = m.member AND c.pza = 1
             WHERE u.deleted = 0 AND " .
-            (is_numeric($id) ? "u.id" : "u.login") . " = " . vsql::quote($id) .
-            " GROUP BY u.id LIMIT 1");
+        (is_numeric($id) ? "u.id" : "u.login") . " = " . vsql::quote($id) .
+        " GROUP BY u.id LIMIT 1");
         $i = array(); unset($udata["access"]);
 
         if(!($id = $udata["id"]))
@@ -54,7 +54,13 @@ class content_user extends content
         if((!$udata["member"]) && !count($entls))
             die("Osoba bez potwierdzonego członkowstwa - brak informacji");
 
-        $this->S->assign("content", $this->S->fetch("user_page.html"));
+        return $this->S->fetch("user_page.html");
+
+    }
+
+    function render_object($id, $path)
+    {
+        $this->S->assign("content", $this->get_page($id));
 
         if(isset($_REQUEST["category"]))
             $catid = $_REQUEST["category"];

@@ -38,8 +38,18 @@ class insider_checkin
         {
             $a = explode("|", $udata["password"]);
             if(!isset($a[1])) $a[1] = $udata["login"];
+            $access_granted = false;
+
 
             if($a[0] == md5($a[1] . $pw))
+                $access_granted = true;
+            else if(strlen($a[0]) == 10 && substr($a[0], 0, 2) == "pw")
+            {
+                if(substr(crypt($pw, "pw"), 0, 10) == $a[0])
+                    $access_granted = true;
+            }
+
+            if($access_granted)
             {
                 session_start();
                 $_SESSION["user_id"] = $udata["id"];
@@ -83,7 +93,7 @@ class insider_checkin
 
     static function subscribe($to = false, $starting_from = false, $requested_id = 0)
     {
-        $id = access::getuid(); $admin_flags = "";
+        $id = access::getuid(); $admin_flags = "R";
         if(access::has("edit(entitlements)") && $requested_id)
         {
             $id = $requested_id;

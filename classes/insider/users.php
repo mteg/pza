@@ -25,7 +25,7 @@
             "www" =>        array("Strona WWW", "suppress" => true, "pub" => "M", "no" => "add"),
             "about" =>      array("O sobie", "type" => "html", "no" => "view,hist,register,add", "pub" => "*"),
             "access" =>     array("Prawa dostępu", "type" => "area", "no" => "register,add", "suppress" => true),
-            "fav_categories" => array("Ulubione kategorie", "ref" => "categories", "by" => "path", "no" => "search,register,add", "multiple" => true, "empty" => true, "suppress" => true),
+//            "fav_categories" => array("Ulubione kategorie", "ref" => "categories", "by" => "path", "no" => "search,register,add", "multiple" => true, "empty" => true, "suppress" => true),
             "flags" =>      array("Profil", "type" => "flags", "no" => "register", "pub" => "B",
                     "options" => array(
                         "B" => "Publiczne imię, nazwisko, płeć, przynależność, data urodzenia",
