@@ -83,6 +83,8 @@ abstract class insider_action
             "Kadra narodowa - archiwum" => "/insider/entitlements?family=ka:kn&open=1|entmgr(ka:kn)",
             "Badania lekarskie - aktualne" => "/insider/entitlements?family=med&open=1#due=eoy|entmgr(med)",
             "Badania lekarskie - wszystkie" => "/insider/entitlements?family=med&open=1|entmgr(med)",
+            "Zgody - bieżące" => "/insider/entitlements?family=d:pza#due=eoy|entmgr(d:pza)",
+            "Zgody - archiwum" => "/insider/entitlements?family=d:pza|entmgr(d:pza)",
         ),
         "Alpinizm jaskiniowy" => array(
             "Instruktorzy" => "/insider/entitlements?family=i:j|entmgr(i:j)",

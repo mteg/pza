@@ -9,7 +9,7 @@
         static public $_fields = array(
             "surname" =>    array("Nazwisko", "regexp" => ".+", "pub" => "B"),
             "name" =>       array("Imię", "pub" => "B"),
-            "login" =>      array("Login", "regexp" => "[a-z][a-z0-9_.]+", "suppress" => true, "empty" => true, "no" => "add", "pub" => "*"),
+            "login" =>      array("Login", "regexp" => "[a-z][a-z0-9_.@]+", "suppress" => true, "empty" => true, "no" => "add", "pub" => "*"),
             "birthdate" =>  array("Data urodzenia", "type" => "date", "suppress" => true, "empty" => true),
             "deathdate" =>  array("Data śmierci", "type" => "date", "suppress" => true, "empty" => true, "no" => "register,add"),
             "phone" =>      array("Numer telefonu", "suppress" => true, "pub" => "T"),
@@ -174,24 +174,28 @@
             return $m;
         }
 
+        static function list_entitlements_groups($id)
+        {
+            $entls = array("med" => array(), "c" => array(), "ka" => array(), "d" => array(), "other" => array());
+            foreach(static::list_entitlements($id) as $entid => $e)
+            {
+                list($class, $junk) = explode(":", $e["short"], 2);
+                if(isset($entls[$class]))
+                    $entls[$class][] = $e;
+                else
+                    $entls["other"][] = $e;
+            }
+            return $entls;
+        }
+
         function view()
         {
             $id = $_REQUEST["id"];
             if(access::has("view(users)"))
             {
-                $entls = array("med" => array(), "c" => array(), "ka" => array(), "other" => array());
-                foreach($this->list_entitlements($id) as $entid => $e)
-                {
-                    list($class, $junk) = explode(":", $e["short"], 2);
-                    if(isset($entls[$class]))
-                        $entls[$class][$entid] = $e;
-                    else
-                        $entls["other"][$entid] = $e;
-                }
-
                 $this->S->assign(array(
                     "memberships" => $this->list_memberships($id),
-                    "entitlements" => $entls,
+                    "entitlements" => $this->list_entitlements_groups($id),
                 ));
             }
             else

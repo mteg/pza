@@ -107,12 +107,14 @@
 
                 list($root, $junk) = explode(":", $family . ":", 2);
                 $this->root = $root;
-                if(in_array($root, explode(",", "c,ka,med")))
+                if(in_array($root, explode(",", "c,ka,med,d")))
                     unset($this->fields["number"]);
                 if($root == "med")
                     $this->fields["starts"] = "Data badania";
                 else if($root == "ka")
                     $this->fields["starts"] = "Data powołania";
+                else if($root == "d")
+                    $this->fields["starts"] = "Data oświadczenia";
 
 
                 unset($this->actions["<classpath>/delete"]);
@@ -171,7 +173,7 @@
             $data = array();
 //            $data["right"] = vsql::get("SELECT `right` FROM entitlements WHERE deleted = 0 ORDER BY creat DESC LIMIT 1", "right", 0);
             $root = $this->root;
-            if($root == "med" || $root == "ka")
+            if($root == "med" || $root == "ka" || $root == "d")
                 $data["due"] = date("Y-12-31");
             else
                 $data["due"] = "9999-12-31";

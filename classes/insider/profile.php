@@ -89,7 +89,7 @@ class insider_profile extends insider_users
 
     function entitlements()
     {
-        $this->S->assign("entitlements", $this->list_entitlements(access::getuid()));
+        $this->S->assign("entitlements", $this->list_entitlements_groups(access::getuid()));
         $this->w("profile_entitlements.html");
     }
 }
