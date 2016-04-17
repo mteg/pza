@@ -22,6 +22,23 @@ switch($op)
         echo $o->category_index(336);
         break;
 
+    case "events":
+        vsql::$conf["db"] = "pza_test";
+        $type = $_REQUEST["type"]; $year = $_REQUEST["year"];
+        $types = array(); if(!$year) $year = date("Y");
+        foreach(explode("|", $type) as $mask)
+        {
+            if(!($mask = trim($mask))) continue;
+            $types[] = "g.type LIKE " . vsql::quote(strtr($mask, array("*" => "%")));
+        }
+        if(count($types))
+            $evts = vsql::retr($qry = "SELECT id, options AS link, name, start, finish, city, address, IF(reguntil >= DATE(NOW()), 1, 0) AS open
+                        FROM grounds AS g WHERE g.deleted = 0 AND (" . implode(" OR ", $types) . ")
+                        AND YEAR(g.start) = " . vsql::quote($year) . " ORDER BY start, name LIMIT 100");
+        $S->assign("events", $evts);
+        if($_REQUEST["debug"]) echo $qry;
+        $S->display("api/cal.html");
+        break;
 
     case "officials":
     default:

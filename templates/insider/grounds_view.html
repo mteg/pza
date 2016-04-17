@@ -1,8 +1,12 @@
 {{extends "insider/table_view.html"}}
 {{block name="dialog" append}}
-<h3>{{$ach_title}}</h3>
+
+
+
+{{function name="perslist"}}
+<h3>{{$title}}</h3>
 <table class="plain">
-    {{include file="insider/table_table.html" this=$o results=$achievements embedded=1}}
+    {{include file="insider/table_table.html" this=$o results=$results embedded=1}}
     {{if $o->count > 15}}
     <tr>
         <td>&nbsp;</td>
@@ -13,8 +17,16 @@
     {{/if}}
 </table>
 {{if $o->count}}
-<a href="/insider/achievements?ground={{$data.id}}">
+<a href="{{$link}}ground={{$data.id}}">
     <small>&raquo; Pełne opcje</small>
 </a>
+{{/if}}
+{{/function}}
+
+{{if $ach_title}}
+{{perslist title=$ach_title results=$achievements link="/insider/achievements?lrole=nf&" o=$o}}
+{{/if}}
+{{if $officials}}
+{{perslist title="Osoby oficjalne" results=$officials link="/insider/achievements?lrole=f&" o=$o_of}}
 {{/if}}
 {{/block}}

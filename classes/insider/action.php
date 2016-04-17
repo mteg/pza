@@ -28,6 +28,7 @@ abstract class insider_action
      */
     public $_menu = array(
         "Wyloguj" => "/insider/checkout",
+        "www.pza.org.pl" => "http://pza.org.pl/",
         "Moje konto" => array(
             "Moje dane" => "/insider/profile",
             "Moje zdjęcie" => "/insider/photo",
@@ -106,6 +107,10 @@ abstract class insider_action
             "Konstruktorzy" => "/insider/entitlements?family=k:s|entmgr(k:s)",
 /*            "Badania lekarskie" => "/insider/entitlements?family=med:r#current=1|entmgr(med:r)", */
             "Moje wyniki" => "/insider/achievements?type=comp:s#user=self",
+            "Kategorie rywalizacji" => "/insider/grounds?type=cat:s|gndmgr(cat:s)",
+            "Rankingi PZA" => "/insider/grounds?type=rank:s|gndmgr(rank:s)",
+            "Szkolenia" => "/insider/grounds?type=course:s|gndmgr(course:s)",
+            "Zgrupowania" => "/insider/grounds?type=event:s|gndmgr(event:s)",
             // todo moje wyniki jedne i drugie
         ),
         "Narciarstwo wysokogórskie" => array(
@@ -136,6 +141,8 @@ abstract class insider_action
     public $source = "", $params = "";
 
     public $username;
+
+    public $title = "", $subtitle = "";
 
     /**
      * Przefiltruj rekursywnie tablicę z menu, pozostawiając tylko pozycje,

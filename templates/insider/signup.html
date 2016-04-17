@@ -1,0 +1,40 @@
+{{extends "insider/action.html"}}
+{{block name="content"}}
+<h2>Zapis na imprezę</h2>
+<h3>{{$gi.name|escape:'html'}}</h3>
+{{if $success}}
+<p>
+    Zapis przebiegł prawidłowo! Numer zgłoszenia: {{$success}}.
+</p>
+{{else}}
+{{if $err}}
+<div class="error">
+    {{$err}}
+</div>
+{{else}}
+<form action="/insider/signup" method="POST">
+<input type="hidden" name="confirmed" value=1>
+<input type="hidden" name="id" value="{{$request.id|escape:'html'}}">
+<div class="table-form checkin-form">
+    {{if $cats}}
+    {{include file="insider/field.html" i=[name => "Kategoria", "type" => "select", "options" => $cats] k="categ"}}
+    {{/if}}
+    {{if $gi.remarks}}
+    <div>
+        {{$gi.remarks}}
+    </div>
+    {{/if}}
+    <div>
+        <input type="checkbox" name="consent" value=1>
+        Wyrażam zgodę na udostępnienie moich danych osobowych, zgromadzonych w bazie PZA
+        organizatorowi imprezy oraz upublicznienie mojego
+        imienia, nazwiska i daty urodzenia w serwisie WWW pza.org.pl.
+    </div>
+    <div>
+        <input type="submit" value="Zapisz się">
+    </div>
+</div>
+</form>
+{{/if}}
+{{/if}}
+{{/block}}

@@ -10,11 +10,13 @@
                                "comp:tj:other" =>  "Zawody inne (alpinizm jaskiniowy)",
                                "comp:nw:pza" =>  "Zawody PZA (skialpinizm)",
                                "comp:nw:other" =>  "Zawody inne (skialpinizm)",
-                               "event:s" =>  "Szkolenia i unifikacje",
+                               "event:s" =>  "Zgrupowania (wspinaczka sportowa)",
+                               "course:s" => "Kursy (wspinaczka sportowa)",
                                "nature:climb" => "Droga wspinaczkowa",
                                "nature:cave" => "Jaskinia",
                                "exp:h" => "Wyprawa himalajska",
                                "exp:cave" => "Wyprawa jaskiniowa",
+                               "cat:s" => "Kategoria rywalizacji (wspinaczka sportowa)",
                                "rank:s" => "Ranking (wspinaczka sportowa)",
                                "rank:nw" => "Ranking (narciarstwo wysokogórskie)",
                         )),
@@ -22,13 +24,16 @@
             "country" =>    array("Kraj", "type" => "list", "regexp" => ".+", "suppress" => true),
             "region" =>     array("Rejon", "consistency" => true, "suppress" => true),
             "city" =>       array("Miasto", "consistency" => true, "suppress" => true),
+            "address" =>       array("Adres", "suppress" => true),
             "massif" =>       array("Masyw", "consistency" => true, "suppress" => true),
             "summit" =>       array("Wierzchołek", "consistency" => true, "suppress" => true),
             "difficulty" =>   array("Trudność", "consistency" => true, "suppress" => true),
+            "reguntil" =>     array("Zapisy do", "type" => "date", "suppress" => true, "comment" => "Zapisy na imprezę będą możliwe do wskazanej daty włacznie"),
             "start" =>        array("Data rozpoczęcia", "type" => "date", "suppress" => true),
             "finish" =>       array("Data zakończenia", "type" => "date", "suppress" => true, "empty" => true),
-            "categories" =>   array("Kategorie", "type" => "area", "suppress" => true),
+            "categories" => array("Kategorie", "ref" => "grounds_view", "by" => "groundref", "multiple" => true),
             "remarks" =>      array("Uwagi", "type" => "area", "suppress" => true),
+            "options" =>    array("Opcje", "suppress" => true),
             "lat"   =>      array("Szerokość geograficzna", "suppress" => true),
             "lon"   =>      array("Długość geograficzna", "suppress" => true),
         );
@@ -72,8 +77,9 @@
 
                 switch($family)
                 {
+                    case "course":
                     case "event":
-                        $this->fields["categories"][0] = "Typy wpisów";
+                        $this->remove_fields("categories");
 
                     case "comp":
                         $this->fields["name"][0] = "Nazwa imprezy";
@@ -83,7 +89,8 @@
                         $this->fields["region"]["options"] = placelist::get("regions");
                         $this->remove_fields("creat,massif,summit,difficulty");
 
-                        $ach_caption = ($family == "event" ? "" : "Wyniki");
+                        $ach_caption = ($family != "comp" ? "" : "Wyniki");
+                        $this->fields["options"][0] = "Link do informacji";
                         break;
 
                     case "nature":
@@ -94,7 +101,7 @@
                         $ach_caption = "Przejścia" . $suffix;
 
                         $this->fields["name"][0] = "Nazwa" . $suffix;
-                        $this->remove_fields("city,start,finish,categories");
+                        $this->remove_fields("city,start,finish,categories,reguntil,address");
                         $this->order = "creat DESC";
 
 
@@ -105,12 +112,33 @@
 
                     case "exp":
                         $this->fields["name"][0] = "Nazwa wyprawy";
-                        $this->remove_fields("creat,city,summit,difficulty,categories");
+                        $this->remove_fields("creat,city,summit,difficulty,categories,reguntil");
                         $ach_caption = "Uczestnicy wyprawy";
                         break;
 
                     case "rank":
+                        $ach_caption = "Lista rankingowa";
+                        $this->fields["name"][0] = "Nazwa rankingu";
+                        $this->fields["options"][0] = "Algorytm rankingu";
+                        $this->fields["start"][0] = "Data aktualizacji";
+                        $this->fields["finish"][0] = "Data obowiązywania";
+                        $this->fields["finish"]["comment"] = "Jeśli uzupełniona jest data obowiązywania, ranking ma charakter historyczny";
+                        $this->remove_fields("city,country,region,summit,difficulty,massif,lat,lon,reguntil,address");
                         break;
+
+                    case "cat":
+                        $ach_caption = "";
+                        $this->fields["name"][0] = "Nazwa kategorii";
+                        $this->fields["start"][0] = "Aktywna od";
+                        $this->fields["finish"][0] = "Aktywna do";
+
+                        $this->fields["options"][0] = "Kwalifikacja zawodników";
+                        $this->fields["options"]["type"] = "area";
+                        $this->fields["options"]["comment"] = "Wpisać linia po linii: 'najstarszy rocznik|najmłodszy rocznik|płeć' lub 'najmłodszy wiek|najstarszy wiek|płeć' lub 'najwcześniejsza data urodzenia|najpóźniejsza data urodzenia|płeć' np. 1999|2001|K, 14|16|M, 1986-01-01|1989-12-31|K";
+
+                        $this->remove_fields("city,country,region,summit,difficulty,massif,lat,lon,categories,reguntil,address");
+                        break;
+
                 }
             }
 
@@ -121,12 +149,14 @@
             if($family == "nature")
                 $this->actions["/insider/grounds/attain"] = array("name" => "Dodaj przejście");
 
-            if(fnmatch("comp:*:pza", $type) || $family == "event")
+            if(fnmatch("comp:*:pza", $type) || $family == "event" || $family == "course")
             {
                 $this->actions["/insider/grounds/competitors"] =
                     array("name" => ($family == "comp" ? "Lista startowa" : "Lista uczestników"), "target" => "_self");
-                $this->actions["/insider/grounds/attain"] =
-                    array("name" => ($family == "comp" ? "Zapis na zawody" : "Zapis"));
+                $this->actions["/insider/grounds/officials"] =
+                    array("name" => ($family == "comp" ? "Osoby oficjalne" : "Kadra"), "target" => "_self");
+                $this->actions["/insider/signup"] =
+                    array("name" => "Zapisz się", "target" => "_self");
             }
 
             if(fnmatch("comp:*:other", $type))
@@ -147,13 +177,30 @@
                       " AND deleted = 0 ORDER BY id DESC LIMIT 1"))
                     return $i;
 
+            if(fnmatch("rank:*", $type = $_REQUEST["type"]))
+                return array("start" => date("Y-m-d"));
+
             return array();
         }
 
         protected function update($id, $data)
         {
+            $new_id = parent::update($id, $data);
+            if(!$new_id) return $new_id;
+            if($type = vsql::get("SELECT type FROM grounds WHERE deleted = 0 AND id = " . vsql::quote($new_id), "type"))
+                if(fnmatch("rank:*", $type))
+                {
+                    @list($rankalg, $rankopts) = explode("|", $data["options"], 2);
+                    if(preg_match('/^[a-z0-9A-Z_-]+$/', $rankalg))
+                        if(file_exists("classes/ranks/" . $rankalg . ".php"))
+                        {
+                            $classname = "ranks_" . $rankalg;
+                            $r = new $classname($rankopts);
+                            $r->update($new_id);
+                        }
+                }
 
-            parent::update($id, $data);
+            return $new_id;
         }
 
         protected function retr_query($filters)
@@ -177,19 +224,25 @@
 
         public function achievements()
         {
-            header("Location: /insider/achievements?ground=" . $_REQUEST["id"]);
+            header("Location: /insider/achievements?lrole=nf&ground=" . $_REQUEST["id"]);
             exit;
         }
 
         public function competitors()
         {
-            header("Location: /insider/achievements?list=1&ground=" . $_REQUEST["id"]);
+            header("Location: /insider/achievements?list=1&lrole=nf&ground=" . $_REQUEST["id"]);
+            exit;
+        }
+
+        public function officials()
+        {
+            header("Location: /insider/achievements?lrole=f&ground=" . $_REQUEST["id"]);
             exit;
         }
 
         public function attain()
         {
-            header("Location: /insider/achievements/add?ground=" . $_REQUEST["id"]);
+            header("Location: /insider/achievements/add?lrole=nf&ground=" . $_REQUEST["id"]);
             exit;
         }
 
@@ -241,6 +294,10 @@
                     $data["finish"] = $data["start"];
             }
 
+            if(fnmatch("rank:*", $data["type"]))
+                if(!$data["start"])
+                    $data["start"] = date("Y-m-d");
+
             if($id)
                 unset($data["type"]);
 
@@ -284,25 +341,54 @@
         {
             $id = $_REQUEST["ground"] = $_REQUEST["id"];
 
+            $_REQUEST["lrole"] = "nf";
             $o = new insider_achievements;
             $r = $o->retr(0, 15);
+
+            $_REQUEST["lrole"] = "f";
+            $o_of = new insider_achievements;
+            $r_of = $o_of->retr(0, 15);
 
             $gt = vsql::get("SELECT type FROM grounds WHERE id = " . vsql::quote($id), "type");
             $at = "Wpisy";
 
-            if(fnmatch("comp:*", $gt) || fnmatch("rank:*", $gt))
+            if(fnmatch("comp:*", $gt))
                 $at = "Zawodnicy";
             else if(fnmatch("nature:*", $gt))
                 $at = "Przejścia";
             else if(fnmatch("exp:*", $gt) || fnmatch("event:*", $gt))
                 $at = "Uczestnicy";
+            else if(fnmatch("rank:*", $gt))
+                $at = "Lista rankingowa";
+            else if(fnmatch("cat:*", $gt))
+                $at = "";
+
+
 
             $this->S->assign("ach_title", $at);
             $this->S->assign("o", $o);
+            $this->S->assign("o_of", $o_of);
             $this->S->assign("achievements", $r);
+            if(count($r_of))
+                $this->S->assign("officials", $r_of);
 
 
             parent::view();
+        }
 
+        protected function complete_constraints($f)
+        {
+            if($f == "categories")
+            {
+                if($type = $_REQUEST["type"])
+                {
+                    @list($family, $comp, $junk) = explode(":", $type, 3);
+                    return " AND type = " . vsql::quote("cat:" . $comp);
+                }
+
+                return "";
+            }
+
+           return "";
         }
     }

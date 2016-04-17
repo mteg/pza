@@ -6,6 +6,12 @@
 {{/block}}
 
 {{block name="content"}}
+  {{if $this->title}}
+  <h2>{{$this->title}}</h2>
+        {{if $this->subtitle}}
+        <p>{{$this->subtitle}}</p>
+        {{/if}}
+  {{/if}}
   <div class="table-container source-domain">
     {{include file="insider/table_menu.html"}}
     
