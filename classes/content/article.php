@@ -1,7 +1,7 @@
 <?
 class content_article extends content
 {
-    function render_object($id, $path)
+    function render_object($id, $path, $redir = false)
     {
         $d = vsql::get("SELECT a.id, a.content, a.type, a.lead, a.title, cat.id AS category_id, cat.path
                         FROM content AS a
@@ -25,6 +25,8 @@ class content_article extends content
 
         /* Wyświetl co trzeba */
         header("Content-type: text/html; charset=utf-8");
+        if($redir)
+            header("Location: http://pza.org.pl");
 
         if(preg_match('/^\s*\{\{extends /', $d["content"]))
             echo $text;
@@ -44,7 +46,7 @@ class content_article extends content
                         WHERE cat.id = " . vsql::quote($id) . " ORDER BY a.id DESC LIMIT 1");
             $id = $v["parent"])
                 if($v["id"])
-                    return $this->render_object($v["id"], $path);
+                    return $this->render_object($v["id"], $path, true);
 
         fail(404, "Nie odnaleziono indeksu kategorii {$cat_id}");
         return true;
