@@ -39,7 +39,7 @@
         public $columns = array("surname", "name", "org" => array("Aktualny klub", "order" => "org"));
         public $filters = array(
             "org" => array("Aktualny klub", "search" => "o.short"),
-            "surname", "name", "town", "country", "district", "birthdate", "flags");
+            "surname", "name", "phone", "town", "country", "district", "birthdate", "flags");
         protected $order = "surname, name";
         protected $capt = "<ref>";
 
