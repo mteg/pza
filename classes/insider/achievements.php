@@ -27,10 +27,20 @@
             "creat" =>   array("Data wpisu", "no" => "add,edit"),
             "ground" =>  array("Szranka", "ref" => "grounds_view", "by" => "groundref", "search" => "g.name", "order" => "g.name"),
             "user" =>    array("Osoba", "ref" => "users", "by" => "ref"),
+            "role" =>    array("Rola", "type" => "select", "options" =>
+                    array(0 => "",
+                          1 => "Uczestnik",
+                          100 => "Sędzia główny",
+                          101 => "Sędzia",
+                          110 => "Konstruktor główny",
+                          120 => "Delegat PZA",
+                          130 => "Trener główny",
+                          131 => "Trener"), "search" => "role.name",
+                "suppress" => true),
             "date" =>    array("Data", "type" => "date", "suppress" => true),
             "position" =>array("Miejsce", "regexp" => "[0-9]+", "empty" => true, "order" => "IF(CAST(t.position AS signed) = 0, 1, 0) <dir>, CAST(t.position AS signed) <dir>, t.position"),
             "points" =>  array("Punkty", "regexp" => "[0-9]+([,.][0-9]*)?", "suppress" => true, "empty" => true),
-            "categ" =>   array("Kategoria", "consistency" => true, "suppress" => true),
+            "categ" =>   array("Kategoria", "ref" => "grounds_view", "by" => "groundref", "search" => "cat.name", "order" => "cat.name"),
             "style" =>   array("Styl", "consistency" => true, "suppress" => true),
             "partners" =>array("Partnerzy", "empty" => true, "multiple" => true,
                                 "suppress" => true,
@@ -115,9 +125,14 @@
                  - konkretna szranka
             */
 
+            $ginfo = array();
             if(is_numeric($ground = $_REQUEST["ground"]))
             {
-                $type = vsql::get("SELECT type FROM grounds WHERE deleted = 0 AND id = " . vsql::quote($ground), "type", "");
+                $ginfo = vsql::get("SELECT type, start, name, categories FROM grounds WHERE deleted = 0 AND id = " . vsql::quote($ground));
+                if($ginfo)
+                    $type = $ginfo["type"];
+                else
+                    $type = "";
                 $this->columns = array();
             }
             else
@@ -142,18 +157,33 @@
             switch($family)
             {
                 case "event":
+                case "course":
                     foreach(array("K", "N", "C") as $f)
                         unset($this->fields["flags"]["options"][$f]);
-                    $this->remove_fields("place,points,position,duration,style,date,partners");
-                    $ground_name = "Wydarzenie";
-                    $this->fields["categ"][0] = "Typ wpisu";
+                    $this->remove_fields("place,points,position,duration,style,date,partners,categ");
+                    $ground_name = $family == "course" ? "Szkolenie" : "Zgrupowanie";
                     $this->order = "surname, name";
                     $this->add_columns("creat");
+                    break;
+
+                case "rank":
+                    if(isset($ginfo["name"]))
+                    {
+                        $this->title = "Ranking: " . htmlspecialchars($ginfo["name"]);
+                        $this->subtitle = "Aktualizacja z dn. " . $ginfo["start"];
+                    }
+                    else
+                        $this->add_columns("date");
+
+                    $this->add_columns("position,points");
                     break;
 
                 case "comp":
                     foreach(array("K", "N") as $f)
                         unset($this->fields["flags"]["options"][$f]);
+
+                    if(isset($ginfo["name"]))
+                        $this->title = "Zawody: " . htmlspecialchars($ginfo["name"]);
 
                     $this->remove_fields("place");
 
@@ -162,6 +192,7 @@
                         $this->remove_fields("points,position,duration,style,date");
                         $this->order = "categ, surname, name";
                         $this->buttons["<classpath>/results"] = array("Wyniki", "target" => "_self", "icon" => "signal");
+                        $this->subtitle = "Lista startowa";
                     }
                     else
                     {
@@ -172,12 +203,39 @@
                             $this->buttons["<classpath>/import"] =
                                 array("Import wyników", "target" => "_blank",
                                     "icon" => "arrow-1-s");
+                        $this->subtitle = "Wyniki";
                     }
                     $this->add_columns("categ");
                     $ground_name = "Impreza";
 
                     $this->fields["partners"]["ref"] = "users";
                     $this->fields["partners"]["by"] = "ref";
+
+                    if($categs = $ginfo["categories"])
+                    {
+                        $cat_list = vsql::retr("SELECT id, name FROM grounds WHERE deleted = 0 AND " . vsql::id_condition($categs, "id"), "id", "name");
+                        $this->fields["categ"]["type"] = "select";
+                        $this->fields["categ"]["options"] = $cat_list;
+                        unset($this->fields["categ"]["ref"]);
+                    }
+
+                    if($role = $_REQUEST["lrole"])
+                    {
+                        if($role == "nf")
+                        {
+                            unset($this->fields["role"]);
+                            $this->buttons["<classpath>/officials"] = array("Osoby oficjalne", "target" => "_self", "icon" => "signal");
+                        }
+                        else if($role == "f")
+                        {
+                            foreach($this->fields['role']['options'] as $rid => $rname)
+                                if($rid <= 100) unset($this->fields['role']['options'][$rid]);
+                            $this->remove_fields("partners,categ,flags");
+                            $this->remove_fields("points,position,duration,style,date");
+                            $this->add_columns("role");
+                            $this->subtitle = "Osoby oficjalne";
+                        }
+                    }
 
                     break;
 
@@ -188,6 +246,7 @@
 
                     if($fine == "cave")
                     {
+                        $this->title = "Przejścia jaskiniowe";
                         $this->fields["style"][0] = "Charakter przejścia";
                         $this->fields["style"]["type"] = "list";
                         $this->fields["style"]["multiple"] = ",";
@@ -202,6 +261,7 @@
                     }
                     else
                     {
+                        $this->title = "Przejścia wspinaczkowe";
                         foreach(array("K", "N") as $f)
                             unset($this->fields["flags"]["options"][$f]);
 
@@ -251,11 +311,13 @@
         protected function retr_query($filters)
         {
             $query = "SELECT SQL_CALC_FOUND_ROWS t.id, t.creat, g.name AS ground, u.surname AS surname, u.name AS name,
-                             t.position, t.points, t.categ, t.duration, t.date, " .
+                             t.position, t.points, cat.name AS categ, t.duration, t.date, role.name AS role, " .
                             ($this->has_signup_restrictions() ? "m.name AS member," : "") .
                             "IF(g.type = 'nature:cave', REPLACE(t.style, ',', '\n'), t.style) AS style
                              FROM achievements AS t
                              LEFT JOIN grounds AS g ON g.id = t.ground AND g.deleted = 0
+                             LEFT JOIN grounds AS cat ON cat.id = t.categ AND t.deleted = 0
+                             LEFT JOIN ground_roles AS role ON role.id = t.role
                              JOIN users AS u ON u.id = t.user AND u.deleted = 0" .
                             ($this->has_signup_restrictions() ?
                                 (" LEFT JOIN memberships AS me ON me.user = u.id AND u.deleted = 0 AND me.starts <= NOW() AND me.due >= NOW() " .
@@ -268,6 +330,14 @@
 
             if($type = $_REQUEST["type"])
                 $query .= " AND g.type = " . vsql::quote($type);
+
+            if($role = $_REQUEST["lrole"])
+            {
+                if($role == "nf")
+                    $query .= " AND t.role < 100";
+                else if($role == "f")
+                    $query .= " AND t.role >= 100";
+            }
 
             $user = $_REQUEST["user"];
 
@@ -320,6 +390,15 @@
                 if(is_numeric($ground = $_REQUEST["ground"]))
                     return " AND ground = " . vsql::quote($ground);
 
+            if($f == "categ")
+            {
+                if($ground = $_REQUEST["ground"])
+                    if($categs = vsql::get("SELECT categories FROM grounds WHERE deleted = 0 AND id = " . vsql::quote($ground), "categories"))
+                        return " AND " . vsql::id_condition($categs, "id");
+
+                return "";
+            }
+
             return "";
         }
 
@@ -349,55 +428,6 @@
                 $data["user"] = $user;
 
             return $data;
-        }
-
-        private function validate_category($p)
-        {
-            $u = vsql::get("SELECT * FROM users WHERE deleted = 0 AND id = " . vsql::quote(access::getuid()));
-
-            if($p["closed"])
-                return $p["closed"];
-
-            if($p["sex"] && $p["sex"] != $u["sex"])
-                return "Niewłaściwa płeć!";
-
-            if($p["born"])
-            {
-                list($from, $to) = array_map("trim", explode("~", $p["born"], 2));
-
-                $born = substr($u["birthdate"], 0, 4);
-                if((!is_numeric($born)) || $born == 0)
-                    return "Niewłaściwa data urodzenia, uzupełnij profil!";
-
-                if($born < $from || $born > $to)
-                    return "Niewłaściwy rocznik: jest $born, ma być $from ~ $to";
-            }
-
-            if($p["require"])
-            {
-                $ents = vsql::retr("SELECT r.short FROM rights AS r
-                            JOIN entitlements AS e ON e.right = r.id AND e.deleted = 0 AND
-                                e.starts <= NOW() AND e.due >= NOW() AND e.user = " . vsql::quote(access::getuid()) .
-                            " WHERE r.deleted = 0", "short", "short");
-                foreach(array_map("trim", explode(",", $p["require"])) as $q)
-                {
-                    $has = false;
-
-                    foreach(($rights = array_map("trim", explode("/", $q))) as $pattern)
-                        foreach($ents as $ent)
-                            if($has = ($has || fnmatch($pattern, $ent)))
-                                break;
-
-                    if(!$has)
-                        return "Nie spełniasz warunku zapisu: " .
-                            (count($rights) > 1 ? " (jedno z) " : "") .
-                            implode(", ", vsql::retr("SELECT r.name FROM rights WHERE deleted = 0 AND " .
-                                    vsql::id_condition($rights, "r.short"), "name", "name"));
-
-                }
-            }
-
-            return false;
         }
 
         protected function validate($id, &$data)
@@ -461,21 +491,6 @@
                     if(vsql::get("SELECT id FROM grounds WHERE start <= NOW() AND id = " . vsql::quote($ground)))
                         $err["ground"] = "Nie możesz już samodzielnie zapisać się na te zawody (za późno!)";
 
-                    /* Sprawdzenie prawidłowości kategorii */
-                    $catlist = $this->get_categories($ground);
-                    if(count($catlist))
-                    {
-                        if($msg = $this->validate_category($opts = $catlist[$data["categ"]]))
-                            $err["categ"] = $msg;
-                        else if(isset($opts["limit"]))
-                        {
-                            $cnt = vsql::get("SELECT COUNT(a.id) AS c FROM grounds AS g
-                                        JOIN achievements AS a ON a.ground = g.id AND a.deleted = 0
-                                        WHERE g.id = " . vsql::quote($ground), "c", 0);
-                            if($cnt >= $opts["limit"])
-                                $err["categ"] = "Limit wpisów został już przekroczony.";
-                        }
-                    }
                 }
 
                 /* Czy nie jest już raz zapisany? */
@@ -571,28 +586,6 @@
             return parent::fetch($id, $resolve, $nl, $extra);
         }
 
-        private function get_categories($ground, $prop = false)
-        {
-            $r = array();
-            foreach(explode("\n", vsql::get("SELECT categories FROM grounds WHERE " .
-                        " id = " . vsql::quote($ground) .
-                        " AND deleted = 0", "categories")) as $e)
-            {
-                $e = trim($e);
-                if(!strlen($e)) continue;
-
-                $props = array();
-                foreach(explode("|", "name=" . $e) as $kv)
-                {
-                    list($k, $v) = array_map("trim", explode("=", $kv, 2));
-                    $props[$k] = $v;
-                }
-
-                $r[$props["name"]] = $prop ? $props[$prop] : $props;
-            }
-            return $r;
-        }
-
         private function has_signup_restrictions()
         {
             return false;
@@ -606,17 +599,6 @@
             {
                 if(!access::has("add(achievements)"))
                     $this->remove_fields("date,position,points,duration,style,flags");
-
-                if($ground = $_REQUEST["ground"])
-                {
-                    if(count($categs = $this->get_categories($ground, "name")))
-                    {
-                        $this->fields["categ"]["type"] = "select";
-                        $this->fields["categ"]["options"] = $categs;
-                    }
-                    else
-                        unset($this->fields["categ"]);
-                }
             }
         }
 
@@ -757,13 +739,19 @@
 
         public function results()
         {
-            header("Location: /insider/achievements?ground=" . $_REQUEST["ground"]);
+            header("Location: /insider/achievements?lrole=nf&ground=" . $_REQUEST["ground"]);
+            exit;
+        }
+
+        public function officials()
+        {
+            header("Location: /insider/achievements?lrole=f&ground=" . $_REQUEST["ground"]);
             exit;
         }
 
         public function competitors()
         {
-            header("Location: /insider/achievements?list=1&ground=" . $_REQUEST["ground"]);
+            header("Location: /insider/achievements?lrole=nf&list=1&ground=" . $_REQUEST["ground"]);
             exit;
         }
 

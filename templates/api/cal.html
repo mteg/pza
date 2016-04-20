@@ -1,0 +1,21 @@
+<p><i>Wskazówka: Aby móc zgłaszać się na imprezy, najpierw musisz się <a href="https://nowe.pza.org.pl/insider/checkin">zalogować</a></i></p>
+<table class="kluby-lista">
+    <tr>
+        <th>Lp.</th>
+        <th>Data</th>
+        <th>Impreza, adres</th>
+        <th>Zgłoszenia</th>
+    </tr>
+    {{foreach from=$events key=k item=i}}
+    <tr>
+        <td>{{counter}}.</td>
+        <td>{{$i.start}}
+            {{if $i.finish != $i.start}}
+                {{if $i.finish != "0000-00-00"}} ~ {{$i.finish}} {{/if}}
+            {{/if}}</td>
+        <td>{{$i.name|escape:'html'}}
+            <br><small>{{$i.city}}{{if $i.address}}, {{$i.address}}{{/if}} {{if $i.link}}<a href="{{$i.link}}">| informacje</a>{{/if}}</small></td>
+        <td>{{if $i.open}}<a href="https://nowe.pza.org.pl/insider/signup?id={{$k}}">zgłoś się!</a>{{else}}<i>zamknięte</i>{{/if}}</td>
+    </tr>
+    {{/foreach}}
+</table>

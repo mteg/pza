@@ -8,7 +8,7 @@ class insider_checkout
         unset($_SESSION["user_id"]);
         session_destroy();
 
-        header("Location: /insider/checkin");
+        header("Location: http://pza.org.pl/");
         exit;
     }
 }

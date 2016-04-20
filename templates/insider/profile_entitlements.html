@@ -1,5 +1,13 @@
 {{extends "insider/action.html"}}
 {{block name="content"}}
 <h2>Uprawnienia PZA</h2>
-{{include file="insider/user_entitlements.html"}}
+{{include file="insider/user_entitlements.html" entitlements=$entitlements.other}}
+<h2 style="margin-top: 20pt;">Badania</h2>
+{{include file="insider/user_entitlements.html" entitlements=$entitlements.med}}
+<h2 style="margin-top: 20pt;">Klasy sportowe</h2>
+{{include file="insider/user_entitlements.html" entitlements=$entitlements.c}}
+<h2 style="margin-top: 20pt;">Udział w kadrze</h2>
+{{include file="insider/user_entitlements.html" entitlements=$entitlements.ka}}
+<h2 style="margin-top: 20pt;">Zgody</h2>
+{{include file="insider/user_entitlements.html" entitlements=$entitlements.d}}
 {{/block}}
