@@ -6,6 +6,7 @@
             "name" =>       array("Nazwa klubu", "regexp" => ".+"),
             "short" =>      array("Nazwa krótka", "regexp" => ".+", "suppress" => true),
             "designation" =>      array("Skrót", "regexp" => "[A-Za-z]+", "suppress" => true, "empty" => true),
+            "phone" =>      array("Numer telefonu", "suppress" => true, "pub" => "T"),
             "email" =>      "E-mail",
             "country" =>    array("Kraj", "type" => "list", "options" => array()),
             "district" =>   array("Województwo", "type" => "list", "options" => array()),
@@ -19,8 +20,8 @@
                       "N" => "Narciarski",
                       "S" => "Sportowy")),
             "settlement"=>  array("Następna płatność", "type" => "date"),
-            "www" =>        "Strona WWW",
-            "pza" =>    array("Zrzeszony w PZA?", "type" => "select", "options" => array(1 => "Tak", 0 => "Nie"))
+            "www" =>    array("Strona WWW", "type" => "area", "suppress" => true),
+            "pza" =>    array("Zrzeszony w PZA?", "type" => "select", "options" => array(1 => "Tak", 0 => "Nie")),
         );
 
         protected $capt = "<name>";
@@ -39,6 +40,10 @@
 
             if(access::has("mailing"))
                 $this->actions["/insider/mailing/members&"] = array("name" => "Wyślij email/sms", "multiple" => true, "target" => "_self");
+
+
+            if(access::has("edit(members)"))
+                $this->actions["/insider/logo&"] = array("name" => "Logo klubu", "multiple" => true, "target" => "_self");
         }
 
         public function memberships()
@@ -50,5 +55,25 @@
         public static function get_members()
         {
             return vsql::retr("SELECT id, short FROM members WHERE deleted = 0 ORDER BY short", "id", "short");
+        }
+
+        public function get_list()
+        {
+            $list = vsql::retr("SELECT id, name, short, email, phone, email, www, zip, town, street, unix_timestamp(settlement) as settlement, deleted FROM members WHERE deleted = 0 ORDER BY short");
+
+            foreach ($list as $k => $i) {
+                $list[$k]['logo_file'] = self::member_logo($i['id']);
+            }
+
+            return $list;
+        }
+
+        static function member_logo($id = false)
+        {
+            if(!$id) $id = access::getuid();
+            foreach(array("png", "gif", "jpg", "jpeg") as $ext)
+                if(file_exists($fp = "files/members/" . $id . "." . $ext))
+                    return($fp);
+            return false;
         }
     }

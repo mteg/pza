@@ -203,7 +203,7 @@ function init_controls(element) {
     });
 
     var fu_container = $(element).find('.file_upload');
-    if (fu_container.hasClass("photo_upload")) {
+    if (fu_container.hasClass("photo_upload") || fu_container.hasClass("logo_upload")) {
         var xid = $(element).find("input[name=xid]").val();
         fu = fu_container.fileupload({
             url: '/upload.php?xid=' + xid + (fu_container.hasClass("photos") ? "&photos=1" : ""),
@@ -213,7 +213,9 @@ function init_controls(element) {
             imageMaxHeight: 1024,
             maxNumberOfFiles: 1
         }).bind("fileuploaddone", function (e, data) {
-            window.location = "/insider/photo/commit?xid=" + xid;
+            var class_name = fu_container.hasClass("photo_upload") ? "photo" : "logo";
+            var id = $(element).find("input[name=id]").val();
+            window.location = "/insider/" + class_name + "/commit?xid=" + xid + (id ? "&id=" + id : "");
         });
     }
     else {

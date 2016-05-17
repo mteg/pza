@@ -82,15 +82,15 @@ abstract class insider_action
         "Wszystkie dyscypliny" => array(
             "Kadra narodowa - bieżąca" => "/insider/entitlements?family=ka:kn&open=1#due=eoy|entmgr(ka:kn)",
             "Kadra narodowa - archiwum" => "/insider/entitlements?family=ka:kn&open=1|entmgr(ka:kn)",
-            "Badania lekarskie - aktualne" => "/insider/entitlements?family=med&open=1#due=eoy|entmgr(med)",
-            "Badania lekarskie - wszystkie" => "/insider/entitlements?family=med&open=1|entmgr(med)",
+//            "Badania lekarskie - aktualne" => "/insider/entitlements?family=med&open=1#due=eoy|entmgr(med)",
+            "Sportowe Badania lekarskie" => "/insider/entitlements?family=med&open=1|entmgr(med)",
             "Zgody - bieżące" => "/insider/entitlements?family=d:pza#due=eoy|entmgr(d:pza)",
             "Zgody - archiwum" => "/insider/entitlements?family=d:pza|entmgr(d:pza)",
         ),
         "Alpinizm jaskiniowy" => array(
             "Instruktorzy" => "/insider/entitlements?family=i:j|entmgr(i:j)",
             "Kadra narodowa" => "/insider/entitlements?family=ka:kn:aj#due=eoy|entmgr(ka:kn:aj)",
-            "Badania lekarskie" => "/insider/entitlements?family=med:j|entmgr(med:j)",
+//            "Badania lekarskie" => "/insider/entitlements?family=med:j|entmgr(med:j)",
             "Lista jaskiń" => "/insider/grounds?type=nature:cave",
             "Moje przejścia" => "/insider/achievements?type=nature:cave&user=self|search(grounds)",
             "Wszystkie przejścia" => "/insider/achievements?type=nature:cave",
@@ -98,7 +98,7 @@ abstract class insider_action
         "Wspinaczka sportowa" => array(
             "Zawody PZA" => "/insider/grounds?type=comp:s:pza",
             "Zawody inne" => "/insider/grounds?type=comp:s:other",
-            "Badania lekarskie" => "/insider/entitlements?family=med:s|entmgr(med:s)",
+//            "Badania lekarskie" => "/insider/entitlements?family=med:s|entmgr(med:s)",
             "Licencje" => "/insider/entitlements?family=l:s|entmgr(l:s)",
             "Kadra narodowa" => "/insider/entitlements?family=ka:kn:s#due=eoy|entmgr(ka:kn:s)",
             "Sędziowie" => "/insider/entitlements?family=s:s|entmgr(s:s)",
@@ -123,7 +123,7 @@ abstract class insider_action
             "Instruktorzy" => "/insider/entitlements?family=i:nw|entmgr(i:nw)",
             "Sędziowie" => "/insider/entitlements?family=s:nw|entmgr(s:nw)",
             "Klasy sportowe" => "/insider/entitlements?family=c:nw|entmgr(c:s)",
-            "Badania lekarskie" => "/insider/entitlements?family=med:j|entmgr(med:nw)",
+//            "Badania lekarskie" => "/insider/entitlements?family=med:j|entmgr(med:nw)",
         ),
         "System" => array(
             "Rodzaje uprawnień" => "/insider/rights|search(rights)",

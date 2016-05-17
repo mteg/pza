@@ -1,0 +1,31 @@
+<table border="0" cellpadding="5" cellspacing="0">
+    <tbody>
+    {{foreach from=$members item=m key=mid}}
+        <tr>
+            <td>
+                <a href="http://www.bkw.org.pl" target="_blank">
+                    {{if $m['logo_file']}}
+                        <img alt="{{$m['short']}}" border="0" height="75" src="{{$m['logo_file']}}" width="75">
+                    {{/if}}
+                </a>
+            </td>
+            <td>
+                <p {{if $smarty.now > $m['settlement']}}style="color:silver"{{/if}}>
+                    <strong>{{$m['name']}}</strong>
+                    <!-- 2015-12-31 00:00:00 < 2016-05-17 -->
+                    <!--          <br><span style="font:10px Verdana;color:red">Nie opłacone składki za 2015 rok!</span> -->
+                    <br>Adres: {{$m['zip']}} {{$m['town']}} {{$m['street']}}<br>Kontakt: tel. {{$m['phone']}}, e-mail: <a href="mailto:{{$m['email']}}">{{$m['email']}}</a></tt>,
+
+                    {{if $m['www']}}
+                    <br />internet:<br/>
+                    {{assign var=www value="\n"|explode:$m['www']}}
+                    {{foreach from=$www item=page}}
+                    <a href="http://{{$page}}" target="_blank">{{$page}}</a><br />
+                    {{/foreach}}
+                    {{/if}}
+                </p>
+            </td>
+        </tr>
+    {{/foreach}}
+    </tbody>
+</table>
