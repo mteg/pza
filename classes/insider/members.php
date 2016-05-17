@@ -43,7 +43,7 @@
 
 
             if(access::has("edit(members)"))
-                $this->actions["/insider/logo&"] = array("name" => "Logo klubu", "multiple" => true, "target" => "_self");
+                $this->actions["/insider/logo&"] = array("name" => "Logo klubu", "multiple" => false, "target" => "_self");
         }
 
         public function memberships()
