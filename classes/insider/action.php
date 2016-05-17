@@ -82,8 +82,8 @@ abstract class insider_action
         "Wszystkie dyscypliny" => array(
             "Kadra narodowa - bieżąca" => "/insider/entitlements?family=ka:kn&open=1#due=eoy|entmgr(ka:kn)",
             "Kadra narodowa - archiwum" => "/insider/entitlements?family=ka:kn&open=1|entmgr(ka:kn)",
-//            "Badania lekarskie - aktualne" => "/insider/entitlements?family=med&open=1#due=eoy|entmgr(med)",
-            "Sportowe Badania lekarskie" => "/insider/entitlements?family=med&open=1|entmgr(med)",
+            "Badania lekarskie - aktualne" => "/insider/entitlements?family=med&open=1#due=eoy|entmgr(med)",
+            "Badania lekarskie - wszystkie" => "/insider/entitlements?family=med&open=1|entmgr(med)",
             "Zgody - bieżące" => "/insider/entitlements?family=d:pza#due=eoy|entmgr(d:pza)",
             "Zgody - archiwum" => "/insider/entitlements?family=d:pza|entmgr(d:pza)",
         ),
