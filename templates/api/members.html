@@ -1,31 +1,119 @@
-<table border="0" cellpadding="5" cellspacing="0">
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
+</head>
+<body>
+<form id="member-search-form">
+    Województwo:
+    <select name="district">
+        <option value="" selected="">Wszystkie województwa
+    </select>
+
+    {{$profiles}}Profil: <select name="profile">
+    <option value="" selected="">Wszystkie profile
+    </option>
+    {{foreach from=$profiles item=v key=k}}
+        <option value="{{$k}}">{{$v}}</option>
+    {{/foreach}}
+</select>
+
+    Szukaj wg nazwy:
+    <input type="text" name="name" value="" maxlength="20" size="20">
+</form>
+
+<table border="0" cellpadding="5" cellspacing="0" id="members-table">
     <tbody>
     {{foreach from=$members item=m key=mid}}
-        <tr>
-            <td>
-                <a href="http://www.bkw.org.pl" target="_blank">
-                    {{if $m['logo_file']}}
-                        <img alt="{{$m['short']}}" border="0" height="75" src="{{$m['logo_file']}}" width="75">
-                    {{/if}}
-                </a>
-            </td>
-            <td>
-                <p {{if $smarty.now > $m['settlement']}}style="color:silver"{{/if}}>
-                    <strong>{{$m['name']}}</strong>
-                    <!-- 2015-12-31 00:00:00 < 2016-05-17 -->
-                    <!--          <br><span style="font:10px Verdana;color:red">Nie opłacone składki za 2015 rok!</span> -->
-                    <br>Adres: {{$m['zip']}} {{$m['town']}} {{$m['street']}}<br>Kontakt: tel. {{$m['phone']}}, e-mail: <a href="mailto:{{$m['email']}}">{{$m['email']}}</a></tt>,
+    <tr data-district="{{$m['district']}}" data-name="{{$m['name']}}" data-profile="{{$m['profile']}}">
+        <td>
+            <a href="http://www.bkw.org.pl" target="_blank">
+                {{if $m['logo_file']}}
+                <img alt="{{$m['short']}}" border="0" height="75" src="http://nowe.pza.org.pl/{{$m['logo_file']}}"
+                     width="75">
+                {{/if}}
+            </a>
+        </td>
+        <td>
+            <p {{if $smarty.now> $m['settlement']}}style="color:silver"{{/if}}>
+                <strong>{{$m['name']}}</strong>
+                <!-- 2015-12-31 00:00:00 < 2016-05-17 -->
+                <!--          <br><span style="font:10px Verdana;color:red">Nie opłacone składki za 2015 rok!</span> -->
+                <br>Adres: {{$m['zip']}} {{$m['town']}} {{$m['street']}}<br>
+                Kontakt: {{if $m['phone']}}tel. {{$m['phone']}},{{/if}} {{if $m['email']}}e-mail: <a
+                        href="mailto:{{$m['email']}}">{{$m['email']}}</a>{{/if}},
 
-                    {{if $m['www']}}
-                    <br />internet:<br/>
-                    {{assign var=www value="\n"|explode:$m['www']}}
-                    {{foreach from=$www item=page}}
-                    <a href="http://{{$page}}" target="_blank">{{$page}}</a><br />
-                    {{/foreach}}
-                    {{/if}}
-                </p>
-            </td>
-        </tr>
+                {{if $m['www']}}
+                <br/>internet:<br/>
+                {{assign var=www value="\n"|explode:$m['www']}}
+                {{foreach from=$www item=page}}
+                <a href="{{if strpos($page, 'http') === false}}http://{{/if}}{{$page}}"
+                   target="_blank">{{$page}}</a><br/>
+                {{/foreach}}
+                {{/if}}
+            </p>
+        </td>
+    </tr>
     {{/foreach}}
     </tbody>
 </table>
+
+<script type="text/javascript">
+    function filterMemberTable(table, fields) {
+        if (typeof(fields) == 'undefined') {
+            fields = [];
+        }
+
+        var show = true;
+
+        $(table).find('tr').each(function () {
+            show = true;
+            var row = this;
+
+            $.each(fields, function (k, v) {
+//                console.log(k + '=>' + v);
+//                console.log($(row).data(k) + ' diff ' + v);
+                if ($(row).data(k).indexOf(v) == -1) {
+                    show = false;
+                }
+            });
+
+            if(show) {
+                $(row).show();
+            } else {
+                $(row).hide();
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        var district_input = $('#member-search-form').find('select[name="district"]');
+
+        // import all districts
+        $('#members-table').find('tr').each(function () {
+            var district = $(this).data('district');
+
+            if (!district_input.find('option[value="' + district + '"]').length) {
+                district_input.append('<option value="' + district + '">' + district + '</option>');
+            }
+        });
+
+
+
+        $('#member-search-form').on('change', function () {
+            var fields = {};
+            $('#member-search-form').find('select,input').each(function() {
+                if ($(this).val()) {
+                    fields[$(this).attr('name')] = $(this).val();
+                }
+            });
+
+            filterMemberTable($('#members-table'), fields);
+        });
+
+        $('#member-search-form').on('submit', function () {
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

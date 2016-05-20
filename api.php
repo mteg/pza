@@ -39,8 +39,11 @@ switch($op)
         break;
 
     case "members":
+        access::$nologin = true;
+        
         $m = new insider_members();
         $S->assign("members", $m->get_list());
+        $S->assign("profiles", insider_members::$_fields['profile']['options']);
         $S->display("api/members.html");
         break;
 

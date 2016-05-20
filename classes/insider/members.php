@@ -19,7 +19,8 @@
                       "K" => "Kanioningowy",
                       "N" => "Narciarski",
                       "S" => "Sportowy")),
-            "settlement"=>  array("Następna płatność", "type" => "date"),
+            "settlement"=>  array("Składka do", "type" => "date"),
+            "pza_license"=>  array("Lic. PZA do", "type" => "date"),
             "www" =>    array("Strona WWW", "type" => "area", "suppress" => true),
             "pza" =>    array("Zrzeszony w PZA?", "type" => "select", "options" => array(1 => "Tak", 0 => "Nie")),
         );
@@ -59,7 +60,7 @@
 
         public function get_list()
         {
-            $list = vsql::retr("SELECT id, name, short, email, phone, email, www, zip, town, street, unix_timestamp(settlement) as settlement, deleted FROM members WHERE deleted = 0 ORDER BY short");
+            $list = vsql::retr("SELECT id, name, short, email, phone, email, www, zip, town, street, district, profile, unix_timestamp(settlement) as settlement, deleted FROM members WHERE pza = 1 and deleted = 0 ORDER BY short");
 
             foreach ($list as $k => $i) {
                 $list[$k]['logo_file'] = self::member_logo($i['id']);
