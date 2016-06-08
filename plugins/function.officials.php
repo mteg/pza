@@ -45,7 +45,7 @@
                 $out .= "<span>Nazwisko <input type='text' name='sn' value='" . urlencode($sname) . "' size=10></span>";
                 $out .= "<span>Klub <input type='text' name='sa' value='" . urlencode($sassoc) . "' size=10></span>";
                 $out .= "<select name='active'><option value='1'>Ważne</option><option value=''>Wszystkie</option></select>";
-                $out .= "<span>Uprawnienie <select name='sr'>$srights</select></span>";
+                $out .= "<span><select name='sr'>$srights</select></span>";
                 $out .= "<span><input type='submit' value='Szukaj'></span>";
                 $out .= "</form>";
                 $out .= "</div>";
@@ -84,6 +84,7 @@
                     " GROUP BY u.id " .
                     " ORDER BY u.surname, u.name", "");
         if($_REQUEST['debug']) echo $qry;
+
 
         $out .= "<table class='kluby-lista instr'>";
         $out .= "<thead>\n";

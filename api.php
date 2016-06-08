@@ -43,7 +43,7 @@ switch($op)
     case "officials":
     default:
 
-        $a = array("right" => "i:w:pza:*|i:s:i:is", "format" => 3, "search" => 1);
+        $a = array("right" => "i:w:pza:*|i:s:i:is|t:s:*", "format" => 3, "search" => 1);
         foreach(array("right", "format", "selector", "getto") as $k)
             if(isset($_GET[$k]))
                 $a[$k] = $_GET[$k];

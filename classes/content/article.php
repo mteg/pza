@@ -46,7 +46,7 @@ class content_article extends content
                         WHERE cat.id = " . vsql::quote($id) . " ORDER BY a.id DESC LIMIT 1");
             $id = $v["parent"])
                 if($v["id"])
-                    return $this->render_object($v["id"], $path, true);
+                    return $this->render_object($v["id"], $path, $v["id"] != 54013 ? true : false);
 
         fail(404, "Nie odnaleziono indeksu kategorii {$cat_id}");
         return true;
