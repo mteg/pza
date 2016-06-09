@@ -72,8 +72,9 @@
                 Każdy zalogowany użytkownik posiada bardzo dużo możliwości
                 jeśli chodzi o własne osiągnięcia.
             */
-            if(in_array($perm, explode(",", "search,add,edit,view,export,delete")))
+            if(in_array($perm, explode(",", "search,add,edit,view,export,delete,signup")))
                 return true;
+
 
             return parent::access($perm);
         }
@@ -128,7 +129,9 @@
             $ginfo = array();
             if(is_numeric($ground = $_REQUEST["ground"]))
             {
-                $ginfo = vsql::get("SELECT type, start, name, categories FROM grounds WHERE deleted = 0 AND id = " . vsql::quote($ground));
+                $ginfo = vsql::get("SELECT type, start, name, city, start AS date, categories,
+                    IF(reguntil >= DATE(NOW()), 1, 0) AS open
+                    FROM grounds WHERE deleted = 0 AND id = " . vsql::quote($ground));
                 if($ginfo)
                     $type = $ginfo["type"];
                 else
@@ -160,7 +163,7 @@
                 case "course":
                     foreach(array("K", "N", "C") as $f)
                         unset($this->fields["flags"]["options"][$f]);
-                    $this->remove_fields("place,points,position,duration,style,date,partners,categ");
+                    $this->remove_fields("place,points,position,duration,style,date,partners,categ,role");
                     $ground_name = $family == "course" ? "Szkolenie" : "Zgrupowanie";
                     $this->order = "surname, name";
                     $this->add_columns("creat");
@@ -182,17 +185,38 @@
                     foreach(array("K", "N") as $f)
                         unset($this->fields["flags"]["options"][$f]);
 
+                    if(!access::has("compadm"))
+                    {
+                        unset($this->buttons["<classpath>/add"]);
+                        unset($this->actions["<classpath>/delete"]);
+                        unset($this->actions["<classpath>/edit"]);
+                        unset($this->buttons["<classpath>/export"]);
+                        if($ground)
+                            if($ginfo["open"])
+                                $this->buttons["/insider/signup?id=" . $ground] = array("Zapisz się", "target" => "_self", "icon" => "signal");
+                    }
+
+
                     if(isset($ginfo["name"]))
-                        $this->title = "Zawody: " . htmlspecialchars($ginfo["name"]);
+                        $this->title = "Zawody: " . htmlspecialchars($ginfo["name"]) . ", " . htmlspecialchars($ginfo["city"]) . " (" . htmlspecialchars($ginfo["date"]) . ")";
 
                     $this->remove_fields("place");
+                    if($categs = $ginfo["categories"])
+                    {
+                        $cat_list = vsql::retr("SELECT id, name FROM grounds WHERE deleted = 0 AND " . vsql::id_condition($categs, "id"), "id", "name");
+                        $this->fields["categ"]["type"] = "select";
+                        $this->fields["categ"]["options"] = $cat_list;
+                        unset($this->fields["categ"]["ref"]);
+                    }
 
                     if($_REQUEST["list"])
                     {
                         $this->remove_fields("points,position,duration,style,date");
-                        $this->order = "categ, surname, name";
+                        $this->order = "surname, name";
                         $this->buttons["<classpath>/results"] = array("Wyniki", "target" => "_self", "icon" => "signal");
                         $this->subtitle = "Lista startowa";
+                        $this->columns["member"] = array("Klub", "field" => "lm.member");
+                        $this->columns["med_date"] = array("Badania", "field" => "le.due");
                     }
                     else
                     {
@@ -205,19 +229,29 @@
                                     "icon" => "arrow-1-s");
                         $this->subtitle = "Wyniki";
                     }
-                    $this->add_columns("categ");
+
+                    if($ground)
+                    {
+                        $cat_list = vsql::retr("SELECT g.id, CONCAT(g.name, ' (', COUNT(a.id), ')') AS capt
+                                     FROM achievements AS a
+                                      JOIN grounds AS g ON g.id = a.categ AND g.deleted = 0
+                                      WHERE a.role < 100 AND a.ground = " . vsql::quote($ground) .
+                        " AND a.deleted = 0 GROUP BY g.id ORDER BY g.name", "id", "capt");
+                        if(count($cat_list))
+                        {
+                            $this->main_selector = "categ";
+                            $this->main_selection = $cat_list;
+                        }
+                        else
+                            $this->add_columns("categ");
+                    }
+                    else
+                        $this->add_columns("categ");
+
                     $ground_name = "Impreza";
 
                     $this->fields["partners"]["ref"] = "users";
                     $this->fields["partners"]["by"] = "ref";
-
-                    if($categs = $ginfo["categories"])
-                    {
-                        $cat_list = vsql::retr("SELECT id, name FROM grounds WHERE deleted = 0 AND " . vsql::id_condition($categs, "id"), "id", "name");
-                        $this->fields["categ"]["type"] = "select";
-                        $this->fields["categ"]["options"] = $cat_list;
-                        unset($this->fields["categ"]["ref"]);
-                    }
 
                     if($role = $_REQUEST["lrole"])
                     {
@@ -225,6 +259,8 @@
                         {
                             unset($this->fields["role"]);
                             $this->buttons["<classpath>/officials"] = array("Osoby oficjalne", "target" => "_self", "icon" => "signal");
+                            if($ground)
+                                $this->buttons["/insider/grounds/score?id=" . $ground] = array("Przelicz punkty", "target" => "_top", "icon" => "signal", "ask" => "Przeliczyć punkty?");
                         }
                         else if($role == "f")
                         {
@@ -237,11 +273,12 @@
                         }
                     }
 
+
                     break;
 
                 case "nature":
                     unset($this->fields["flags"]["options"]["C"]);
-                    $this->remove_fields("position,points,categ");
+                    $this->remove_fields("position,points,categ,role");
                     unset($this->fields["partners"]["comment"]);
 
                     if($fine == "cave")
@@ -276,7 +313,7 @@
                 case "exp":
                     foreach(array("K", "N", "C") as $f)
                         unset($this->fields["flags"]["options"][$f]);
-                    $this->remove_fields(array("date", "position", "points", "categ", "style", "partners", "duration", "place"));
+                    $this->remove_fields(array("date", "position", "points", "categ", "style", "partners", "duration", "place", "role"));
                     $this->order = "surname, name";
                     $ground_name = "Wyprawa";
                     break;
@@ -290,6 +327,7 @@
             }
             if(isset($this->fields["ground"]))
                 $this->fields["ground"][0] = $ground_name;
+
 
             parent::__construct();
             unset($this->filters["duration"]);
@@ -310,15 +348,37 @@
 
         protected function retr_query($filters)
         {
+            $columns = array();
+            $columns[] = "t.date";
+
+            $joins = array();
+
+            if($_REQUEST["lrole"] == "f")
+            {
+                $joins[] = "LEFT JOIN ground_roles AS role ON role.id = t.role";
+                $columns[] = "role.name AS role";
+            }
+
+            if($_REQUEST["list"] == 1)
+            {
+                $med_e = vsql::retr("SELECT id FROM rights WHERE deleted = 0 AND short LIKE 'med:%'", "id", "id");
+                $joins[] = "LEFT JOIN memberships AS lme ON lme.user = u.id AND lme.deleted = 0 AND lme.starts <= g.start AND lme.due >= g.finish ";
+                $joins[] = "LEFT JOIN members AS lm ON lm.id = lme.member AND lm.deleted = 0 ";
+                $joins[] = "LEFT JOIN entitlements AS le ON le.deleted = 0 AND le.user = u.id AND le.starts <= g.start AND le.due >= g.finish AND " . vsql::id_condition($med_e, "le.right");
+                $columns[] = "lm.name AS member";
+                $columns[] = "IFNULL(MAX(le.due), '---') AS med_date";
+            }
+
             $query = "SELECT SQL_CALC_FOUND_ROWS t.id, t.creat, g.name AS ground, u.surname AS surname, u.name AS name,
-                             t.position, t.points, cat.name AS categ, t.duration, t.date, role.name AS role, " .
+                             t.position, t.points, cat.name AS categ, t.duration, t.date," .
                             ($this->has_signup_restrictions() ? "m.name AS member," : "") .
-                            "IF(g.type = 'nature:cave', REPLACE(t.style, ',', '\n'), t.style) AS style
-                             FROM achievements AS t
+                            "IF(g.type = 'nature:cave', REPLACE(t.style, ',', '\n'), t.style) AS style, " .
+                            implode(",", $columns) .
+                            " FROM achievements AS t
                              LEFT JOIN grounds AS g ON g.id = t.ground AND g.deleted = 0
-                             LEFT JOIN grounds AS cat ON cat.id = t.categ AND t.deleted = 0
-                             LEFT JOIN ground_roles AS role ON role.id = t.role
-                             JOIN users AS u ON u.id = t.user AND u.deleted = 0" .
+                             LEFT JOIN grounds AS cat ON cat.id = t.categ AND t.deleted = 0 " .
+                            " JOIN users AS u ON u.id = t.user AND u.deleted = 0 " .
+                            implode(" ", $joins) .
                             ($this->has_signup_restrictions() ?
                                 (" LEFT JOIN memberships AS me ON me.user = u.id AND u.deleted = 0 AND me.starts <= NOW() AND me.due >= NOW() " .
                                  " LEFT JOIN members AS m ON m.id = me.member AND m.deleted = 0 ") : ""
@@ -338,6 +398,10 @@
                 else if($role == "f")
                     $query .= " AND t.role >= 100";
             }
+
+            if(isset($_REQUEST["selector"]))
+                $query .= " AND t.categ = " . vsql::quote($_REQUEST["selector"]);
+
 
             $user = $_REQUEST["user"];
 
@@ -782,4 +846,5 @@
 
             parent::delete();
         }
+
     }
