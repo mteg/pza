@@ -90,6 +90,7 @@ class insider_signup extends insider_action
                 {
                     $ach_id = vsql::insert("achievements", array(
                         "user" => access::getuid(),
+                        "categ" => $_REQUEST["categ"],
                         "ground" => $id,
                         "date" => date("Y-m-d"),
                     ));

@@ -28,7 +28,7 @@
             "massif" =>       array("Masyw", "consistency" => true, "suppress" => true),
             "summit" =>       array("Wierzchołek", "consistency" => true, "suppress" => true),
             "difficulty" =>   array("Trudność", "consistency" => true, "suppress" => true),
-            "reguntil" =>     array("Zapisy do", "type" => "date", "suppress" => true, "comment" => "Zapisy na imprezę będą możliwe do wskazanej daty włacznie"),
+            "reguntil" =>     array("Zapisy do", "type" => "date", "suppress" => true, "comment" => "Zapisy na imprezę będą możliwe do wskazanej daty włacznie", "empty" => true),
             "start" =>        array("Data rozpoczęcia", "type" => "date", "suppress" => true),
             "finish" =>       array("Data zakończenia", "type" => "date", "suppress" => true, "empty" => true),
             "categories" => array("Kategorie", "ref" => "grounds_view", "by" => "groundref", "multiple" => true),
@@ -91,6 +91,7 @@
 
                         $ach_caption = ($family != "comp" ? "" : "Wyniki");
                         $this->fields["options"][0] = "Link do informacji";
+                        $this->columns = array("name", "city", "start",  "reguntil");
                         break;
 
                     case "nature":
@@ -120,9 +121,9 @@
                         $ach_caption = "Lista rankingowa";
                         $this->fields["name"][0] = "Nazwa rankingu";
                         $this->fields["options"][0] = "Algorytm rankingu";
-                        $this->fields["start"][0] = "Data aktualizacji";
-                        $this->fields["finish"][0] = "Data obowiązywania";
-                        $this->fields["finish"]["comment"] = "Jeśli uzupełniona jest data obowiązywania, ranking ma charakter historyczny";
+                        $this->fields["start"][0] = "Data początkowa";
+                        $this->fields["finish"][0] = "Data końcowa";
+                        $this->fields["remarks"][0] = "Parametry";
                         $this->remove_fields("city,country,region,summit,difficulty,massif,lat,lon,reguntil,address");
                         break;
 
@@ -136,7 +137,7 @@
                         $this->fields["options"]["type"] = "area";
                         $this->fields["options"]["comment"] = "Wpisać linia po linii: 'najstarszy rocznik|najmłodszy rocznik|płeć' lub 'najmłodszy wiek|najstarszy wiek|płeć' lub 'najwcześniejsza data urodzenia|najpóźniejsza data urodzenia|płeć' np. 1999|2001|K, 14|16|M, 1986-01-01|1989-12-31|K";
 
-                        $this->remove_fields("city,country,region,summit,difficulty,massif,lat,lon,categories,reguntil,address");
+                        $this->remove_fields("creat,city,country,region,summit,difficulty,massif,lat,lon,categories,reguntil,address");
                         break;
 
                 }
@@ -153,10 +154,14 @@
             {
                 $this->actions["/insider/grounds/competitors"] =
                     array("name" => ($family == "comp" ? "Lista startowa" : "Lista uczestników"), "target" => "_self");
-                $this->actions["/insider/grounds/officials"] =
-                    array("name" => ($family == "comp" ? "Osoby oficjalne" : "Kadra"), "target" => "_self");
+                if(access::has("officials"))
+                    $this->actions["/insider/grounds/officials"] =
+                        array("name" => ($family == "comp" ? "Osoby oficjalne" : "Kadra"), "target" => "_self");
                 $this->actions["/insider/signup"] =
                     array("name" => "Zapisz się", "target" => "_self");
+                if(access::has("scoring"))
+                    $this->actions["/insider/grounds/score"] =
+                        array("name" => "Przelicz punkty", "target" => "_top", "multiple" => true, "ask" => "Przeliczyć punkty?");
             }
 
             if(fnmatch("comp:*:other", $type))
@@ -219,6 +224,7 @@
                     vsql::quote($uid) . " AND a.ground = t.id AND a.deleted = 0 " .
                 " WHERE t.deleted = 0 " . $filters . " " .
                 (($type = $_REQUEST["type"]) ? " AND t.type = " . vsql::quote($type) : "") .
+                (($_REQUEST["upcoming"] == 1) ? " AND t.reguntil >= DATE(NOW())" : "") .
                 " GROUP BY t.id";
         }
 
@@ -390,5 +396,40 @@
             }
 
            return "";
+        }
+
+
+        /* Przypisz punkty do miejsc */
+        function score()
+        {
+            access::ensure("scoring");
+            $score_map = array(
+                0, 100, 80, 65, 55, 51, 47, 43, 40, 37, 34,
+                31, 28, 26, 24, 22, 20, 18, 16, 14, 12,
+                10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+            );
+
+            $cnt = 0;
+            $results = vsql::id_retr($_REQUEST["id"], "ground",
+                "SELECT id, position, points FROM achievements WHERE deleted = 0 AND ");
+            foreach($results as $i)
+            {
+                $pos = $i["position"];
+                if(!is_numeric($pos))
+                    $points = 0;
+                else if($pos <= 0)
+                    $points = 0;
+                else if(!isset($score_map[$pos]))
+                    $points = 0;
+                else
+                    $points = $score_map[$pos];
+
+                if($points != $i["points"])
+                {
+                    vsql::update("achievements", array("points" => $points), $i["id"]);
+                    $cnt++;
+                }
+            }
+            echo json_encode(array("msg" => "Przeliczono wyników: $cnt"));
         }
     }

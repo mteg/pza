@@ -223,7 +223,7 @@ abstract class insider_table extends insider_action
 
             if($table)
             {
-                $action = array_pop(explode("/", $k));
+                $action = array_shift(explode("?", array_pop(explode("/", $k))));
                 if(!$this->access($action))
                     continue;
             }
