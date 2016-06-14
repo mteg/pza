@@ -407,7 +407,7 @@
 
             if(!access::has("search(achievements)"))
             {
-                $query .= insider_users::pub_conditions("u.");
+/*                $query .= insider_users::pub_conditions("u."); */
                 $query .= " AND (u.id = " . vsql::quote(access::getuid()) .
                             " OR t.flags LIKE '%V%') ";
             }

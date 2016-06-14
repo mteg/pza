@@ -93,6 +93,7 @@ class insider_signup extends insider_action
                         "categ" => $_REQUEST["categ"],
                         "ground" => $id,
                         "date" => date("Y-m-d"),
+                        "flags" => "V",
                     ));
                     $this->S->assign("success", $ach_id);
                 }
