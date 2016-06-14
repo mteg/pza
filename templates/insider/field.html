@@ -28,7 +28,7 @@
     {{else}}
       <input type="{{if $i.type == 'password'}}password{{else}}text{{/if}}" name="{{$k|escape:'html'}}" value="{{$data.$k|escape:'html'}}"
         {{if $i.size}} size="{{$i.size}}"{{/if}}
-        {{if $i.ref || $i.type == "list" || $i.consistency}}class="table-autocomplete"{{/if}}
+        class="{{if ($i.ref || $i.type == 'list' || $i.consistency) && $i.type != 'list-multiple-autocomplete'}}table-autocomplete{{/if}} {{if $i.type == 'list-multiple-autocomplete'}}table-autocomplete2{{/if}}"
         {{if $i.multiple}}data-multiple=1{{/if}}
         class="{{if $i.type == "date"}}table-datepicker{{/if}} {{if $err.$k}}err{{/if}}"
         {{if $disabled.$k}}disabled{{/if}}

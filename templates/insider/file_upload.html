@@ -1,6 +1,7 @@
-{{if $fu_type == "photo"}}
-<div class="file_upload photo_upload{{if $class}} {{$class}}{{/if}}">
+{{if $fu_type == "photo" || $fu_type == "logo"}}
+<div class="file_upload {{$fu_type}}_upload{{if $class}} {{$class}}{{/if}}">
     <input name="xid" value="{{$xid}}" type="hidden">
+    {{if $id}}<input name="id" value="{{$id}}" type="hidden">{{/if}}
     <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
     <div class="row fileupload-buttonbar">
         <div class="col-lg-7">

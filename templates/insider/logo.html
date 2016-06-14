@@ -1,0 +1,13 @@
+{{extends "insider/action.html"}}
+{{block name="content"}}
+<div style="margin-bottom: 20pt;">
+{{if !$logo}}
+<i>(Obecnie klub nie posiada przypisanego loga.)</i>
+{{else}}
+<img src="/{{$logo}}" style="max-width: 100%;">
+<br>
+<a class="btn" onclick="return confirm('Usunąć zdjęcie?');" href="/insider/logo/remove?id={{$id}}">Usuń logo z profilu klubu</a>
+{{/if}}
+</div>
+{{include file="insider/file_upload.html" fu_type="logo"}}
+{{/block}}

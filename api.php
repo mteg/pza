@@ -8,8 +8,6 @@ if(isset($_REQUEST['op']))
 else
     $op = "officials";
 
-
-
 switch($op)
 {
     case "profile":
@@ -38,6 +36,15 @@ switch($op)
         $S->assign("events", $evts);
         if($_REQUEST["debug"]) echo $qry;
         $S->display("api/cal.html");
+        break;
+
+    case "members":
+        access::$nologin = true;
+        
+        $m = new insider_members();
+        $S->assign("members", $m->get_list());
+        $S->assign("profiles", insider_members::$_fields['profile']['options']);
+        $S->display("api/members.html");
         break;
 
     case "officials":

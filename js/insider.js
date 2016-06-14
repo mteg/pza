@@ -1,4 +1,5 @@
 /* Compare just file names, without paths */
+
 function same_file(n1, n2) {
     var a1 = n1.split("/");
     var a2 = n2.split("/");
@@ -11,6 +12,8 @@ function same_file(n1, n2) {
 }
 
 function init_controls(element) {
+    var ajax_spinner_timeout = 0;
+
     /* Uruchomienie pól HTML */
     var textareas = $(element).find('textarea.html');
 //    if(typeof textareas.tinymce == "function")
@@ -104,71 +107,74 @@ function init_controls(element) {
         src += "&" +
             $(this).closest(".source-domain").children("input[name=params]").val();
         $(this).autocomplete({source: src, minLength: 2});
+    });
 
-        if(0)
-        {
-        // TODO: remove
-        $(this).autocomplete({
-            minLength: 2,
-            src: src,
-            source: function(request, response) {
-                var term = request.term.split(',').pop();
-                $.ajax({
-                    dataType: "json",
-                    type : 'Get',
-                    url: src + "&term=" + term,
-                    success: function(data) {
-                        response(data);
-                    }
-                });
-            },
-            select: function( event, ui ) {
-                var input = $(event.target);
-                var content = input.val().split(',');
+    $(element).find("input.table-autocomplete2").each(function () {
+        var src = $(this).closest(".source-domain").children("input[name=source]").val();
+        src += "/complete?f=" + encodeURIComponent($(this).attr("name"));
+        src += "&" +
+            $(this).closest(".source-domain").children("input[name=params]").val();
 
-                if (!input.data('multiple')) {
-                    // content.unshift(ui.item.label);
-                    // input.val(content.join());
-                    input.val(ui.item.label);
-                } else {
-                    input.val('');
+            $(this).autocomplete({
+                minLength: 2,
+                src: src,
+                source: function(request, response) {
+                    var term = request.term.split(',').pop();
+                    $.ajax({
+                        dataType: "json",
+                        type : 'Get',
+                        url: src + "&term=" + term,
+                        success: function(data) {
+                            response(data);
+                        }
+                    });
+                },
+                select: function( event, ui ) {
+                    var input = $(event.target);
+                    var content = input.val().split(',');
 
-                    input.parent().append(generate_autocomplete_option(ui.item.label, input.attr('name')));
-                    rebind_autocomplete_events();
-                }
+                    if (!input.data('multiple')) {
+                        // content.unshift(ui.item.label);
+                        // input.val(content.join());
+                        input.val(ui.item.label);
+                    } else {
+                        input.val('');
 
-                return false;
-            },
-            focus: function (event, ui) {
-                // Zapobiegamy standardowemu zachowaniu przy wyborze
-                // podpowiedzi za pomocą klawiszy strzałek na klawiaturze
-                // nie chcemy zastępować całego pola nową wartością
-                return false;
-            },
-            create: function(event, ui) {
-                var input = $(event.target);
-
-                // tylko dla lementów typu multiple tworzymy boxy
-                console.log(input);
-                if (input.data('multiple')) {
-                    var content = input.val();
-
-                    if (content.length == 0) {
-                        return true;
+                        input.parent().append(generate_autocomplete_option(ui.item.label, input.attr('name')));
+                        rebind_autocomplete_events();
                     }
 
-                    content = content.split(',');
-                    $.each(content, function (idx) {
-                        input.parent().append(generate_autocomplete_option(content[idx], input.attr('name')));
-                    })
-                    input.val('');
+                    return false;
+                },
+                focus: function (event, ui) {
+                    // Zapobiegamy standardowemu zachowaniu przy wyborze
+                    // podpowiedzi za pomocą klawiszy strzałek na klawiaturze
+                    // nie chcemy zastępować całego pola nową wartością
+                    return false;
+                },
+                create: function(event, ui) {
+                    var input = $(event.target);
 
-                    rebind_autocomplete_events();
+                    // tylko dla lementów typu multiple tworzymy boxy
+                    console.log(input);
+                    if (input.data('multiple')) {
+                        var content = input.val();
+
+                        if (content.length == 0) {
+                            return true;
+                        }
+
+                        content = content.split(',');
+                        $.each(content, function (idx) {
+                            input.parent().append(generate_autocomplete_option(content[idx], input.attr('name')));
+                        })
+                        input.val('');
+
+                        rebind_autocomplete_events();
+                    }
+
                 }
-
-            }
-        });
-        }
+            });
     });
 
     /* Checkbox-y z flagami */
@@ -197,7 +203,7 @@ function init_controls(element) {
     });
 
     var fu_container = $(element).find('.file_upload');
-    if (fu_container.hasClass("photo_upload")) {
+    if (fu_container.hasClass("photo_upload") || fu_container.hasClass("logo_upload")) {
         var xid = $(element).find("input[name=xid]").val();
         fu = fu_container.fileupload({
             url: '/upload.php?xid=' + xid + (fu_container.hasClass("photos") ? "&photos=1" : ""),
@@ -207,7 +213,9 @@ function init_controls(element) {
             imageMaxHeight: 1024,
             maxNumberOfFiles: 1
         }).bind("fileuploaddone", function (e, data) {
-            window.location = "/insider/photo/commit?xid=" + xid;
+            var class_name = fu_container.hasClass("photo_upload") ? "photo" : "logo";
+            var id = $(element).find("input[name=id]").val();
+            window.location = "/insider/" + class_name + "/commit?xid=" + xid + (id ? "&id=" + id : "");
         });
     }
     else {
@@ -258,6 +266,18 @@ function init_controls(element) {
             fu.fileupload("option", "disableImageResize", false);
     }
 
+    $(document)
+        .ajaxStart(function () {
+            // nie pokazujemy spinnera dla krótkich requestów,
+            // po co migać użytkownikowi ekranem (modal box)
+            ajax_spinner_timeout = setTimeout(function() {
+                $('#ajax-loading').show();
+            }, 400)
+        })
+        .ajaxStop(function () {
+            clearTimeout(ajax_spinner_timeout);
+            $('#ajax-loading').hide();
+        });
 }
 
 function generate_autocomplete_option(label, name)
