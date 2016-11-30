@@ -87,11 +87,12 @@
                             $this->fields["region"] = array("Województwo", "type" => "list");
 
                         $this->fields["region"]["options"] = placelist::get("regions");
-                        $this->remove_fields("creat,massif,summit,difficulty");
+                        $this->remove_fields("creat,massif,summit");
 
                         $ach_caption = ($family != "comp" ? "" : "Wyniki");
                         $this->fields["options"][0] = "Link do informacji";
                         $this->columns = array("name", "city", "start",  "reguntil");
+                        $this->fields["difficulty"][0] = "Waga zawodów";
                         break;
 
                     case "nature":
@@ -137,7 +138,12 @@
                         $this->fields["options"]["type"] = "area";
                         $this->fields["options"]["comment"] = "Wpisać linia po linii: 'najstarszy rocznik|najmłodszy rocznik|płeć' lub 'najmłodszy wiek|najstarszy wiek|płeć' lub 'najwcześniejsza data urodzenia|najpóźniejsza data urodzenia|płeć' np. 1999|2001|K, 14|16|M, 1986-01-01|1989-12-31|K";
 
-                        $this->remove_fields("creat,city,country,region,summit,difficulty,massif,lat,lon,categories,reguntil,address");
+                        $this->fields["categories"][0] = "Kategorie równoległe";
+                        $this->fields["categories"]["comment"] = "Automatyczny zapis do wybranych kategorii w momencie zapisu na imprezę";
+                        $this->fields["categories"]["empty"] = true;
+                        $this->fields["categories"]["suppress"] = true;
+
+                        $this->remove_fields("creat,city,country,region,summit,difficulty,massif,lat,lon,reguntil,address");
                         break;
 
                 }
@@ -192,7 +198,7 @@
         {
             $new_id = parent::update($id, $data);
             if(!$new_id) return $new_id;
-            if($type = vsql::get("SELECT type FROM grounds WHERE deleted = 0 AND id = " . vsql::quote($new_id), "type"))
+/*            if($type = vsql::get("SELECT type FROM grounds WHERE deleted = 0 AND id = " . vsql::quote($new_id), "type"))
                 if(fnmatch("rank:*", $type))
                 {
                     @list($rankalg, $rankopts) = explode("|", $data["options"], 2);
@@ -203,7 +209,7 @@
                             $r = new $classname($rankopts);
                             $r->update($new_id);
                         }
-                }
+                }*/
 
             return $new_id;
         }

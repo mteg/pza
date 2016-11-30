@@ -59,10 +59,12 @@
 
         if($sright && (!is_array($sright))) $sright = array($sright);
         if(!$sright) $sright = array();
+//        IF(u.flags LIKE '%E%', u.surname, CONCAT(SUBSTR(u.surname, 1, 1), '...')) AS surname,
+//                    IF(u.flags LIKE '%E%', u.name, CONCAT(SUBSTR(u.name, 1, 1), '...')) AS name,
 
         $list = vsql::retr($qry = "SELECT u.id,
-                    IF(u.flags LIKE '%E%', u.surname, CONCAT(SUBSTR(u.surname, 1, 1), '...')) AS surname,
-                    IF(u.flags LIKE '%E%', u.name, CONCAT(SUBSTR(u.name, 1, 1), '...')) AS name,
+                    u.surname,
+                    u.name,
                     u.login,
                     GROUP_CONCAT(CONCAT(r.name, ' ', e.number) ORDER BY r.name SEPARATOR '|') AS entl,
                     GROUP_CONCAT(DISTINCT c.short ORDER BY c.short SEPARATOR '|') AS society,
@@ -82,15 +84,17 @@
                     ($sassoc ? (" AND c.short LIKE " . vsql::quote("%" . $sassoc . "%")) : "") .
                     (count($sright) ? (" AND " . entl_condition($sright, "r.short")) : "") .
                     " GROUP BY u.id " .
-                    " ORDER BY u.surname, u.name", "");
+                    " ORDER BY status DESC, u.surname, u.name", "");
         if($_REQUEST['debug']) echo $qry;
 
 
         $out .= "<table class='kluby-lista instr'>";
         $out .= "<thead>\n";
         $out .= "<th>#</th><th>Nazwisko</th><th>Imię</th><th>Klub</th>";
-        if($params["format"] == 3)
-            $out .= "<th>Aktualna licencja</th>";
+        if($params["format"] == 4)
+            $out .= "<th>Uprawnienie</th>";
+        if($params["format"] == 3 || $params["format"] == 4)
+            $out .= "<th>Ważność licencji</th>";
         elseif($params["format"] == 2)
             $out .= "<th>Uprawnienia</th>";
         else
@@ -103,12 +107,22 @@
 
             $out .= "<tr>";
             $out .= "<td>" . $c . "</td>";
-            $out .= "<td><a href='$userlink'>" . htmlspecialchars($e["surname"]) . "</a></td>";
-            $out .= "<td><a href='$userlink'>" . htmlspecialchars($e["name"]) . "</a></td>";
+            if(isset($_REQUEST["nolink"]))
+            {
+                $out .= "<td>" . htmlspecialchars($e["surname"]) . "</td>";
+                $out .= "<td>" . htmlspecialchars($e["name"]) . "</td>";
+            }
+            else
+            {
+                $out .= "<td><a href='$userlink'>" . htmlspecialchars($e["surname"]) . "</a></td>";
+                $out .= "<td><a href='$userlink'>" . htmlspecialchars($e["name"]) . "</a></td>";
+            }
             $out .= "<td>" . strtr(htmlspecialchars($e["society"]), array("|" => "<BR>")) . "</td>";
-            if($params["format"] == 3)
+            if($params["format"] == 3 || $params["format"] == 4)
             {
 //                $due = substr($e["due"], 0, 4);
+                if($params["format"] == 4)
+                    $out .= "<td>" . strtr(htmlspecialchars($e["entl"]), array("|" => "<BR>")) . "</td>";
                 $due = $e["due"];
                 if($due == "9999-12-31")
                     $due = "TAK";

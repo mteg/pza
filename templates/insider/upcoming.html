@@ -1,0 +1,41 @@
+{{extends "insider/action.html"}}
+{{block name="content"}}
+<h1>Nadchodzące imprezy</h1>
+<div class="upcoming">
+{{foreach from=$upcoming key=id item=i}}
+<div>
+<h2>{{$i.name|escape:'html'}}</h2>
+<p>{{$i.date}}</p>
+{{if $i.address}}
+<p>
+  {{$i.address|escape:'html'}}
+</p>
+{{/if}}
+<p>
+    {{$i.remarks|nl2br}}
+</p>
+{{if $i.link}}<p>
+Więcej informacji: <a href="{{$i.link}}">{{$i.link}}</a>
+</p>
+{{/if}}
+{{if $i.categs}}
+<p>Kategorie:
+{{foreach from=$i.categs item=j key=catid}}
+{{if $j@iteration != 1}}, {{/if}}
+<a href="/insider/achievements?list=1&lrole=nf&ground={{$id}}#selector={{$j.cat_id}}">
+    {{if $i.usercats.$catid}}<b>{{/if}}
+    {{$j.name}} ({{$j.gcnt}})
+    {{if $i.usercats.$catid}}</b>{{/if}}
+</a>
+{{/foreach}}
+</p>
+{{/if}}
+{{if $mysignups.$id}}
+<button>Zapisano, zgłoszenie nr {{$mysignups.$id}}</button>
+{{else}}
+<a href="/insider/signup?id={{$id}}"><button>Zapisz się!</button></a>
+{{/if}}
+</div>
+{{/foreach}}
+</div>
+{{/block}}

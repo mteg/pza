@@ -1,12 +1,28 @@
 <?
 require_once "common.php";
 require_once "plugins/function.officials.php";
+
+function evdates($info)
+{
+    if($info["start"] == $info["finish"])
+        $info["date"] = $info["start"];
+    else if(substr($info["start"], 0, 7) == substr($info["finish"], 0, 7))
+        $info["date"] = $info["start"] . " ~ " . substr($info["finish"], 8);
+    else
+        $info["date"] = $info["start"] . " ~ " . $info["finish"];
+
+    return $info;
+
+}
+
 $S = get_Smarty();
 
 if(isset($_REQUEST['op']))
     $op = $_REQUEST["op"];
 else
     $op = "officials";
+
+
 
 switch($op)
 {
@@ -21,7 +37,7 @@ switch($op)
         break;
 
     case "events":
-        vsql::$conf["db"] = "pza_test";
+//        vsql::$conf["db"] = "pza_test";
         $type = $_REQUEST["type"]; $year = $_REQUEST["year"];
         $types = array(); if(!$year) $year = date("Y");
         foreach(explode("|", $type) as $mask)
@@ -33,9 +49,39 @@ switch($op)
             $evts = vsql::retr($qry = "SELECT id, options AS link, name, start, finish, city, address, IF(reguntil >= DATE(NOW()), 1, 0) AS open
                         FROM grounds AS g WHERE g.deleted = 0 AND (" . implode(" OR ", $types) . ")
                         AND YEAR(g.start) = " . vsql::quote($year) . " ORDER BY start, name LIMIT 100");
+        else
+            $evts = array();
+
+        $have_results = vsql::id_retr(array_keys($evts), "a.ground", "SELECT a.ground, a.id FROM achievements AS a WHERE
+              a.deleted = 0 AND a.position = 1 AND ", "ground", "", "id");
+
+
+        foreach($evts as $id => $info)
+            $evts[$id] = evdates($info);
+
         $S->assign("events", $evts);
+        $S->assign("results", $have_results);
         if($_REQUEST["debug"]) echo $qry;
         $S->display("api/cal.html");
+        break;
+
+    case "results":
+        $event = $_REQUEST["event"]; $res = array();
+        foreach(vsql::retr("SELECT a.id, cat.name AS cat_name, a.position, u.surname, u.name
+                            FROM grounds AS ev
+                                JOIN achievements AS a ON a.ground = ev.id AND a.deleted = 0
+                                JOIN grounds AS cat ON a.categ = cat.id
+                                JOIN users AS u ON u.id = a.user AND u.deleted = 0
+                                WHERE ev.type LIKE 'comp:s:%' AND ev.id = " . vsql::quote($event) .
+                            " ORDER BY cat_name, CAST(a.position AS signed), u.surname, u.name") as $i)
+        {
+            if(!isset($res[$i["cat_name"]])) $res[$i["cat_name"]] = array();
+            $res[$i["cat_name"]][] = $i;
+        }
+
+        $S->assign("event", evdates(vsql::get("SELECT name, start, finish, city FROM grounds WHERE type LIKE 'comp:%' AND id = ". vsql::quote($event))));
+        $S->assign("results", $res);
+        $S->display("api/results.html");
         break;
 
     case "members":
@@ -58,6 +104,7 @@ switch($op)
         $right_tab = array(
             "cnw" => "c:nw:*",
             "csk" => "c:sk:*",
+            "kwss" => "s:s:*",
             "iww" => "i:w:pza:*|i:s:i:is",
         );
 

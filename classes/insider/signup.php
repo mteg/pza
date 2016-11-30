@@ -2,7 +2,7 @@
 
 class insider_signup extends insider_action
 {
-    function user_cats($cats, $event_date)
+    static function user_cats($cats, $event_date)
     {
         $user_info = vsql::get("SELECT sex, birthdate FROM users WHERE id = " . access::getuid());
         $all_cats = vsql::retr("SELECT g.id, g.options, g.name FROM grounds AS g WHERE g.deleted = 0
@@ -88,13 +88,19 @@ class insider_signup extends insider_action
                         "Zgoda na przetwarzanie danych jest wymagana, <a href='/insider/signup?id=$id'>ponów zgłoszenie</a>");
                 else
                 {
-                    $ach_id = vsql::insert("achievements", array(
-                        "user" => access::getuid(),
-                        "categ" => $_REQUEST["categ"],
-                        "ground" => $id,
-                        "date" => date("Y-m-d"),
-                        "flags" => "V",
-                    ));
+                    $cat_list = array($_REQUEST["categ"]);
+                    foreach(explode(",", vsql::get("SELECT categories FROM grounds WHERE id = " . vsql::quote($_REQUEST["categ"]), "categories")) as $x_cat)
+                        if(is_numeric($x_cat))
+                            $cat_list[] = $x_cat;
+
+                    foreach(array_reverse($cat_list) as $cat)
+                        $ach_id = vsql::insert("achievements", array(
+                            "user" => access::getuid(),
+                            "categ" => $cat,
+                            "ground" => $id,
+                            "date" => date("Y-m-d"),
+                            "flags" => "V",
+                        ));
                     $this->S->assign("success", $ach_id);
                 }
             }

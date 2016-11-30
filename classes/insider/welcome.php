@@ -1,13 +1,9 @@
 <?
 
-// todo better welcome page!
-
-class insider_welcome
+class insider_welcome extends insider_action
 {
-
     function route()
     {
-        header("Location: /insider/users");
-        exit;
+        $this->S->display("insider/welcome.html");
     }
 }

@@ -54,9 +54,21 @@
             }
 
 
-            usort($out, function ($a, $b) {
-                if(($ptdiff = $b["points"] - $a["points"]))
-                    return $ptdiff;
+            if($_REQUEST["debug"])
+            {
+                header("Content-type: text/plain; charset=utf-8");
+                foreach($out as $us => $info)
+                    echo $us . " " . $info["points"] . "\n";
+
+                echo "---\n";
+            }
+
+
+            usort($out, function ($a, $b)  {
+                $ptdiff = $b["points"] - $a["points"];
+
+                if($ptdiff > 0.0) return 1;
+                if($ptdiff < 0.0) return -1;
 
                 /* Taka sama liczba punktów - nie-do-brze */
 
@@ -92,10 +104,26 @@
                 return 0;
             });
 
-            $points = -1; $pos = 0; $rank = array();
+            if($_REQUEST["debug"])
+            {
+                header("Content-type: text/plain; charset=utf-8");
+                foreach($out as $us => $info)
+                    echo $us . " " . $info["points"] . "\n";
+
+                exit;
+            }
+
+            $points = -1; $pos = 0; $rank = array(); $latent_pos = 1;
             foreach($out as $k => $i)
             {
-                $pos ++;
+                if($pos == 1 || $i["points"] != $points)
+                {
+                    $pos += $latent_pos;
+                    $latent_pos = 1;
+                }
+                else
+                    $latent_pos++;
+
                 $points = $i["points"];
                 if($points > 0)
                     $rank[] = array(

@@ -27,7 +27,7 @@ abstract class insider_action
      * Definicja menu dostępnego z prawej strony.
      */
     public $_menu = array(
-        "Wyloguj" => "/insider/checkout",
+        "Menu główne" => "/insider/welcome",
         "www.pza.org.pl" => "http://pza.org.pl/",
         "Moje konto" => array(
             "Moje dane" => "/insider/profile",
@@ -96,8 +96,8 @@ abstract class insider_action
             "Wszystkie przejścia" => "/insider/achievements?type=nature:cave",
         ),
         "Wspinaczka sportowa" => array(
-            "Nadchodzące zawody" => "/insider/grounds?type=comp:s:pza&upcoming=1",
-            "Wszystkie zawody" => "/insider/grounds?type=comp:s:pza",
+            "Nadchodzące zawody" => "/insider/upcoming?type=comp:s:pza",
+            "Zawody krajowe" => "/insider/grounds?type=comp:s:pza",
             "Zawody międzynarodowe" => "/insider/grounds?type=comp:s:other",
             "Badania lekarskie" => "/insider/entitlements?family=med:s|entmgr(med:s)",
             "Licencje" => "/insider/entitlements?family=l:s|entmgr(l:s)",

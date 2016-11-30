@@ -216,7 +216,8 @@
                         $this->buttons["<classpath>/results"] = array("Wyniki", "target" => "_self", "icon" => "signal");
                         $this->subtitle = "Lista startowa";
                         $this->columns["member"] = array("Klub", "field" => "lm.member");
-                        $this->columns["med_date"] = array("Badania", "field" => "le.due");
+                        if(access::has("entlmgr(med:*)"))
+                            $this->columns["med_date"] = array("Badania", "field" => "le.due");
                     }
                     else
                     {
@@ -304,9 +305,26 @@
 
                         $this->remove_fields("place");
                         $ground_name = "Droga";
+                        
+                        if($_REQUEST["extview"])
+                        {
+                          $this->columns["summit"] = array("Szczyt", "order" => "g.summit", "search" => "g.summit");
+                          $this->columns["country"] = array("Kraj", "order" => "g.country", "search" => "g.country");
+                          $this->columns["region"] = array("Rejon", "order" => "g.region", "search" => "g.region");
+                          $this->columns["difficulty"] = array("Trudności", "order" => "g.difficulty", "search" => "g.difficulty");
+                          if($this->columns[0] == "ground")
+                          {
+                            unset($this->columns[0]);	                       
+                            $this->add_columns("ground,comments");
+                          } 
+                        }
+                        else if(!(isset($_REQUEST["user"]) || isset($_REQUEST["ground"]))) 
+                          $this->buttons["<classpath>?type=" . urlencode($type) . "&extview=1"] = array("Widok rozszerzony", "target" => "_self");
                     }
                     $this->add_columns("date,style,duration");
                     $this->order = "date DESC, surname, name";
+
+
 
                     break;
 
@@ -372,7 +390,7 @@
             $query = "SELECT SQL_CALC_FOUND_ROWS t.id, t.creat, g.name AS ground, u.surname AS surname, u.name AS name,
                              t.position, t.points, cat.name AS categ, t.duration, t.date," .
                             ($this->has_signup_restrictions() ? "m.name AS member," : "") .
-                            "IF(g.type = 'nature:cave', REPLACE(t.style, ',', '\n'), t.style) AS style, " .
+                            "IF(g.type = 'nature:cave', REPLACE(t.style, ',', '\n'), t.style) AS style, g.summit, g.country, g.region, g.difficulty, " .
                             implode(",", $columns) .
                             " FROM achievements AS t
                              LEFT JOIN grounds AS g ON g.id = t.ground AND g.deleted = 0

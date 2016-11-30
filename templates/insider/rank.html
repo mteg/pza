@@ -25,11 +25,11 @@
         <tr>
             <td>{{$i.position}}</td>
             <td>{{$i.user_name|escape:'html'}}</td>
-            <td>{{$i.points}}</td>
+            <td>{{$i.points|round:2|number_format:2}}</td>
             {{foreach from=$events item=ei key=ek}}
             <td>
                 {{if $i.scores.$ek.points}}
-                {{$i.scores.$ek.points|round}}
+                {{$i.scores.$ek.points|round:2|number_format:2}}
                 {{/if}}
             </td>
             {{/foreach}}

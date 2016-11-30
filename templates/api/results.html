@@ -1,0 +1,21 @@
+<h2>Impreza: {{$event.name|escape:'html'}}</h2>
+<p>{{$event.city}}, {{$event.date}}</p>
+{{foreach from=$results item=rlist key=categ}}
+        <h3>{{$categ}}</h3>
+        <table>
+            <tr>
+                <th>Miejsce</th>
+                <th>Nazwisko</th>
+                <th>Imię</th>
+            </tr>
+            {{foreach from=$rlist item=i key=k}}
+            <tr>
+                <td>{{$i.position}}</td>
+                <td>{{$i.surname}}</td>
+                <td>{{$i.name}}</td>
+            </tr>
+            {{/foreach}}
+        </table>
+{{foreachelse}}
+<i>Brak wyników</i>
+{{/foreach}}

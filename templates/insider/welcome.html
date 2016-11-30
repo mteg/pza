@@ -1,0 +1,24 @@
+{{extends "insider/action.html"}}
+{{block name="content"}}
+        <h1>Witamy w systemie wewnętrznym PZA!</h1>
+        <p>
+            Wybierz moduł, z którego chcesz skorzystać.
+        </p>
+        <div class="welcome_modules">
+{{foreach from=$this->_menu key=label item=link}}
+<div>
+{{if is_array($link)}}
+    <h2>{{$label|escape:'html'}}</h2>
+    <p>
+    {{foreach from=$link key=label_lev2 item=link_lev2}}
+    {{if $link_lev2@iteration != 1}} | {{/if}}
+    <a href="{{$link_lev2}}">{{$label_lev2|escape:'html'}}</a>
+    {{/foreach}}
+    </p>
+{{else}}
+    <a href="{{$link}}"><h2>{{$label|escape:'html'}}</h2></a>
+{{/if}}
+</div>
+{{/foreach}}
+        </div>
+{{/block}}
