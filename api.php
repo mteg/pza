@@ -7,15 +7,16 @@ function evdates($info)
     if($info["start"] == $info["finish"])
         $info["date"] = $info["start"];
     else if(substr($info["start"], 0, 7) == substr($info["finish"], 0, 7))
-        $info["date"] = $info["start"] . " ~ " . substr($info["finish"], 8);
+        $info["date"] = $info["start"] . "/" . substr($info["finish"], 8);
     else
-        $info["date"] = $info["start"] . " ~ " . $info["finish"];
+        $info["date"] = $info["start"] . "/" . $info["finish"];
 
     return $info;
 
 }
 
 $S = get_Smarty();
+$S->assign("request", $_REQUEST);
 
 if(isset($_REQUEST['op']))
     $op = $_REQUEST["op"];
@@ -40,11 +41,19 @@ switch($op)
 //        vsql::$conf["db"] = "pza_test";
         $type = $_REQUEST["type"]; $year = $_REQUEST["year"];
         $types = array(); if(!$year) $year = date("Y");
-        foreach(explode("|", $type) as $mask)
+        $typeopts = explode("|", $type);
+        foreach($typeopts as $mask)
         {
             if(!($mask = trim($mask))) continue;
+            if(isset($_REQUEST["typef"]))
+                if(strlen($_REQUEST["typef"]))
+                    if($_REQUEST["typef"] != $mask)
+                        continue;
             $types[] = "g.type LIKE " . vsql::quote(strtr($mask, array("*" => "%")));
         }
+        if(count($typeopts) > 1)
+            $S->assign("filter", array("" => "--- wszystkie ---") + array_intersect_key(insider_grounds::$fields_template["type"]["options"], array_flip(explode("|", $type))));
+
         if(count($types))
             $evts = vsql::retr($qry = "SELECT id, options AS link, name, start, finish, city, address, IF(reguntil >= DATE(NOW()), 1, 0) AS open
                         FROM grounds AS g WHERE g.deleted = 0 AND (" . implode(" OR ", $types) . ")
@@ -79,7 +88,7 @@ switch($op)
             $res[$i["cat_name"]][] = $i;
         }
 
-        $S->assign("event", evdates(vsql::get("SELECT name, start, finish, city FROM grounds WHERE type LIKE 'comp:%' AND id = ". vsql::quote($event))));
+        $S->assign("event", evdates(vsql::get("SELECT name, start, finish, city FROM grounds WHERE (type LIKE 'comp:%' OR type LIKE 'event:%' OR type LIKE 'course:%') AND id = ". vsql::quote($event))));
         $S->assign("results", $res);
         $S->display("api/results.html");
         break;

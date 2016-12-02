@@ -1,7 +1,7 @@
 <?
     class insider_grounds extends insider_table
     {
-        public $fields = array(
+        static $fields_template = array(
             "creat" =>   array("Data utworzenia", "no" => "add,edit"),
             "type" =>    array("Typ", "type" => "select", "options" => array(
                                "comp:s:pza" =>  "Zawody PZA (wspinaczka sportowa)",
@@ -31,7 +31,7 @@
             "reguntil" =>     array("Zapisy do", "type" => "date", "suppress" => true, "comment" => "Zapisy na imprezę będą możliwe do wskazanej daty włacznie", "empty" => true),
             "start" =>        array("Data rozpoczęcia", "type" => "date", "suppress" => true),
             "finish" =>       array("Data zakończenia", "type" => "date", "suppress" => true, "empty" => true),
-            "categories" => array("Kategorie", "ref" => "grounds_view", "by" => "groundref", "multiple" => true),
+            "categories" => array("Kategorie", "ref" => "grounds_view", "by" => "groundref", "multiple" => true, "empty" => true),
             "remarks" =>      array("Uwagi", "type" => "area", "suppress" => true),
             "options" =>    array("Opcje", "suppress" => true),
             "lat"   =>      array("Szerokość geograficzna", "suppress" => true),
@@ -64,6 +64,7 @@
                  - wszystko
                  - rodzina szranek
             */
+            $this->fields = static::$fields_template;
 
             $ach_caption = "Osiągnięcia"; $family = "";
 
@@ -78,8 +79,9 @@
                 switch($family)
                 {
                     case "course":
-                    case "event":
                         $this->remove_fields("categories");
+
+                    case "event":
 
                     case "comp":
                         $this->fields["name"][0] = "Nazwa imprezy";

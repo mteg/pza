@@ -1129,7 +1129,7 @@ abstract class insider_table extends insider_action
             {
                 $r = array_merge($r,
                     vsql::retr($q = "SELECT CONCAT(id, ':', `{$col}`) AS sugg FROM
-                    `$tab` WHERE deleted = 0 AND `$col` LIKE " . vsql::quote($q) .
+                    `$tab` WHERE deleted = 0 AND `$col` LIKE " . vsql::quote(trim($q)) .
                         $this->complete_constraints($f) .
                         " ORDER BY $order",
                         "sugg", "sugg"));

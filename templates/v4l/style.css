@@ -1,3 +1,19 @@
+/*
+Theme Name: PzaPress
+Theme URI: https://wordpress.org/themes/pzapress/
+Author: the WordPress team
+Author URI: https://wordpress.org/
+Description: Twenty Sixteen is a modernized take on an ever-popular WordPress layout — the horizontal masthead with an optional right sidebar that works perfectly for blogs and websites. It has custom color options with beautiful default color schemes, a harmonious fluid grid using a mobile-first approach, and impeccable polish in every detail. Twenty Sixteen will make your WordPress look beautiful everywhere.
+
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: black, blue, gray, red, white, yellow, dark, light, one-column, two-columns, right-sidebar, fixed-layout, responsive-layout, accessibility-ready, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, microformats, post-formats, rtl-language-support, sticky-post, threaded-comments, translation-ready
+Text Domain: pzapress
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+*/
+
 html {margin: 0;
       padding: 0;}
 
@@ -10,7 +26,7 @@ body {width: 1200px;
       
 #header-phone, .no-desc {display: none;}      
       
-    
+input[type='text'], input[type='submit'], input[type='search'], button[type='submit'] {font-family: Ubuntu, verdana, sans-serif;}  
       
 a {text-decoration: none;}  
 
@@ -25,6 +41,10 @@ a {text-decoration: none;}
 #header {width: 100%;
         margin: 0 auto;
         position: relative;}  
+
+.rss {position: absolute;
+      top: 3px;
+      right: 0;}
         
 #logo {width: 110px;
        height: 50px;
@@ -34,26 +54,27 @@ a {text-decoration: none;}
 #logo img {width: 100%;}       
        
 
-.menu {width: 769px;
+.pza-menu {width: auto;
        height: 40px;
        float: right;
-       background: url(img/menu_top.jpg) no-repeat;
+       background: url(/gfx/menu_top.jpg) no-repeat;
+       background-color: #242738;
        margin: 39px 0 0 0; }
        
-.menu ul {list-style: none;
+.pza-menu ul {list-style: none;
          text-transform: uppercase;
          margin: 0;
          padding: 0;}
          
-.menu ul li  {float: left;
-              padding: 14px 15px 0 15px;}
+.pza-menu ul li  {float: left;
+              padding: 12px 15px 0 15px;}
 
-.menu ul li:first-child {padding: 14px 15px 0 55px;}
+.pza-menu ul li:first-child {padding: 12px 15px 14px 55px;}
 
-.menu ul li a {display: block;
+.pza-menu ul li a {display: block;
               color: #fff;}
 
-.menu a img {float: right;
+.pza-menu a img {float: right;
              margin: 11px 10px 0 2px;}
 
  
@@ -63,7 +84,9 @@ a {text-decoration: none;}
 
 .col1 {width: 980px;
        float: left;
-       margin-bottom: 25px;}
+       margin-bottom: 25px;
+       padding-right: 20px;
+       box-sizing: border-box;}
        
 .box {width: 225px;
       float: left;
@@ -74,7 +97,7 @@ a {text-decoration: none;}
       position: relative;
       z-index: 5;} 
       
-.box a.ngl {background: url(img/dzial_naglowek_linia.gif) no-repeat 0 8px;
+.box a.ngl {background: url(/gfx/dzial_naglowek_linia.gif) no-repeat 0 8px;
              color: #B82626;
              display: block;} 
              
@@ -139,12 +162,12 @@ a {text-decoration: none;}
             
 
 .col2 ul li a {color: #01315F;
-               padding: 5px 0 5px 13px;
+               padding: 5px 8px 5px 13px;
                display: block;}
 
 .col2 ul li a:hover {background: #242738;
                      color: #EAEAEC;
-                     padding: 5px 0 5px 13px;}
+                     padding: 5px 8px 5px 13px;}
 
 .col2 ul li > ul {margin: 5px 0 5px 0;
                   display: none;
@@ -203,6 +226,8 @@ a {text-decoration: none;}
             border-top: 1px solid #C3C3C3;
             height: 100px;
             position: relative;} 
+
+.partnerzy .loga {padding-top:16px;}
             
 .partnerzy span {display: block;
                  width: 67px;
@@ -271,7 +296,7 @@ a {text-decoration: none;}
 
 .table-top td {vertical-align: bottom;}
 
-.pdf {background: url(img/pdf.jpg) no-repeat scroll 0 10px;
+.pdf {background: url(/gfx/pdf.jpg) no-repeat scroll 0 10px;
       color: #000;
       font-size: 14px;
       font-weight: bold;
@@ -284,7 +309,7 @@ a {text-decoration: none;}
                   padding: 0;
                   list-style: none;} 
                   
-.col1-content li {background: url(img/lista_ico.gif) no-repeat scroll 0 8px;
+.col1-content li {background: url(/gfx/lista_ico.gif) no-repeat scroll 0 8px;
                   padding: 3px 0 3px 16px;} 
                   
 .col1-content li a {color: #242736;}   
@@ -305,13 +330,13 @@ a {text-decoration: none;}
             overflow: hidden;}
             
 .pozniej {float: left;
-          background: url(img/pozniejsze_ico.jpg) no-repeat scroll 0 4px;
+          background: url(/gfx/pozniejsze_ico.jpg) no-repeat scroll 0 4px;
           color: #fff;
           font-weight: bold;
           padding: 0 0 0 18px;}  
           
 .wczesniej {float: right;
-          background: url(img/wczesniejsze_ico.jpg) no-repeat scroll 98px 4px;
+          background: url(/gfx/wczesniejsze_ico.jpg) no-repeat scroll 98px 4px;
           color: #fff;
           font-weight: bold;
           padding: 0 20px 0 0;} 
@@ -371,14 +396,17 @@ a {text-decoration: none;}
        overflow: hidden;
        margin: 20px 20px 0 0;} 
        
-.news li:nth-child(odd)  { clear: both;}      
+.news li:nth-child(odd)  { clear: both;} 
+
+.news li:nth-child(even) {margin-right: 0;}    
        
+.news li p {margin: 0;}
        
 .foto-news {float: left;
             padding: 0 12px 0 0;
             clear: both;}   
             
-.foto-news img {width: 100%}  
+.foto-news img {width: 100%} 
 
 .news h2 {color: #242736;
           margin: 0 0 5px 0;}  
@@ -461,7 +489,7 @@ a {text-decoration: none;}
 .kluby-lista tr:last-child td {border: none;}
 
 
-.kluby-lista td:first-child + td {width: 550px;}
+.kluby-lista td:first-child + td { width: 450px;}
 
 
 .kluby-lista a {color: #242736;}
@@ -475,3 +503,224 @@ a {text-decoration: none;}
 .instr tr:hover a {color: #F12737;}
 
 .instr tr:hover td:first-child {color: #242736;}
+
+.baner-top .widget-title {display:none;}
+
+.pza-browsepanel {width: 960px;
+                  background: #4A4C59;
+                  padding: 7px 10px;
+                  box-sizing: border-box;
+                  color: #fff;}
+
+.pza-browsepanel input[type='text'] {background: #8c93a3;
+                                     border: 1px solid #bcc2ce;
+                                     color: #fff;
+                                     margin: 0 15px 0 5px;}
+
+.pza-browsepanel input[type="submit"] { background: #1a1d2c;
+                                        border: none;
+                                        color: #fff;
+                                        float: right;
+                                        padding: 2px 7px;}
+
+.pza-browsepanel select {background: #8c93a3;
+                         border: 1px solid #bcc2ce;
+                         color: #fff;
+                         margin: 0 15px 0 5px;}
+
+div.wprss-feed-meta .feed-source {padding-left:13px;}
+
+
+.navigation li a,
+.navigation li a:hover,
+.navigation li.active a,
+.navigation li.disabled {
+	color: #fff;
+	text-decoration:none;
+}
+
+.navigation li {
+	display: inline;
+}
+
+.navigation li a,
+.navigation li a:hover,
+.navigation li.active a,
+.navigation li.disabled {
+	background-color: #C0BEC9;
+	border-radius: 3px;
+	cursor: pointer;
+	padding: 4px 8px;
+}
+
+.navigation li a:hover,
+.navigation li.active a {
+	background-color: #242736;
+}
+
+.navigation ul {padding: 0;}
+
+.navigation {display:flex;
+        justify-content:left;
+
+        display:-webkit-flex;
+        -webkit-justify-content:left;}
+
+
+#search-5 input[type='search'] {border: 1px solid #8B92A2;
+                              width: 145px;
+                              padding: 4px 2px;}
+
+.search-submit {border: none;
+                padding: 4px 6px 5px 6px;
+                background: #8B92A2;
+                color: #fff;
+               text-transform: uppercase;
+               float: right;
+               font-size: 12px;
+               font-weight: 900;}
+
+h1 p {margin: 0;}
+
+
+/****************MENU ROZWIJANE*********/
+
+.pza-menu {position: relative;}
+
+.menu-bottom {position: absolute;
+              width: 100%;
+              margin-top: 40px;
+              left: 0%;
+              background: #373C52;
+              z-index: 100;
+             display: none;}
+
+.pza-menu .menu-bottom li {width: 33.3333333333333%;
+                           padding: 0 0 12px 10px;
+                           box-sizing: border-box;
+                            font-weight: 900;}
+
+.pza-menu .menu-bottom li a {font-size: 0;}
+
+.pza-menu .menu-bottom li > ul li a {font-size: 13px;}
+
+.pza-menu .menu-bottom li > ul li {font-weight: bold;
+                                   text-transform: uppercase;
+                                   background: none;
+                                   float: none;
+                                    width: 100%;}
+
+.pza-menu .menu-bottom li:first-child {padding: 0 0 12px 10px;}
+
+.pza-menu .menu-bottom li > ul li > ul li { 
+                                   background: url(lista_menu_ico.png) scroll no-repeat 0 7px;
+                                    padding: 0 0 5px 12px;
+                                   font-weight: normal;
+                                   text-transform: none;}
+
+.pza-menu .menu-bottom li > ul {margin-top: 12px;}
+
+
+
+.pza-menu .menu-bottom li > ul li:first-child {padding: 0 0 5px 12px;}
+              
+
+.pza-menu ul li {padding-bottom: 14px;}          
+
+.pza-menu ul:hover +.menu-bottom {display: block;}
+
+.menu-bottom:hover {display: block;}
+
+.col1 h1 {margin-bottom: 0;}
+
+h2 a {color: #242736;}
+
+#primary article {width: 48%;
+                  float: left;
+                  overflow: hidden;
+                  padding: 10px 2% 10px 0;}
+
+#primary article img {float: left;
+                      margin: 0 12px 0 0;
+                      /*width: 150px;*/}
+
+#primary article .entry-footer {clear: both;}
+
+.more-link {display: none !important;}
+
+.addthis_sharing_toolbox {min-height:25px;
+			  padding-top:4px;}
+
+.data-wpisu {font-size: 12px;
+             color: #8B92A2;}
+
+.col1 .szukaj-box {width: 300px;}
+
+.col1 .szukaj-box input[type="search"] {border: 1px solid #8b92a2;
+                                        padding: 4px 2px;
+                                        width: 226px;}
+
+.col1 a {color: #C7271B;
+         font-weight: bold;}
+
+.col1 article h2 a {color: #242736;}
+
+.braedcrumbs {padding: 8px 0 0 0;
+              margin-left: -5px;}
+
+.braedcrumbs a {color: #242736;
+                      font-weight: normal;}
+
+.braedcrumbs span {padding: 0 5px;}
+
+#text-12 .widget-title {display:none;}
+
+img.size-full {max-width: 100%;}
+
+.entry-content img {max-width: 100%;}
+
+.footer-rss {display: none;}
+
+.widget_wysija_cont input[type='text'] {border: 1px solid #8b92a2;
+                                        padding: 4px 2px;
+                                         width: 100%;
+                                        box-sizing: border-box;}
+
+.widget_wysija_cont input[type='submit']  {background: #8b92a2 ;
+                                           border: none;
+                                           color: #fff;
+                                           font-size: 12px;
+                                           font-weight: 900;
+                                           padding: 4px 6px 5px;
+                                           text-transform: uppercase;}
+
+
+.headline-news {background: #ECECEC;
+                padding: 8px;
+                 box-sizing: border-box;} 
+
+.news .headline-news p {margin: 0 0 10px 0;}
+
+
+.headline-news a {color: #242738;}
+
+
+.wpn_news .wpn_post img {max-width:580px;background:#222;border:1px solid #5e5e5e;padding:1px;}
+		.wpn_post img.centered{display:block;margin-left:auto;margin-right:auto;}
+		.wpn_post img.alignright{padding:4px;margin:0 0 2px 7px;display:inline;}
+		.wpn_post img.alignleft {padding:4px;margin:0 7px 2px 0;display:inline;}
+		.wpn_post .alignright {float:right;}
+		.wpn_post .alignleft {float:left }
+		.aligncenter, div.aligncenter {display:block;margin-left:auto;margin-right:auto;}
+.wpn_post .wp-caption {border:1px solid #000;text-align:center;background-color:#444;padding-top:4px;margin:10px;-moz-border-radius:3px;-khtml-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;}
+		.wpn_post.wp-caption img {align=center;margin:0;padding:0;border:0 none;}
+		.wpn_post .wp-caption p.wp-caption-text {font-size:11px;line-height:17px;padding:0 4px 5px;margin:0;}
+
+
+.alignright {float: right;}
+
+
+/***********Skórka czarno-biała**************/
+
+/*img {-webkit-filter: grayscale(100%); /* Chrome, Safari, Opera */
+    filter: grayscale(100%);}*/

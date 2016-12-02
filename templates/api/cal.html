@@ -1,4 +1,10 @@
 <p><i>Wskazówka: Aby móc zgłaszać się na imprezy, najpierw musisz się <a href="https://nowe.pza.org.pl/insider/checkin">zalogować</a></i></p>
+        Pokaż wydarzenia typu:
+{{if $filter}}
+<select name="f" id="pza_event_filter">
+{{html_options options=$filter selected=$request.typef}}
+</select>
+{{/if}}
 <table class="kluby-lista">
     <tr>
         <th>Lp.</th>
@@ -15,7 +21,21 @@
 
         <td>{{$i.date}}</td>
         <td>{{if $i.open}}<a href="https://nowe.pza.org.pl/insider/signup?id={{$k}}">zgłoś się!</a>{{else}}<i>zamknięte</i>{{/if}}</td>
-        <td>{{if $results[$i.id]}}<a href="wyniki?event={{$i.id}}">wyniki</a>{{/if}}</td>
+        <td>{{if $results[$i.id]}}<a href="wyniki?event={{$i.id}}">wyniki</a>{{else}}<a href="zgloszenia?event={{$i.id}}">lista zgłoszeń</a>{{/if}}</td>
     </tr>
     {{/foreach}}
 </table>
+<script type="text/javascript">
+
+    $(function() {
+        $("#pza_event_filter").on("change", function () {
+            var url = window.location.href;
+            if(url.indexOf("?") == -1)
+                url += "?";
+
+            url += "&typef=" + $(this).val();
+            window.location.href = url;
+        })
+    });
+
+</script>
