@@ -80,6 +80,7 @@ abstract class insider_action
             "Klasy sportowe" => "/insider/entitlements?family=c:sk|entmgr(c:sk)",
         ),
         "Wszystkie dyscypliny" => array(
+            "Status kadry" => "/insider/multitlements?family=ka:kn&open=1#due=eoy|entmgr(ka:kn)",
             "Kadra narodowa - bieżąca" => "/insider/entitlements?family=ka:kn&open=1#due=eoy|entmgr(ka:kn)",
             "Kadra narodowa - archiwum" => "/insider/entitlements?family=ka:kn&open=1|entmgr(ka:kn)",
             "Badania lekarskie - aktualne" => "/insider/entitlements?family=med&open=1#due=eoy|entmgr(med)",
