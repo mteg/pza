@@ -11,7 +11,7 @@
         function __construct()
         {
             foreach(array_values($this->oths) as $n => $capt)
-                $this->columns["othdate{$n}"] = $capt;
+                $this->columns["othdate{$n}"] = array($capt, "order" => "othdate{$n}");
 
             parent::__construct();
         }
