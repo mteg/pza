@@ -26,17 +26,7 @@
     </div> 
     <div class="register-panel">
       <h2>Zarządzanie stroną WWW</h2>
-      <form action="http://pza.org.pl/wp-login.php" method="post">
-        {{include file="insider/field.html" i=[name => "Nazwa użytkownika"] k="log" data=["login" => $request.login] nofit=1 size=15}}
-        {{include file="insider/field.html" i=[name => "Hasło", "type" => "password"] k="pwd" nofit=1 size=15}}
-        <input type="hidden" name="redirect_to" value="http://press.pza.org.pl/wp-admin/">
-        <input type="hidden" name="testcookie" value="1">
-        <a href="http://press.pza.org.pl/wp-login.php?action=lostpassword">Nie pamiętam hasła</a>
-
-        <div class="form-btns">
-          <input type="submit" class="btn" value="Zaloguj się">
-        </div>
-      </form>
+      <a href="http://pza.org.pl/wp-login.php">Kliknij by przejść do strony logowania</a>
     </div>
   </div>
   

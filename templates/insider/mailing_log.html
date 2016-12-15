@@ -1,0 +1,14 @@
+{{extends "insider/action.html"}}
+{{block name="content"}}
+<h2>Archiwum wysłanych wiadomości</h2>
+
+<div class="source-domain">
+    <input type="hidden" name="source" value="{{$source|escape:'html'}}">
+    <input type="hidden" name="params" value="{{$params|escape:'html'}}">
+
+    {{foreach from=$data item=i key=k}}
+        {{$i}}<br />
+    {{/foreach}}
+</div>
+
+{{/block}}
