@@ -152,6 +152,30 @@
             header("Location: /insider/achievements?user=" . $id);
         }
 
+        static function list_nature_climb($id, $extra_sql = "")
+        {
+            $m = vsql::retr($qry = "SELECT SQL_CALC_FOUND_ROWS t.id, t.creat, g.name AS ground, u.surname AS surname, u.name AS name,
+                             t.position, t.points, cat.name AS categ, t.duration, t.date,IF(g.type = 'nature:cave', REPLACE(t.style, ',', '
+'), t.style) AS style, g.summit, g.country, g.region, g.difficulty, t.date FROM achievements AS t
+LEFT JOIN grounds AS g ON g.id = t.ground AND g.deleted = 0
+LEFT JOIN grounds AS cat ON cat.id = t.categ AND t.deleted = 0  JOIN users AS u ON u.id = t.user AND u.deleted = 0  
+WHERE t.deleted = 0  AND g.type = \"nature:climb\" AND t.user = " . vsql::quote($id) . " AND date >= DATE_FORMAT( CURRENT_DATE - INTERVAL 12 MONTH, '%Y-%m-01' ) GROUP BY t.id", "");
+
+            return $m;
+        }
+
+        static function list_nature_cave($id, $extra_sql = "")
+        {
+            $m = vsql::retr($qry = "SELECT SQL_CALC_FOUND_ROWS t.id, t.creat, g.name AS ground, u.surname AS surname, u.name AS name,
+                             t.position, t.points, cat.name AS categ, t.duration, t.date,IF(g.type = 'nature:cave', REPLACE(t.style, ',', '
+'), t.style) AS style, g.summit, g.country, g.region, g.difficulty, t.date FROM achievements AS t
+LEFT JOIN grounds AS g ON g.id = t.ground AND g.deleted = 0
+LEFT JOIN grounds AS cat ON cat.id = t.categ AND t.deleted = 0  JOIN users AS u ON u.id = t.user AND u.deleted = 0  
+WHERE t.deleted = 0  AND g.type = \"nature:cave\" AND t.user = " . vsql::quote($id) . " AND date >= DATE_FORMAT( CURRENT_DATE - INTERVAL 12 MONTH, '%Y-%m-01' ) GROUP BY t.id", "");
+
+            return $m;
+        }
+
         static function list_memberships($id, $extra_sql = "")
         {
             $m = vsql::retr($qry = "SELECT m.starts, m.due, IF(m.due >= NOW() AND m.flags LIKE '%R%', 1, 0) AS status, o.short
@@ -181,10 +205,50 @@
             {
                 list($class, $junk) = explode(":", $e["short"], 2);
                 if(isset($entls[$class]))
-                    $entls[$class][] = $e;
+                        $entls[$class][] = $e;
                 else
                     $entls["other"][] = $e;
             }
+
+            // grupujemy uprawnienia (kadra, zgoda, badania, potwierdzenie z klubu) wg lat
+            $e = $entls;
+            $entls['years'] = array();
+            foreach(array('ka' => array(), 'med' => array(), 'd' => array('d:pza:do'), 'other' => array('p:pza:k')) as $key => $filter) {
+                foreach ($entls[$key] as $entid => $e) {
+
+                        if (!empty($filter) && !in_array($e['short'], $filter) )
+                            continue;
+
+
+                        list($sy, $sm, $sd) = explode('-', $e['starts']);
+                        list($dy, $dm, $dd) = explode('-', $e['due']);
+
+                        if ($sy != 0 && $dy != 0) {
+                            for ($y = $sy; $y == $dy; $y++) {
+                                $entls["years"][$y][] = $e;
+                            }
+                        } else {
+                            if ($sy != 0)
+                                $entls["years"][$sy][] = $e;
+
+                            if ($dy != 0)
+                                $entls["years"][$dy][] = $e;
+                        }
+
+
+
+                }
+            }
+
+            // uzupełnijmy brakujące lata
+            krsort($entls['years'], SORT_NUMERIC);
+            for($y=end(array_keys($entls['years'])); $y<=date("Y")+1; $y++) {
+                if (!isset($entls['years'][$y])) {
+                    $entls['years'][$y] = array();
+                }
+            }
+            krsort($entls['years'], SORT_NUMERIC);
+
             return $entls;
         }
 
@@ -196,6 +260,10 @@
                 $this->S->assign(array(
                     "memberships" => $this->list_memberships($id),
                     "entitlements" => $this->list_entitlements_groups($id),
+                    "achievements" => array(
+                        "nature_climb" => $this->list_nature_climb($id),
+                        "nature_cave" => $this->list_nature_cave($id)
+                    )
                 ));
             }
             else

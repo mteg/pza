@@ -1,48 +1,111 @@
-{{extends "insider/table_view.html"}}
-{{block name="fields" append}}
-{{if !$restricted}}
-<div>
-    <span>Przynależność</span>
-    <span class="fit">
-        {{include file="insider/user_memberships.html"}}
-    </span>
-    <div></div>
-</div>
+{{block name="dialog"}}
+<input type="hidden" class="dialog-title" value="Podgląd">
+<div class="table-view table-form source-domain">
+    <input type="hidden" name="id" value="{{$data.id}}">
+    {{include file="insider/table_menu.html"}}
+    <input type="hidden" name="source" value="{{$source|escape:'html'}}">
+    <input type="hidden" name="params" value="{{$params|escape:'html'}}">
 
-<div>
-    <span>Uprawnienia</span>
-    <span class="fit">
-        {{include file="insider/user_entitlements.html" entitlements=$entitlements.other}}
-    </span>
-    <div></div>
+    {{if !$restricted}}
+    <div id="user_tabs">
+        <ul>
+            <li><a href="#tabs-1">Dane podstawowe</a></li>
+            <li><a href="#tabs-2">Uprawnienia</a></li>
+            <li><a href="#tabs-3">Status w kadrze</a></li>
+            <li><a href="#tabs-4">Przejścia ({{count($achievements.nature_climb)+count($achievements.nature_cave)}})</a></li>
+        </ul>
+        <div id="tabs-1">
+
+            <div>
+                <span>Numer w systemie</span>
+                <span class="fit">{{$data.id}}</span>
+                <div></div>
+            </div>
+            {{foreach from=$this->fields item=i key=k}}
+            {{if !$i.noview}}
+            {{if (!$i.suppress) || (($data.$k != "") && ($data.$k != "0") && ($data.$k != "0000-00-00"))}}
+            <div>
+                <span>{{$i.name|escape:'html'}}</span>
+                <span class="fit">
+                    {{if $data.$k}}
+                    {{if $i.type == "html"}}
+                    {{$data.$k}}
+                    {{else}}
+                    {{$data.$k|escape:'html'|nl2br}}
+                    {{/if}}
+                    {{else}}
+                    &nbsp;
+                    {{/if}}
+                </span>
+                <div></div>
+            </div>
+            {{/if}}
+            {{/if}}
+            {{/foreach}}
+
+            <div>
+                <span>Przynależność</span>
+                <span class="fit">
+                    {{include file="insider/user_memberships.html"}}
+                </span>
+                <div></div>
+            </div>
+        </div>
+
+        <div id="tabs-2">
+            <div>
+                <span>Uprawnienia</span>
+                <span class="fit">
+                    {{include file="insider/user_entitlements.html" entitlements=$entitlements.other}}
+                </span>
+                <div></div>
+            </div>
+
+            <div>
+                <span>Klasy sportowe</span>
+                <span class="fit">
+                    {{include file="insider/user_entitlements.html" entitlements=$entitlements.c}}
+                </span>
+                <div></div>
+            </div>
+        </div>
+
+        <div id="tabs-3">
+            <div>
+                <span class="fit">
+                    {{include file="insider/user_membership.html" entitlements=$entitlements.years user=$data.id}}
+                    </span>
+                    <div></div>
+                </div>
+        </div>
+
+        <div id="tabs-4">
+            <div>
+                <span>Przejścia wspinaczkowe - ostatnie 12 m-cy</span>
+                <span class="fit">
+                    {{include file="insider/user_achievements.html" achievements=$achievements.nature_climb}}
+                    </span>
+                <div></div>
+            </div>
+            <br/><br/>
+            <div>
+                <span>Przejścia jaskiniowe - ostatnie 12 m-cy </span>
+                <span class="fit">
+                    {{include file="insider/user_achievements.html" achievements=$achievements.nature_cave}}
+                    </span>
+                <div></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript">
+        $( function() {
+            $( "#user_tabs" ).tabs();
+        } );
+    </script>
+    {{/if}}
+
 </div>
-<div>
-    <span>Badania</span>
-    <span class="fit">
-        {{include file="insider/user_entitlements.html" entitlements=$entitlements.med}}
-    </span>
-    <div></div>
-</div>
-<div>
-    <span>Klasy sportowe</span>
-    <span class="fit">
-        {{include file="insider/user_entitlements.html" entitlements=$entitlements.c}}
-    </span>
-    <div></div>
-</div>
-<div>
-    <span>Udział w kadrze</span>
-    <span class="fit">
-        {{include file="insider/user_entitlements.html" entitlements=$entitlements.ka}}
-    </span>
-    <div></div>
-</div>
-<div>
-    <span>Zgody</span>
-    <span class="fit">
-        {{include file="insider/user_entitlements.html" entitlements=$entitlements.d}}
-    </span>
-    <div></div>
-</div>
-{{/if}}
 {{/block}}

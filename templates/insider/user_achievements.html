@@ -1,0 +1,45 @@
+{{if $achievements}}
+<table class="plain">
+    <tr>
+        <th>Lp.</th>
+        <th>Szczyt</th>
+        <th>Kraj</th>
+        <th>Region</th>
+        <th>Trudności</th>
+        <th>Droga</th>
+        <th>Uwagi</th>
+        <th>Data</th>
+        <th>Styl</th>
+        <th>Czas</th>
+    </tr>
+    {{foreach from=$achievements item=i key=k}}
+    <tr>
+        <td>{{$k}}.</td>
+        <td>{{$i.summit}}</td>
+        <td>{{$i.country}}</td>
+        <td>{{$i.region}}</td>
+        <td>{{$i.difficulty}}</td>
+        <td>{{$i.ground}}</td>
+        <td>&nbsp;</td>
+        <td>{{$i.date}}</td>
+        <td>{{$i.style}}</td>
+        <td>{{$i.duration}}</td>
+    </tr>
+    {{if $k==30}}
+        {{break}}
+    {{/if}}
+    {{foreachelse}}
+    <tr>
+        <td colspan=4><i>Brak wpisów</i></td>
+    </tr>
+    {{/foreach}}
+    {{if count($achievements) > 30}}
+    <tr><td colspan="10">... i jeszcze {{count($achievements) - 30}}</td></tr>
+    {{/if}}
+
+</table>
+{{else}}
+<div>
+    <i>Brak wpisów</i>
+</div>
+{{/if}}
