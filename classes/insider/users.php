@@ -226,7 +226,7 @@ WHERE t.deleted = 0  AND g.type = \"nature:cave\" AND t.user = " . vsql::quote($
                         list($dy, $dm, $dd) = explode('-', $e['due']);
 
                         if ($sy != 0 && $dy != 0) {
-                            for ($y = $sy; $y == $dy; $y++) {
+                            for ($y = $sy; $y <= $dy; $y++) {
                                 $entls["years"][$y][] = $e;
                             }
                         } else {
@@ -244,7 +244,10 @@ WHERE t.deleted = 0  AND g.type = \"nature:cave\" AND t.user = " . vsql::quote($
 
             // uzupełnijmy brakujące lata
             krsort($entls['years'], SORT_NUMERIC);
-            for($y=end(array_keys($entls['years'])); $y<=date("Y")+1; $y++) {
+            $from = end(array_keys($entls['years']));
+            if (!$from) $from = date("Y") - 5;
+
+            for($y=$from; $y<=date("Y")+1; $y++) {
                 if (!isset($entls['years'][$y])) {
                     $entls['years'][$y] = array();
                 }
