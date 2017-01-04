@@ -224,7 +224,7 @@ WHERE t.deleted = 0  AND g.type = \"nature:cave\" AND t.user = " . vsql::quote($
                         list($dy, $dm, $dd) = explode('-', $e['due']);
 
                         if ($sy != 0 && $dy != 0) {
-                            for ($y = $sy; $y == $dy; $y++) {
+                            for ($y = $sy; $y <= $dy; $y++) {
                                 $entls["years"][$y][] = $e;
                             }
                         } else {
