@@ -1,0 +1,5 @@
+Odbiorcy, którzy otrzymają wiadomość: <br/><br/>
+{{foreach from=$recipients item=c}}
+{{$c['ref']}} ({{$c['email']}})<br />
+{{/foreach}}
+

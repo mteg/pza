@@ -140,7 +140,12 @@ function init_controls(element) {
                     } else {
                         input.val('');
 
-                        input.parent().append(generate_autocomplete_option(ui.item.label, input.attr('name')));
+                        // input.parent().append(generate_autocomplete_option(ui.item.label, input.attr('name')));
+                        var source = input.attr('name');
+                        if (typeof ui.item.type != 'undefined')
+                            source = ui.item.type;
+
+                        input.parent().append(generate_autocomplete_option(ui.item.label, source));
                         rebind_autocomplete_events();
                     }
 

@@ -6,7 +6,7 @@
     <input type="hidden" name="source" value="{{$source|escape:'html'}}">
     <input type="hidden" name="params" value="{{$params|escape:'html'}}">
 
-    <form action="/insider/mailing" method="POST">
+    <form action="/insider/mailing" method="POST" id="mailing_form">
     <input type="hidden" name="id" value="{{$request.id|escape:'html'}}">
         <div class="table-form checkin-form">
             {{include file="insider/field.html" i=[
@@ -19,25 +19,41 @@
 
             {{include file="insider/field.html" i=[name => "Typ wiadomości", "type" => "select", "options" => array('email')] k="type" nofit=1 size=15}}
 
-            {{include file="insider/field.html" i=[name => "Wyślij do klubów:", "ref" => "members", "type" => "list-multiple-autocomplete", "multiple" => 1] k="members" nofit=1 size=15}}
-            {{include file="insider/field.html" i=[
-                name => "Do klubów o profilu:",
-                "type" => "flags",
-                "multiple" => 1,
-                "options" =>["J" => "Jaskiniowy", "W" => "Wysokogórski", "K" => "Kanioningowy", "N" => "Narciarski", "S" => "Sportowy"]
-            ]
-            k="member_profile" nofit=1 size=15}}
-            {{include file="insider/field.html" i=[name => "Grupa adresatów:", "ref" => "rights", "type" => "list-multiple-autocomplete", "multiple" => 1] k="rights" nofit=1 size=15}}
-            {{include file="insider/field.html" i=[name => "Do osoby:", "ref" => "users", "type" => "list-multiple-autocomplete", "multiple" => 1] k="users" nofit=1 size=15}}
+            {{include file="insider/field.html" i=[name => "Odbiorcy:", "ref" => "rights", "type" => "list-multiple-autocomplete", "multiple" => 1] k="rights" nofit=1 size=15}}
+
 
             {{include file="insider/field.html" i=[name => "Tytuł wiadomości"] k="title" nofit=1 size=15}}
             {{include file="insider/field.html" i=[name => "Treść", "type" => "html"] k="message" nofit=1 size=15}}
 
             <div>
                 <input type="submit" value="Wyślij wiadomość">
+                <input id="button_recipient" type="button" class="ui-button-text" href="/insider/mailing/log" value="Pokaż odbiorców">
             </div>
         </div>
     </form>
 </div>
+
+<div id="dialog" title="Lista odbiorców"></div>
+
+<script type="text/javascript">
+$("#button_recipient").click(function() {
+    console.log($('#mailing_form').serialize());
+    $.post('/insider/mailing/recipient', $('#mailing_form').serialize(), function (data) {
+        var d = $('#dialog');
+        d.html(data);
+        d.dialog({
+            modal: true,
+            width: 600,
+            height: 400,
+            buttons: {
+                Ok: function () {
+                    $(this).dialog("close");
+                }
+            }
+        })
+    })
+});
+</script>
+
 
 {{/block}}

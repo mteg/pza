@@ -215,7 +215,10 @@ abstract class insider_action
                 $this->_menu["Kluby"][$name] = "/insider/memberships?org=" . $org . "#status=1&current=1";
 
         if(access::has("mailing"))
-            $this->_menu["Wyślij email"] = "/insider/mailing";
+            $this->_menu["Mailing"] = array(
+                "Wyślij email" => "/insider/mailing",
+                "Log wiadomości" => "/insider/mailing/log",
+            );
 
 
         $this->filter_menu($this->_menu);

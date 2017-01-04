@@ -1142,7 +1142,7 @@ abstract class insider_table extends insider_action
         foreach(array_slice($r, 0, 10) as $ent)
             $a[] = array("label" => $ent, "value" => ($term_prefix . $ent));
 
-        echo json_encode($a);
+        return $a;
     }
 
     /**
@@ -1181,7 +1181,7 @@ abstract class insider_table extends insider_action
                     $a[$ent] = array("label" => $ent, "value" => ($term_prefix . $ent));
             if(count($a) > 20) break;
         }
-        echo json_encode(array_values(array_slice($a, 0, 20)));
+        return array_values(array_slice($a, 0, 20));
     }
 
     /**
@@ -1205,7 +1205,20 @@ abstract class insider_table extends insider_action
                           $this->complete_constraints($f), "f", "f"))) > 20)
                 break;
 
-        echo json_encode(array_keys(array_slice($a, 0, 20)));
+        return array_keys(array_slice($a, 0, 20));
+    }
+
+    function complete_flags($f, $term)
+    {
+        $list = array();
+
+        foreach ($this->fields[$f]['options'] as $key => $option) {
+            if (strpos(strtolower($option), strtolower($term)) !== false) {
+                $list[] = array('label' => $option, 'value' => $key);
+            }
+        }
+
+        return $list;
     }
 
     /**
@@ -1222,13 +1235,18 @@ abstract class insider_table extends insider_action
         if(!isset($this->fields[$f])) return;
 
         if(isset($this->fields[$f]["ref"]))
-            return $this->complete_ref($f, $term);
+            echo json_encode($this->complete_ref($f, $term));
 
         if($this->fields[$f]["type"] == "list")
-            return $this->complete_list($f, $term);
+            echo json_encode($this->complete_list($f, $term));
 
         if($this->fields[$f]["consistency"])
-            return $this->complete_consistency($f, $term);
+            echo json_encode($this->complete_consistency($f, $term));
+
+        if($this->fields[$f]["type"] == "flags")
+            echo json_encode($this->complete_flags($f, $term));
+
+        return true;
     }
 
     /**
