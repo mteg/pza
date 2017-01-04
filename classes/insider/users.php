@@ -161,6 +161,7 @@ LEFT JOIN grounds AS g ON g.id = t.ground AND g.deleted = 0
 LEFT JOIN grounds AS cat ON cat.id = t.categ AND t.deleted = 0  JOIN users AS u ON u.id = t.user AND u.deleted = 0  
 WHERE t.deleted = 0  AND g.type = \"nature:climb\" AND t.user = " . vsql::quote($id) . " AND date >= DATE_FORMAT( CURRENT_DATE - INTERVAL 12 MONTH, '%Y-%m-01' ) GROUP BY t.id", "");
 
+
             return $m;
         }
 
@@ -172,6 +173,7 @@ WHERE t.deleted = 0  AND g.type = \"nature:climb\" AND t.user = " . vsql::quote(
 LEFT JOIN grounds AS g ON g.id = t.ground AND g.deleted = 0
 LEFT JOIN grounds AS cat ON cat.id = t.categ AND t.deleted = 0  JOIN users AS u ON u.id = t.user AND u.deleted = 0  
 WHERE t.deleted = 0  AND g.type = \"nature:cave\" AND t.user = " . vsql::quote($id) . " AND date >= DATE_FORMAT( CURRENT_DATE - INTERVAL 12 MONTH, '%Y-%m-01' ) GROUP BY t.id", "");
+
 
             return $m;
         }

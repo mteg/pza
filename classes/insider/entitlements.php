@@ -173,7 +173,9 @@
             $data = array();
 //            $data["right"] = vsql::get("SELECT `right` FROM entitlements WHERE deleted = 0 ORDER BY creat DESC LIMIT 1", "right", 0);
             $root = $this->root;
-            if($root == "med" || $root == "ka" || $root == "d")
+            if($root == "med")
+                $data["due"] = "";
+            else if($root == "ka" || $root == "d" || $root == "p")
                 $data["due"] = date("Y-12-31");
             else
                 $data["due"] = "9999-12-31";
