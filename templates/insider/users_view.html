@@ -14,7 +14,7 @@
             <li><a href="#tabs-3">Status w kadrze</a></li>
             <li><a href="#tabs-4">Przejścia ({{count($achievements.nature_climb)+count($achievements.nature_cave)}})</a></li>
         </ul>
-        <div id="tabs-1">
+        <div id="tabs-1" class="table-form">
 
             <div>
                 <span>Numer w systemie</span>
@@ -54,15 +54,15 @@
 
         <div id="tabs-2">
             <div>
-                <span>Uprawnienia</span>
+                <h3>Uprawnienia</h3>
                 <span class="fit">
                     {{include file="insider/user_entitlements.html" entitlements=$entitlements.other}}
                 </span>
                 <div></div>
             </div>
-
+            <br/><br/>
             <div>
-                <span>Klasy sportowe</span>
+                <h3>Klasy sportowe</h3>
                 <span class="fit">
                     {{include file="insider/user_entitlements.html" entitlements=$entitlements.c}}
                 </span>
@@ -81,7 +81,7 @@
 
         <div id="tabs-4">
             <div>
-                <span>Przejścia wspinaczkowe - ostatnie 12 m-cy</span>
+                <h3>Przejścia wspinaczkowe - ostatnie 12 m-cy</h3>
                 <span class="fit">
                     {{include file="insider/user_achievements.html" achievements=$achievements.nature_climb}}
                     </span>
@@ -89,7 +89,7 @@
             </div>
             <br/><br/>
             <div>
-                <span>Przejścia jaskiniowe - ostatnie 12 m-cy </span>
+                <h3>Przejścia jaskiniowe - ostatnie 12 m-cy </h3>
                 <span class="fit">
                     {{include file="insider/user_achievements.html" achievements=$achievements.nature_cave}}
                     </span>
