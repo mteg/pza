@@ -5,7 +5,7 @@ require_once "swiftmailer/lib/swift_required.php";
 class insider_mailing extends insider_table
 {
     public $fields = array(
-        "from" => array("options" => array("mailing@pza.org.pl" => "mailing@pza.org.pl")),
+        "from" => array("options" => array("mailing@pza.org.pl" => "mailing@pza.org.pl", "Komisja Szkolenia PZA <mailing@pza.org.pl>" => "Komisja Szkolenia PZA <mailing@pza.org.pl>")),
         "members" => array("Kluby", "ref" => "members", "by" => "name"),
         "member_profile"   =>  array("Profil klubu", "type" => "flags", "options" =>
             array("J" => "Profil klubu: Jaskiniowy",
@@ -425,8 +425,8 @@ class insider_mailing extends insider_table
 
         $message = Swift_Message::newInstance($messageTitle)
             ->setContentType('text/html')
-//            ->setFrom(array(vsql::$email_conf['sender_email']))
-            ->setFrom(array($from => 'Test'))
+            ->setFrom(array(vsql::$email_conf['sender_email'] => $from))
+//            ->setFrom(array($from => 'Test'))
             ->setTo(array($recipient))
             ->setBody(strip_tags($messageBody))
             ->addPart($messageBody, 'text/html');
