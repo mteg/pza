@@ -89,9 +89,10 @@ class insider_signup extends insider_action
                 else
                 {
                     $cat_list = array($_REQUEST["categ"]);
-                    foreach(explode(",", vsql::get("SELECT categories FROM grounds WHERE id = " . vsql::quote($_REQUEST["categ"]), "categories")) as $x_cat)
-                        if(is_numeric($x_cat))
-                            $cat_list[] = $x_cat;
+                    if($_REQUEST["categ"])
+                        foreach(explode(",", vsql::get("SELECT categories FROM grounds WHERE id = " . vsql::quote($_REQUEST["categ"]), "categories")) as $x_cat)
+                            if(is_numeric($x_cat))
+                                $cat_list[] = $x_cat;
 
                     foreach(array_reverse($cat_list) as $cat)
                         $ach_id = vsql::insert("achievements", array(

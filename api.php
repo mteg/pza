@@ -79,9 +79,9 @@ switch($op)
         foreach(vsql::retr("SELECT a.id, cat.name AS cat_name, a.position, u.surname, u.name
                             FROM grounds AS ev
                                 JOIN achievements AS a ON a.ground = ev.id AND a.deleted = 0
-                                JOIN grounds AS cat ON a.categ = cat.id
+                                LEFT JOIN grounds AS cat ON a.categ = cat.id
                                 JOIN users AS u ON u.id = a.user AND u.deleted = 0
-                                WHERE ev.type LIKE 'comp:s:%' AND ev.id = " . vsql::quote($event) .
+                                WHERE ev.type LIKE '%' AND ev.id = " . vsql::quote($event) .
                             " ORDER BY cat_name, CAST(a.position AS signed), u.surname, u.name") as $i)
         {
             if(!isset($res[$i["cat_name"]])) $res[$i["cat_name"]] = array();
