@@ -205,8 +205,10 @@ class insider_mailing extends insider_table
 
                 // TODO: fix
                 //member profile? solution for now....
-                if ($field == 'member_profile') {
-                    $ids = str_split($field_elements);
+                if (in_array($field, array('member_profile', 'custom')) && is_array($field_elements)) {
+                    foreach ($field_elements as $field_element) {
+                        $ids[] = array_search($field_element, $this->fields[$field]['options']);
+                    }
                 }
 
                 if (count($ids)) {
@@ -226,9 +228,6 @@ class insider_mailing extends insider_table
 
             // Teraz możemy wyslać wiasomości.
             $sender_name = 'send_to_' . $type;
-
-            // wysyłamy kopię maila na skrzynkę pza
-            $recipients[vsql::$email_conf['sender_email']] = vsql::$email_conf['sender_email'];
 
             $errors = array_merge($errors, $this->$sender_name($recipients, $title, $message, $from));
 
@@ -284,6 +283,13 @@ class insider_mailing extends insider_table
             if ($rval !== true) {
                 $errors[] = $rval;
             }
+        }
+
+        $append = "<div><strong>Pełna lista odbiorców:</strong> " . implode(", ", $recipients) . "<br/><br/><strong>Treść wiadomości:</strong><br/><br/>";
+
+        $rval = $this->send_email(vsql::$email_conf['sender_email'], $title, $append . $message, $from);
+        if ($rval !== true) {
+            $errors[] = $rval;
         }
 
         return $errors;
