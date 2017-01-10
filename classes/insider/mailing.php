@@ -205,8 +205,10 @@ class insider_mailing extends insider_table
 
                 // TODO: fix
                 //member profile? solution for now....
-                if ($field == 'member_profile') {
-                    $ids = str_split($field_elements);
+                if (in_array($field, array('member_profile', 'custom')) && is_array($field_elements)) {
+                    foreach ($field_elements as $field_element) {
+                        $ids[] = array_search($field_element, $this->fields[$field]['options']);
+                    }
                 }
 
                 if (count($ids)) {
