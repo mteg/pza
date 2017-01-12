@@ -4,30 +4,20 @@
 
 {{block name="body"}}
 <h1 class="login-header">Witamy wewnątrz PZA!</h1>
+{{if $subtitle}}
+<h2 class="login-header">{{$subtitle}}</h2>
+<h3 class="login-header">Przed zapisaniem Cię na zawody musimy zebrać nieco danych.
+  Najpierw zaloguj się na swoje konto w systemie PZA lub, jeśli nie posiadasz konta, wypełnij formularz rejestracyjny.</h3>
+{{/if}}
 
 <section class="gray-panel">
 
   <div class="login-center">
-    <div class="login-panel">
-      <h2>Logowanie do Systemu</h2>
-    <form action="/insider/checkin" method="post">
-      {{include file="insider/field.html" i=[name => "Nazwa użytkownika"] k="login" data=["login" => $request.login] nofit=1 size=15}}
-      {{include file="insider/field.html" i=[name => "Hasło", "type" => "password"] k="password" nofit=1 size=15}}
-
-      <div class="form-btns">
-        <input type="submit" class="btn" value="Zaloguj się">
-      </div>
-      <a href="/insider/checkin/recover">Nie pamiętam hasła</a>
-    </form>
-      <br /><h2>Nie posiadasz konta?</h2>
-      <div class="form-btns">
-        <a href="/insider/checkin/register" class="btn">Zarejestruj się</a>
-      </div>
-    </div> 
-    <div class="register-panel">
-      <h2>Zarządzanie stroną WWW</h2>
-      <a href="http://pza.org.pl/wp-login.php">Kliknij by przejść do strony logowania</a>
-    </div>
+    {{if $subtitle}}
+    {{include file="insider/login_creator.html"}}
+    {{else}}
+      {{include file="insider/login_default.html"}}
+    {{/if}}
   </div>
   
 </section>

@@ -11,6 +11,10 @@ class insider_checkin
     /* Obiekt Smarty */
     protected $S;
 
+    static $allowed_urls = array(
+        "\/insider\/files"
+    );
+
 
     /* Lekkie powtórzenie z insider_action! */
     function __construct()
@@ -30,6 +34,16 @@ class insider_checkin
     function route()
     {
         $this->login();
+    }
+
+    private function check_urls($url)
+    {
+        foreach (self::$allowed_urls as $allowed_url) {
+            if (preg_match('/' . $allowed_url . '/i', $url))
+                return true;
+        }
+
+        return false;
     }
 
     private function auth($login, $pw)
@@ -54,7 +68,13 @@ class insider_checkin
                 session_start();
                 $_SESSION["user_id"] = $udata["id"];
                 $_SESSION["adm_of"] = insider_memberships::adm_of();
-                header("Location: /insider/welcome");
+
+                // TODO: przenosimy do poprzedniej lokalizacji jeśli mamy taką możliwosć
+                if ($_REQUEST['url'] && $this->check_urls($_REQUEST['url'])) {
+                    header("Location: " . $_REQUEST["url"]);
+                } else {
+                    header("Location: /insider/welcome");
+                }
                 exit;
             }
 
@@ -87,6 +107,12 @@ class insider_checkin
             if(strlen($login) || strlen($pw))
                 $this->S->assign("err", $err);
         }
+
+        $this->S->assign('url', $_REQUEST['url']);
+
+        //TODO: debug
+        $this->S->assign("subtitle", $_REQUEST['subtitle'] ? $_REQUEST['subtitle'] : null);
+        $this->S->assign("creator", true);
 
         $this->S->display("insider/login.html");
     }
