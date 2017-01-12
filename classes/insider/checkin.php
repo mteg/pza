@@ -156,7 +156,7 @@ class insider_checkin
         }
     }
 
-    private function useradd($u)
+    private function validate_user($u)
     {
         $i = $_POST;
 
@@ -187,6 +187,14 @@ class insider_checkin
         if ($retr)
             $err['birthdate'] = 'Użytkownik o podanym nazwisku i dacie urodzenia już istnieje!';
 
+
+        return $err;
+    }
+
+    private function useradd($u)
+    {
+        $err = $this->validate_user($u);
+
         if(!count($err))
         {
             if($id = $u->update(0, array_intersect_key($i, $u->fields)))
@@ -215,7 +223,10 @@ class insider_checkin
 
     function rhelp()
     {
-        echo "AAA";
+        access::$nologin = true;
+        $u = new insider_users(true);
+
+        echo json_encode($this->validate_user($u));
     }
 
     function register()

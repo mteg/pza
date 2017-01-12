@@ -291,36 +291,30 @@ function init_controls(element) {
 function init_form_helper(element)
 {
     $('form :input', element).each(function() {
-
         $(this).on("change", function(e) {
-
             var form = $(this).parents('form');
-
-            var req_url = '';
+            var field = $(this);
+            var req_url = 'unknown';
             if (!$(form).data('helper'))
                 return;
 
             req_url = $(form).data('helper');
 
-
-            console.log("Requesting: " + req_url);
-            console.log("Data: " + $(form).serialize());
-
-            // request po pomoc
-            // zwracany json z błędami dla pól,
-            // aktualizujemy div.error
+            $.ajax({
+                'url': req_url,
+                'method': 'post',
+                'data': $(form).serialize(),
+                'dataType': 'json',
+                'success': function(data, textStatus, jqXHR) {
+                    if (data[field.attr('name')]) {
+                        field.next('div.error').html(data[field.attr('name')]);
+                        field.focus();
+                        // może jakaś animacja zwarająca uwagę na błąd?!
+                    }
+                }
+            });
         })
-
     });
-
-
-    // $('input[name="surname"],input[name="birthdate"]', container).each(function() {
-    //     $(this).on('change', function() {
-    //         if ($(this).val().length > 3) {
-    //             send request and check
-            // }
-        // })
-    // });
 }
 
 function generate_autocomplete_option(label, name)
