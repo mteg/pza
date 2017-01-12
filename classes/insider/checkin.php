@@ -213,6 +213,11 @@ class insider_checkin
                 "id", "name");
     }
 
+    function rhelp()
+    {
+        echo "AAA";
+    }
+
     function register()
     {
         access::$nologin = true;

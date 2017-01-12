@@ -283,6 +283,44 @@ function init_controls(element) {
             clearTimeout(ajax_spinner_timeout);
             $('#ajax-loading').hide();
         });
+
+    init_form_helper(element);
+}
+
+// TODO: skończyć!
+function init_form_helper(element)
+{
+    $('form :input', element).each(function() {
+
+        $(this).on("change", function(e) {
+
+            var form = $(this).parents('form');
+
+            var req_url = '';
+            if (!$(form).data('helper'))
+                return;
+
+            req_url = $(form).data('helper');
+
+
+            console.log("Requesting: " + req_url);
+            console.log("Data: " + $(form).serialize());
+
+            // request po pomoc
+            // zwracany json z błędami dla pól,
+            // aktualizujemy div.error
+        })
+
+    });
+
+
+    // $('input[name="surname"],input[name="birthdate"]', container).each(function() {
+    //     $(this).on('change', function() {
+    //         if ($(this).val().length > 3) {
+    //             send request and check
+            // }
+        // })
+    // });
 }
 
 function generate_autocomplete_option(label, name)
