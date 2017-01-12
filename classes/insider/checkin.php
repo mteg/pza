@@ -157,6 +157,10 @@ class insider_checkin
                 if(!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $i["member_from"]))
                     $err["member_from"] = "Niewłaściwa data (RRRR-MM-DD)";
 
+        $retr = vsql::get('select id from users where surname=' . vsql::quote($i['surname']). ' and birthdate=' . vsql::quote($i['birthdate']));
+        if ($retr)
+            $err['birthdate'] = 'Użytkownik o podanym nazwisku i dacie urodzenia już istnieje!';
+
         if(!count($err))
         {
             if($id = $u->update(0, array_intersect_key($i, $u->fields)))
