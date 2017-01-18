@@ -2,14 +2,14 @@
   <h2><input type="radio" name="action" checked="checked" data-box="login-box"> Posiadam konto</h2>
   <h2>Logowanie do Systemu</h2>
   <div id="login-box">
-    <form action="/insider/checkin?url={{$url}}" method="post">
+    <form action="/insider/checkin?url={{$url}}&subtitle={{$subtitle}}&description={{$description}}" method="post">
       {{include file="insider/field.html" i=[name => "Nazwa użytkownika"] k="login" data=["login" => $request.login] nofit=1 size=15}}
       {{include file="insider/field.html" i=[name => "Hasło", "type" => "password"] k="password" nofit=1 size=15}}
 
       <div class="form-btns">
         <input type="submit" class="btn" value="Zaloguj się">
       </div>
-      <a href="/insider/checkin/recover?url={{$url}}">Nie pamiętam hasła</a>
+      <a href="/insider/checkin/recover?url={{$url}}&subtitle={{$subtitle}}&description={{$description}}">Nie pamiętam hasła</a>
     </form>
   </div>
 </div>
@@ -18,7 +18,7 @@
   <div id="register-box">
     <h2>Nie posiadasz konta?</h2>
     <div class="form-btns">
-      <a href="/insider/checkin/register?url={{$url}}" class="btn">Zarejestruj się</a>
+      <a href="/insider/checkin/register?url={{$url}}&subtitle={{$subtitle}}&description={{$description}}" class="btn">Zarejestruj się</a>
     </div>
   </div>
 </div>

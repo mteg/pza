@@ -307,6 +307,7 @@ function init_form_helper(element)
                 'dataType': 'json',
                 'success': function(data, textStatus, jqXHR) {
                     if (data[field.attr('name')]) {
+                        field.addClass('err');
                         field.next('div.error').html(data[field.attr('name')]);
                         field.focus();
                         // może jakaś animacja zwarająca uwagę na błąd?!

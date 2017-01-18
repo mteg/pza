@@ -10,6 +10,7 @@ class insider_signup extends insider_action
                 WHERE g.deleted = 0 AND g.id = " . vsql::quote($id));
 
         access::$subtitle = 'Zapis na imprezę PZA: ' . $info['name'];
+        access::$description = 'Przed zapisaniem Cię na zawody musimy zebrać nieco danych. Najpierw zaloguj się na swoje konto w systemie PZA lub, jeśli nie posiadasz konta, wypełnij formularz rejestracyjny.';
 
         parent::__construct();
     }

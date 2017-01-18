@@ -198,6 +198,15 @@ WHERE t.deleted = 0  AND g.type = \"nature:cave\" AND t.user = " . vsql::quote($
             return $m;
         }
 
+        static function get_med_max($id, $extra_sql = "")
+        {
+            return vsql::get("SELECT IF(MAX(e.due) = '9999-12-31', '', MAX(e.due)) as due
+                            FROM pza.entitlements AS e
+                            JOIN pza.rights AS r ON r.id = e.right
+                            WHERE e.user = " . vsql::quote($id) . $extra_sql . " and short like 'med:%'" .
+            " AND e.deleted = 0 ORDER BY e.starts, e.due, r.name", "due");
+        }
+
         static function list_entitlements_groups($id)
         {
             $entls = array("med" => array(), "c" => array(), "ka" => array(), "d" => array(), "other" => array());
@@ -266,7 +275,8 @@ WHERE t.deleted = 0  AND g.type = \"nature:cave\" AND t.user = " . vsql::quote($
                     "achievements" => array(
                         "nature_climb" => $this->list_nature_climb($id),
                         "nature_cave" => $this->list_nature_cave($id)
-                    )
+                    ),
+                    "med_max" => $this->get_med_max($id)
                 ));
             }
             else

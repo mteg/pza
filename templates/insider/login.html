@@ -6,10 +6,10 @@
 <h1 class="login-header">Witamy wewnątrz PZA!</h1>
 {{if $subtitle}}
 <h2 class="login-header">{{$subtitle}}</h2>
-<h3 class="login-header">Przed zapisaniem Cię na zawody musimy zebrać nieco danych.
-  Najpierw zaloguj się na swoje konto w systemie PZA lub, jeśli nie posiadasz konta, wypełnij formularz rejestracyjny.</h3>
 {{/if}}
-
+{{if $description}}
+<h3 class="login-header">{{$description}}</h3>
+{{/if}}
 <section class="gray-panel">
 
   <div class="login-center">

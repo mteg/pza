@@ -12,7 +12,7 @@ class insider_checkin
     protected $S;
 
     static $allowed_urls = array(
-        "\/insider\/files"
+        "\/insider\/signup\?id=\d"
     );
 
 
@@ -42,7 +42,7 @@ class insider_checkin
             if (preg_match('/' . $allowed_url . '/i', $url))
                 return true;
         }
-
+        die ("jednak nie...");
         return false;
     }
 
@@ -112,6 +112,7 @@ class insider_checkin
 
         //TODO: debug
         $this->S->assign("subtitle", $_REQUEST['subtitle'] ? $_REQUEST['subtitle'] : null);
+        $this->S->assign("description", $_REQUEST['description'] ? $_REQUEST['description'] : null);
         $this->S->assign("creator", true);
 
         $this->S->display("insider/login.html");
@@ -185,7 +186,8 @@ class insider_checkin
 
         $retr = vsql::get('select id from users where surname=' . vsql::quote($i['surname']). ' and birthdate=' . vsql::quote($i['birthdate']));
         if ($retr)
-            $err['birthdate'] = 'Użytkownik o podanym nazwisku i dacie urodzenia już istnieje!';
+            $err['birthdate'] = 'Użytkownik o podanym nazwisku i dacie urodzenia już istnieje! ' .
+                                'Kliknij <a href="/insider/checkin/recover?url=' . $_REQUEST['url']. '&subtitle=' . $_REQUEST['subtitle']. '&description=' . $_REQUEST['description']. '">TU</a> by odzyskać hasło';
 
 
         return $err;
@@ -206,7 +208,11 @@ class insider_checkin
                 insider_passwd::passwd($id, $i["pw1"]);
                 $this->subscribe($i["member"], $i["member_from"]);
 
-                header("Location: /insider/welcome");
+                if ($_REQUEST['url'] && $this->check_urls($_REQUEST['url'])) {
+                    header("Location: " . $_REQUEST["url"]);
+                } else {
+                    header("Location: /insider/welcome");
+                }
             }
 
         }
@@ -246,10 +252,14 @@ class insider_checkin
         }
 
         $this->S->assign("member_list", $this->member_list());
+        $this->S->assign('url', $_REQUEST['url']);
+        $this->S->assign("subtitle", $_REQUEST['subtitle'] ? $_REQUEST['subtitle'] : null);
+        $this->S->assign("description", $_REQUEST['description'] ? $_REQUEST['description'] : null);
 
         $this->S->assign("u", $u);
         $this->S->display("insider/register.html");
     }
+
     function recover()
     {
         access::$nologin = true;
@@ -316,8 +326,20 @@ class insider_checkin
                             vsql::update("users", array("login" => $_POST["login"]), $uid);
                         insider_passwd::passwd($uid, $_POST["pw1"]);
                         echo "passwd: $uid, " . $_POST["pw1"];
+
+                        //TODO: zalogować użytkownika
+                        // przejść do URL jeśli zdefiniowany
+                        $this-$this->auth($_POST['login'], $_POST['pw1']);
+
+                        // TODO: przenosimy do poprzedniej lokalizacji jeśli mamy taką możliwosć
+                        if ($_REQUEST['url'] && $this->check_urls($_REQUEST['url'])) {
+                            header("Location: " . $_REQUEST["url"]);
+                            return;
+                        }
+
                         $this->S->assign("title", "Zmiana hasła zakończona");
-                        $this->S->assign("msg", "Udało się zmienić hasło! Teraz w końcu możesz <a href='/insider/checkin'>zalogować się.</a>");
+//                        $this->S->assign("msg", "Udało się zmienić hasło! Teraz w końcu możesz <a href='/insider/checkin'>zalogować się.</a>");
+                        $this->S->assign("msg", "Udało się zmienić hasło! Zostałeś automatycznie zalogowany na swoje konto.</a>");
                         $this->S->display("insider/success.html");
                         return;
                     }
@@ -349,6 +371,10 @@ class insider_checkin
             $this->S->assign("err", $err);
             $this->S->assign("data", $_POST);
         }
+
+        $this->S->assign("url", $_REQUEST['url'] ? $_REQUEST['url'] : null);
+        $this->S->assign("subtitle", $_REQUEST['subtitle'] ? $_REQUEST['subtitle'] : null);
+        $this->S->assign("description", $_REQUEST['description'] ? $_REQUEST['description'] : null);
         $this->S->display("insider/recover.html");
     }
 

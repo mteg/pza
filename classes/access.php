@@ -7,6 +7,7 @@ class access
     private static $rights = false, $username = false;
     public static $nologin = false;
     public static $subtitle = null;
+    public static $description = null;
 
 
     static function aliases()
@@ -35,6 +36,10 @@ class access
 
             if (self::$subtitle) {
                 $url .= '&subtitle=' . self::$subtitle;
+            }
+
+            if (self::$description) {
+                $url .= '&description=' . self::$description;
             }
 
             header("Location: " . $url);
