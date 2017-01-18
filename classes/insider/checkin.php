@@ -42,7 +42,7 @@ class insider_checkin
             if (preg_match('/' . $allowed_url . '/i', $url))
                 return true;
         }
-        die ("jednak nie...");
+        
         return false;
     }
 
