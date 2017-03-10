@@ -21,6 +21,14 @@
             </span>
             <div></div>
         </div>
+        <div>
+            <span>... lub wklej treść</span>
+            <span>
+            <textarea name="results" rows="10" cols="50">{{$request.results|escape:'html'}}</textarea>
+            <div class="error">{{if $err.results}}{{$err.results}}{{/if}}</div>
+            </span>
+            <div></div>
+        </div>
         {{foreach from=$cols item=i key=k}}
         {{include file="insider/field.html" i=$i k=$k nofit=1}}
         {{/foreach}}

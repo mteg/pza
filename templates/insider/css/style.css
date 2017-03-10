@@ -658,3 +658,23 @@ div.upcoming > div {
 div.upcoming > div p {
     padding-top: 3pt;
 }
+
+table.import {
+  border-collapse: collapse;
+}
+
+table.import tr.even {
+  background-color: #f0f0f0;
+}
+
+table.import tr.odd {
+  background-color: #e8e8e8;
+}
+
+table.import div.error {
+  color: #800;
+}
+
+table.import tr.line td {
+  font-family: monospace;
+}

@@ -9,8 +9,8 @@ class insider_signup extends insider_action
                                 AND " . vsql::id_condition($cats, "g.id") . " ORDER BY g.options");
         $user_cats = array();
         $age = substr($event_date, 0, 4) - substr($user_info["birthdate"], 0, 4);
-        if(substr($user_info["birthdate"], 5) < substr($event_date, 5))
-            $age -= 1;
+//        if(substr($user_info["birthdate"], 5) < substr($event_date, 5))
+//            $age -= 1;
         foreach($all_cats as $id => $cat)
         {
             foreach(explode("\n", $cat["options"]) as $l)

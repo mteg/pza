@@ -241,7 +241,7 @@
                         if(count($cat_list))
                         {
                             $this->main_selector = "categ";
-                            $this->main_selection = $cat_list;
+                            $this->main_selection = $cat_list + array("" => "--- wszystkie ---");
                         }
                         else
                             $this->add_columns("categ");
@@ -418,7 +418,8 @@
             }
 
             if(isset($_REQUEST["selector"]))
-                $query .= " AND t.categ = " . vsql::quote($_REQUEST["selector"]);
+                if(strlen($_REQUEST["selector"]))
+                    $query .= " AND t.categ = " . vsql::quote($_REQUEST["selector"]);
 
 
             $user = $_REQUEST["user"];
@@ -756,7 +757,7 @@
                 $col_list[$i] = "Kolumna " . ($i + 1) . " (" . chr(ord("A") + $i) . ")";
 
             foreach(array(
-                        "id" => "Identyfikator użytkownika",
+                        "id" => "Identyfikator zapisu",
                         "surname" => "Nazwisko",
                         "duration" => "+Czas",
                         "position" => "+Miejsce",
@@ -792,16 +793,22 @@
 
             $this->S->assign("colparams", implode("&", $colparams));
 
+            $res_text = array();
             if(isset($_FILES["file"]))
             {
-                if(!file_exists($fname = $_FILES["file"]["tmp_name"]))
+                if (!file_exists($fname = $_FILES["file"]["tmp_name"]))
                     $err["file"] = "Problem z przesłaniem pliku (" . $_FILES["file"]["error"] . ")";
                 else
-                {
-                    $this->process_import(file($fname), $cols);
-                    $this->w("achievements_import2.html");
-                    exit;
-                }
+                    $res_text = file($fname);
+            }
+
+            if(!count($res_text)) $res_text = explode("\n", $_REQUEST["results"]);
+
+            if(strlen(trim(implode("", $res_text))))
+            {
+                $this->process_import($res_text, $cols);
+                $this->w("achievements_import2.html");
+                exit;
             }
 
             if(isset($_REQUEST["lines"]))
