@@ -17,11 +17,11 @@
     <tr>
         <td>{{counter}}.</td>
         <td>{{$i.name|escape:'html'}}
-            <br><small>{{$i.city}}{{if $i.address}}, {{$i.address}}{{/if}} {{if $i.link}}<a href="{{$i.link}}">| informacje</a>{{/if}}</small></td>
+            <br><small>{{$i.city}}{{if $i.address}}, {{$i.address}}{{/if}} {{if $i.links.0}}<a href="{{$i.links.0}}">| informacje</a>{{/if}}</small></td>
 
         <td>{{$i.date}}</td>
-        <td>{{if $i.open}}<a href="https://nowe.pza.org.pl/insider/signup?id={{$k}}">zgłoś się!</a>{{else}}<i>zamknięte</i>{{/if}}</td>
-        <td>{{if $results[$i.id]}}<a href="wyniki?event={{$i.id}}">wyniki</a>{{else}}<a href="zgloszenia?event={{$i.id}}">lista zgłoszeń</a>{{/if}}</td>
+        <td>{{if $i.links.1}}<a href="{{$i.links.1}}">zgłoś się!</a>{{else}}{{if $i.open}}<a href="https://nowe.pza.org.pl/insider/signup?id={{$k}}">zgłoś się!</a>{{else}}<i>zamknięte</i>{{/if}}{{/if}}</td>
+        <td>{{if $i.links.2}}<a href="{{$i.links.2}}">wyniki</a>{{else}}{{if $results[$i.id]}}<a href="wyniki?event={{$i.id}}">wyniki</a>{{else}}<a href="zgloszenia?event={{$i.id}}">lista zgłoszeń</a>{{/if}}{{/if}}</td>
     </tr>
     {{/foreach}}
 </table>

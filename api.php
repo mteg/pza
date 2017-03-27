@@ -61,6 +61,9 @@ switch($op)
         else
             $evts = array();
 
+        foreach($evts as $evid => $evdata)
+            $evts[$evid]["links"] = explode("|", $evdata["link"]);
+
         $have_results = vsql::id_retr(array_keys($evts), "a.ground", "SELECT a.ground, a.id FROM achievements AS a WHERE
               a.deleted = 0 AND a.position = 1 AND ", "ground", "", "id");
 

@@ -92,7 +92,7 @@
                         $this->remove_fields("creat,massif,summit");
 
                         $ach_caption = ($family != "comp" ? "" : "Wyniki");
-                        $this->fields["options"][0] = "Link do informacji";
+                        $this->fields["options"][0] = "Linki (informacje|zapisy|wyniki)";
                         $this->columns = array("name", "city", "start",  "reguntil");
                         $this->fields["difficulty"][0] = "Waga zawodów";
                         break;
