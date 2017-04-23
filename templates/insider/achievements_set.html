@@ -1,0 +1,50 @@
+{{extends "insider/action.html"}}
+{{block name="content"}}
+<h2>Edytuj wyniki</h2>
+
+{{if $err}}
+<div class="error">
+    Podczas przetwarzania formularza wystąpiły następujące błędy:
+    {{foreach from=$err item=i key=k}}
+    <div class="notification error">[{{$k}}] {{$i|escape:'html'}}</div>
+    {{/foreach}}
+</div>
+{{/if}}
+
+<form action="" method="POST">
+    <input type="hidden" name="ground" value="{{$request.ground}}">
+{{foreach from=$form item=i key=grp}}
+<h2>{{$grp|escape:'html'}}</h2>
+
+
+<table class="plain">
+<thead>
+<tr>
+    <th>Lp.</th>
+    <th>Nazwisko</th>
+    <th>Imię</th>
+    <th>Data ur.</th>
+    <th>Pozycja</th>
+    <th>Punkty</th>
+    <th>Czas</th>
+</tr>
+</thead>
+<tbody>
+{{foreach from=$i item=j key=osid}}
+<tr>
+    <td>{{$j@iteration}}.</td>
+    <td>{{$j.surname|escape:'html'}}</td>
+    <td>{{$j.name|escape:'html'}}</td>
+    <td>{{$j.birthdate}}</td>
+    <td><input type="text" name="data[{{$osid}}][position]" size=3 value="{{$data.$osid.position|escape:'html'}}" class="right"></td>
+    <td><input type="text" name="data[{{$osid}}][points]" size=3 value="{{$data.$osid.points|escape:'html'}}" class="right"></td>
+    <td><input type="text" name="data[{{$osid}}][duration]" size=3 value="{{$data.$osid.duration|escape:'html'}}" class="right"></td>
+</tr>
+{{/foreach}}
+</tbody>
+</table>
+
+{{/foreach}}
+<input type="submit" value="Zapisz">
+</form>
+{{/block}}

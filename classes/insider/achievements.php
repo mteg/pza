@@ -224,10 +224,14 @@
                         $this->add_columns("duration,position,points");
                         $this->order = "categ, position, points, surname, name";
                         $this->buttons["<classpath>/competitors"] = array("Lista startowa", "target" => "_self", "icon" => "list");
-                        if(access::has("import(achievements)") && $ground)
+                        if(access::has("import(achievements)") && $ground) {
                             $this->buttons["<classpath>/import"] =
                                 array("Import wyników", "target" => "_blank",
                                     "icon" => "arrow-1-s");
+                            $this->buttons["<classpath>/set"] =
+                                array("Edycja wyników", "target" => "_blank",
+                                    "icon" => "arrow-1-s");
+                        }
                         $this->subtitle = "Wyniki";
                     }
 
@@ -825,7 +829,80 @@
                 $this->S->assign("data", array("id" => 0, "surname" => 2, "position" => 4));
             $this->w("achievements_import.html");
         }
+        public function set()
+        {
+            access::ensure("import(achievements)");
 
+            if (!($r = $_REQUEST["ground"]))
+                die("ERR Nie wskazano identyfikatora zawodów");
+
+            $form = array();
+            $orig_data = vsql::retr("SELECT u.surname, u.name, u.birthdate, a.id, a.position, a.points, a.duration, c.name AS category
+                            FROM achievements AS a 
+                             JOIN users AS u ON u.id = a.user  AND u.deleted = 0
+                             JOIN grounds AS c ON c.id = a.categ AND c.deleted = 0
+                              WHERE a.ground = " . vsql::quote($r) . " ORDER BY c.name, a.position, u.surname, u.name");
+            foreach($orig_data as $id => $i) {
+                $form[$i["category"]][$id] = $i;
+                $orig_data[$id]["duration"] = $this->sec2dur($i["duration"]);
+            }
+
+            $this->S->assign("form", $form);
+            if($_SERVER["REQUEST_METHOD"] == "POST")
+            {
+                $data = $_REQUEST["data"]; $err = array(); $updates = array();
+                $data = array_intersect_key($data, $orig_data);
+                vsql::query("START TRANSACTION");
+                foreach($data as $osid => $info)
+                {
+                    $updata = array(); $od = $orig_data[$osid];
+                    foreach(array("position", "duration", "points") as $k)
+                        if($info[$k] != $od[$k])
+                        {
+                            if($k == "duration") {
+                                if (($info[$k] = $this->dur2sec($info[$k])) == -1) {
+                                    $err[$osid] = "Nieprawidłowy wpis dla '" . $orig_data[$osid]['surname'] . "', " . $data[$osid][$k];
+                                }
+                            }
+                            else if(!is_numeric($info[$k]))
+                                $err[$osid] = "Nieprawidłowy wpis dla '" . $orig_data[$osid]['surname'] . "', " . $data[$osid][$k];
+
+                            if(!isset($err[$osid]))
+                                $updata[$k] = $info[$k];
+                        }
+
+                    if(count($updata))
+                        $updates[$osid] = $updata;
+                }
+
+                if(count($err))
+                {
+                    vsql::query("ROLLBACK");
+                    $this->S->assign("data", $data);
+                    $this->S->assign("err", $err);
+                }
+                else
+                {
+                    foreach($updates as $osid => $updata)
+                        $this->update($osid, $updata);
+
+                    vsql::query("COMMIT");
+                    header("Location: /insider/achievements?lrole=nf&ground=" . $_REQUEST["ground"]);
+                    exit;
+                }
+            }
+            else
+                $this->S->assign("data", $orig_data);
+            /*
+            if(1) {
+                header("Content-type: text/plain; charset=utf-8");
+                print_r($form);
+                exit;
+            }
+            */
+
+            $this->w("achievements_set.html");
+        }
         public function results()
         {
             header("Location: /insider/achievements?lrole=nf&ground=" . $_REQUEST["ground"]);
