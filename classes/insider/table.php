@@ -468,6 +468,8 @@ abstract class insider_table extends insider_action
         if(!strlen($date))
             return vsql::quote($enddate ? "2086-01-01" : "0000-00-00");
 
+        if($date == "y") $date = date("Y");
+
         if(preg_match('/^([0-9]{4})$/', $date))
             $date .= ($enddate ? "-12-31" : "-01-01");
 

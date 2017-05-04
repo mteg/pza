@@ -678,3 +678,5 @@ table.import div.error {
 table.import tr.line td {
   font-family: monospace;
 }
+
+h2.no-menu { margin-top: 20pt; }

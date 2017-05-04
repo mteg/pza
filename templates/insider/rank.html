@@ -9,31 +9,6 @@
         {{html_options name="selector" options=$ranks selected=$request.id}}
     </div>
         <table class="table-table">
-            <tr>
-                <th>Miejsce</th>
-                <th>Osoba</th>
-                <th>Punkty</th>
-                {{foreach from=$events item=ei key=ek}}
-                <th>
-                    {{$ei.event_city}}<br>
-                    {{$ei.event_date}}
-                </th>
-                {{/foreach}}
-            </tr>
-
-{{foreach from=$results item=i key=k}}
-        <tr>
-            <td>{{$i.position}}</td>
-            <td>{{$i.user_name|escape:'html'}}</td>
-            <td>{{$i.points|round:2|number_format:2}}</td>
-            {{foreach from=$events item=ei key=ek}}
-            <td>
-                {{if $i.scores.$ek.points}}
-                {{$i.scores.$ek.points|round:2|number_format:2}}
-                {{/if}}
-            </td>
-            {{/foreach}}
-        </tr>
-{{/foreach}}
+            {{include file="insider/rank_table.html"}}
         </table>
 {{/block}}

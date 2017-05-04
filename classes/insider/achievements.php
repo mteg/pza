@@ -213,6 +213,12 @@
                     {
                         $this->remove_fields("points,position,duration,style,date");
                         $this->order = "surname, name";
+                        if(access::has("import(achievements)") && $ground) {
+                            $this->buttons["<classpath>/load"] =
+                                array("Import", "target" => "_blank",
+                                    "icon" => "arrow-1-s");
+
+                        }
                         $this->buttons["<classpath>/results"] = array("Wyniki", "target" => "_self", "icon" => "signal");
                         $this->subtitle = "Lista startowa";
                         $this->columns["member"] = array("Klub", "field" => "lm.member");
@@ -231,6 +237,9 @@
                             $this->buttons["<classpath>/set"] =
                                 array("Edycja wyników", "target" => "_blank",
                                     "icon" => "arrow-1-s");
+
+                            $this->actions["<classpath>/score"] =
+                                array("Przypisz punkty", "target" => "_top", "multiple" => true);
                         }
                         $this->subtitle = "Wyniki";
                     }
@@ -242,6 +251,9 @@
                                       JOIN grounds AS g ON g.id = a.categ AND g.deleted = 0
                                       WHERE a.role < 100 AND a.ground = " . vsql::quote($ground) .
                         " AND a.deleted = 0 GROUP BY g.id ORDER BY g.name", "id", "capt");
+                        if(isset($this->fields["categ"]["options"]))
+                            $cat_list += $this->fields["categ"]["options"];
+
                         if(count($cat_list))
                         {
                             $this->main_selector = "categ";
@@ -829,6 +841,99 @@
                 $this->S->assign("data", array("id" => 0, "surname" => 2, "position" => 4));
             $this->w("achievements_import.html");
         }
+
+        private function process_load($res, $gnd, $cat)
+        {
+            $res = strtr($res, array("\r" => "\n", "   " => "\t", ";" => "\t", "/" => "\t", "," => "\t",  ":" => "\t"));
+            $lines = array();
+            foreach(explode("\n", $res) as $ent)
+            {
+                $ent = trim($ent); if(!strlen($ent)) continue;
+                $a = array_map("trim", explode("\t", $ent));
+                if(count($a) != 4)
+                {
+                    $lines[$ent] = "$ent: Niewłaściwa liczba kolumn (jest: " . count($a) . ", ma być: 4)";
+                    continue;
+                }
+                list($surname, $name, $date, $phone) = $a;
+                $date = date("Y-m-d", strtotime($date));
+                if(!count($os = vsql::retr("SELECT id, CONCAT(surname, ' ', name, ' (', birthdate, ')') AS descr FROM users WHERE deleted = 0 AND surname = " . vsql::quote($surname) . " AND name = " . vsql::quote($name) . " AND birthdate = " . vsql::quote($date), "id", "descr")))
+                    $os = vsql::retr("SELECT id, CONCAT(surname, ' ', name, ' (', birthdate, ')') AS descr FROM users WHERE deleted = 0 AND birthdate = " . vsql::quote($date) . " AND phone = " . vsql::quote($phone), "id", "descr");
+
+                $othopts= array("" => "--- Nie dodawaj",
+                            "n" . $surname . "/" . $name . "/" . $date . "/" . $phone => "--- Dodaj nową osobę"
+                );
+
+                if(count($os) == 1)
+                    $os = $os + $othopts;
+                else
+                    $os = $othopts + $os;
+                $lines[$ent] = $os;
+            }
+            return $lines;
+        }
+
+        public function load()
+        {
+            access::ensure("import(achievements)");
+
+            if(!($gnd = $_REQUEST["ground"]))
+                die("ERR Nie wskazano identyfikatora zawodów");
+            if(!($cat = $_REQUEST["selector"]))
+                die("ERR Nie wskazano kategorii");
+
+            $this->S->assign(array(
+                "cinfo" => vsql::get("SELECT * FROM grounds WHERE deleted = 0 AND id = " . vsql::quote($cat)),
+                "ginfo" => vsql::get("SELECT * FROM grounds WHERE deleted = 0 AND id = " . vsql::quote($gnd)),
+            ));
+
+
+            if(isset($_REQUEST['results']))
+                $res = $_REQUEST["results"];
+            else
+                $res = "";
+
+            if(strlen(trim($res)))
+            {
+                $lines = $this->process_load($res, $gnd, $cat);
+
+                /*
+
+                print_r($lines);
+                print_r($err);
+
+                */
+
+                $this->S->assign("lines", $lines);
+
+                $this->w("achievements_load2.html");
+                exit;
+            }
+            else if(isset($_REQUEST["lines"]))
+            {
+                foreach($_REQUEST["lines"] as $ent)
+                {
+                    if(is_numeric($ent))
+                        vsql::insert("achievements", array("ground" => $gnd, "categ" => $cat, "user" => $ent));
+                    else if($ent{0} == "n")
+                    {
+                        list($surname, $name, $dob, $phone) = explode("/", substr($ent, 1));
+                        $u = new insider_users;
+                        $ent = $u->update(0, array("surname" => $surname, "name" => $name, "birthdate" => $dob, "phone" => $phone));
+                        vsql::insert("achievements", array("ground" => $gnd, "categ" => $cat, "user" => $ent));
+                    }
+                }
+                header("Location: /insider/achievements?ground=$gnd&selector=$cat");
+                exit;
+            }
+
+
+            $this->w("achievements_load.html");
+        }
+
+
+
+
         public function set()
         {
             access::ensure("import(achievements)");
@@ -947,6 +1052,69 @@
             }
 
             parent::delete();
+        }
+
+        static function score($ids = false)
+        {
+            access::ensure("scoring");
+            $score_map = array(
+                0, 100, 80, 65, 55, 51, 47, 43, 40, 37, 34,
+                31, 28, 26, 24, 22, 20, 18, 16, 14, 12,
+                10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+            );
+
+            if(!is_array($ids)) $ids = $_REQUEST["id"];
+
+            $cnt = 0;
+            $results = vsql::id_retr($ids, "id", "SELECT id, position, points, ground, categ FROM achievements WHERE deleted = 0 AND ");
+
+            if($_REQUEST["debug"])
+                header("Content-type: text/plain; charset=utf-8");
+
+            /* Grounds/categories */
+            $gcats = array();
+            foreach($results as $i)
+                $gcats[$i["ground"]] = array();
+
+            /* Per-category, per-ground, per-position counts */
+            foreach(vsql::retr($qry = "SELECT COUNT(DISTINCT a.id) AS n, a.ground, a.categ, a.position
+                    FROM achievements AS a
+                    JOIN users AS u ON u.id = a.user AND u.deleted = 0 WHERE a.deleted = 0 AND " .
+                    vsql::id_condition(array_keys($gcats), "ground") . " GROUP BY a.ground, a.categ, a.position", "") as $e)
+                $gcats[$e["ground"]][$e["categ"]][$e["position"]] = $e["n"];
+/*
+            print_r($gcats);
+            echo $qry;
+*/
+
+            foreach($results as $i)
+            {
+                $pos = $i["position"];
+                if(!is_numeric($pos))
+                    $points = 0;
+                else if($pos <= 0)
+                    $points = 0;
+                else if(!isset($score_map[$pos]))
+                    $points = 0;
+                else
+                {
+                    $n = $gcats[$i["ground"]][$i["categ"]][$pos];
+                    if(!is_numeric($n)) $n = 1;
+                    $points = 0;
+                    for($j = 0; $j < $n; $j++)
+                        $points += $score_map[$pos + $j];
+                    $points = floor($points / $n);
+                }
+
+                if($_REQUEST["debug"])
+                    echo "Assign $pos = $points ($n x)\n";
+                else if($points != $i["points"])
+                {
+                    vsql::update("achievements", array("points" => $points), $i["id"]);
+                    $cnt++;
+                }
+            }
+            echo json_encode(array("msg" => "Przeliczono wyników: $cnt"));
         }
 
     }

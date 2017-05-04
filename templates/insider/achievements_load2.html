@@ -1,0 +1,51 @@
+{{extends "insider/action.html"}}
+{{block name="body"}}
+<h2 class="no-menu">Import listy uczestników</h2>
+<p>
+    Poniższe informacje zostały odczytane z przesłanych danych.
+</p>
+<p>
+    <b>Uwaga: dane nie zostały jeszcze zapisane do bazy PZA!</b>  Sprawdź poprawność
+    przetwarzania pliku, a następnie zatwierdź wczytanie listy do bazy przyciskiem na dole strony.
+</p>
+
+<div>
+    Impreza: <b>{{$ginfo.name}}</b>
+</div>
+<div>
+    Kategoria: <b>{{$cinfo.name}}</b>
+</div>
+<form action="{{$source}}/load?{{$params}}" method="POST" enctype="multipart/form-data" >
+    <input type="hidden" name="ground" value="{{$request.ground}}">
+    <input type="hidden" name="selector" value="{{$request.selector}}">
+
+<table class="import">
+<tr>
+    <th>#</th>
+    <th>Treść linii</th>
+    <th>Propozycja</th>
+</tr>
+{{foreach from=$lines item=i key=k}}
+<tr class="line{{if $i@iteration is even}} even{{/if}}">
+    <td>{{$i@iteration}}</td>
+    <td>{{$k|escape:'html'}}
+    </td>
+    <td>
+        {{if is_array($i)}}
+            {{html_options name="lines[]" options=$i}}
+        {{else}}
+            <div class="error">{{$i}}</div>
+        {{/if}}
+    </td>
+</tr>
+{{foreachelse}}
+<tr>
+    <td>&nbsp;</td>
+    <td><i>Brak danych wejściowych!</i></td>
+    <td>&nbsp;</td>
+</tr>
+{{/foreach}}
+</table>
+<input type="submit" value="Zatwierdź">
+</form>
+{{/block}}

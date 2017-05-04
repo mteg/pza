@@ -98,7 +98,7 @@ abstract class insider_action
         ),
         "Wspinaczka sportowa" => array(
             "Nadchodzące zawody" => "/insider/upcoming?type=comp:s:pza",
-            "Zawody krajowe" => "/insider/grounds?type=comp:s:pza",
+            "Zawody krajowe" => "/insider/grounds?type=comp:s:pza#start=y",
             "Zawody międzynarodowe" => "/insider/grounds?type=comp:s:other",
             "Badania lekarskie" => "/insider/entitlements?family=med:s|entmgr(med:s)",
             "Licencje" => "/insider/entitlements?family=l:s|entmgr(l:s)",

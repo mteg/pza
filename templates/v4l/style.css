@@ -498,11 +498,11 @@ a {text-decoration: none;}
 
 .instr td:first-child + td {width: 130px;}
 
-.instr tr:hover {color: #F12737;}
+.instr tr:hover, .rank tr:hover {color: #F12737;}
 
 .instr tr:hover a {color: #F12737;}
 
-.instr tr:hover td:first-child {color: #242736;}
+.instr tr:hover td:first-child, .rank tr:hover td:first-child {color: #242736;}
 
 .baner-top .widget-title {display:none;}
 

@@ -105,6 +105,12 @@ switch($op)
         $S->display("api/members.html");
         break;
 
+    case "ranking":
+
+        $S->assign(insider_rank::get_rank($_REQUEST["id"]));
+        $S->display("api/ranking.html");
+        break;
+
     case "officials":
     default:
 

@@ -411,33 +411,7 @@
         function score()
         {
             access::ensure("scoring");
-            $score_map = array(
-                0, 100, 80, 65, 55, 51, 47, 43, 40, 37, 34,
-                31, 28, 26, 24, 22, 20, 18, 16, 14, 12,
-                10, 9, 8, 7, 6, 5, 4, 3, 2, 1
-            );
-
-            $cnt = 0;
-            $results = vsql::id_retr($_REQUEST["id"], "ground",
-                "SELECT id, position, points FROM achievements WHERE deleted = 0 AND ");
-            foreach($results as $i)
-            {
-                $pos = $i["position"];
-                if(!is_numeric($pos))
-                    $points = 0;
-                else if($pos <= 0)
-                    $points = 0;
-                else if(!isset($score_map[$pos]))
-                    $points = 0;
-                else
-                    $points = $score_map[$pos];
-
-                if($points != $i["points"])
-                {
-                    vsql::update("achievements", array("points" => $points), $i["id"]);
-                    $cnt++;
-                }
-            }
-            echo json_encode(array("msg" => "Przeliczono wyników: $cnt"));
+            $achid = vsql::retr("SELECT id FROM achievements WHERE deleted = 0 AND " . vsql::id_condition($_REQUEST["id"], "ground"));
+            insider_achievements::score(array_keys($achid));
         }
     }

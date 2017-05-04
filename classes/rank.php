@@ -1,6 +1,7 @@
 <?
     abstract class rank
     {
+
         function update($id)
         {
             /* Flush old results */
@@ -33,9 +34,11 @@
                             FROM grounds AS rank
                             JOIN achievements AS a ON a.date >= rank.start AND a.date <= rank.finish AND a.deleted = 0
                               AND CONCAT(',', rank.categories, ',') LIKE CONCAT('%,', a.categ, ',%')
-                            JOIN grounds AS g ON a.ground = g.id AND g.deleted = 0
+                            JOIN grounds AS g ON a.ground = g.id AND g.deleted = 0 AND g.type LIKE 'comp:%'
                             JOIN users AS u ON u.id = a.user
                             WHERE rank.id = " . vsql::quote($id) . " ORDER BY g.start");
+
+
 
             return $scores;
         }
@@ -109,8 +112,6 @@
                 header("Content-type: text/plain; charset=utf-8");
                 foreach($out as $us => $info)
                     echo $us . " " . $info["points"] . "\n";
-
-                exit;
             }
 
             $points = -1; $pos = 0; $rank = array(); $latent_pos = 1;

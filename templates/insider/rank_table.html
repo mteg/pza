@@ -1,0 +1,26 @@
+<tr>
+    <th>Miejsce</th>
+    <th>Osoba</th>
+    <th style="text-align: center;">Punkty</th>
+    {{foreach from=$events item=ei key=ek}}
+    <th style="text-align: center;">
+        {{$ei.event_city}}<br>
+        {{$ei.event_date}}
+    </th>
+    {{/foreach}}
+</tr>
+
+{{foreach from=$results item=i key=k}}
+<tr>
+    <td style="text-align: right;">{{$i.position}}</td>
+    <td>{{$i.user_name|escape:'html'}}</td>
+    <td style="text-align: center;">{{$i.points|round:2|number_format:1}}</td>
+    {{foreach from=$events item=ei key=ek}}
+    <td style="text-align: center;" title="Miejsce: {{$i.scores.$ek.position}}">
+        {{if $i.scores.$ek.points}}
+        {{$i.scores.$ek.points|round:2|number_format:1}}
+        {{/if}}
+    </td>
+    {{/foreach}}
+</tr>
+{{/foreach}}

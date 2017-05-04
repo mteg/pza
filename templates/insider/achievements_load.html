@@ -1,0 +1,32 @@
+{{extends "insider/action.html"}}
+{{block name="body"}}
+
+<h2 class="no-menu">Import listy uczestników do bazy PZA</h2>
+<p>
+    Wklej dane zawodników. Każdy zawodnik powinien być wprowadzony w osobnym wierszu.
+    Wymagane dane: <b>Nazwisko, Imię, Data urodzenia, Numer telefonu (9 cyfr lub więcej).</b> Dane można rozdzielać
+    znakiem tabulacji, średnikiem, przecinkiem, dwukropkiem, ukośnikiem lub trzema spacjami.
+</p>
+<br/>
+<div>
+    Impreza: <b>{{$ginfo.name}}</b>
+</div>
+<div>
+    Kategoria: <b>{{$cinfo.name}}</b>
+</div>
+<form action="{{$source}}/load?{{$params}}" method="POST" enctype="multipart/form-data" >
+        <input type="hidden" name="ground" value="{{$request.ground}}">
+        <input type="hidden" name="selector" value="{{$request.selector}}">
+        <div>
+            <span>
+            <textarea name="results" rows="20" cols="50" style="width: 80%;">{{$request.results|escape:'html'}}</textarea>
+            <div class="error">{{if $err.results}}{{$err.results}}{{/if}}</div>
+            </span>
+            <div></div>
+        </div>
+        <div>
+            <input type="submit" value="Importuj!">
+        </div>
+</form>
+
+{{/block}}
