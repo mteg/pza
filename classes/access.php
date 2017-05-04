@@ -6,6 +6,8 @@ class access
 {
     private static $rights = false, $username = false;
     public static $nologin = false;
+    public static $subtitle = null;
+    public static $description = null;
 
 
     static function aliases()
@@ -28,7 +30,19 @@ class access
                 static::$rights = array();
                 return;
             }
-            header("Location: /insider/checkin");
+
+            // TODO: przenosimy na ekran logowania z przekazaniem docelowej lokalizacji i tytułu
+            $url = "/insider/checkin?url=" . $_SERVER["REQUEST_URI"];
+
+            if (self::$subtitle) {
+                $url .= '&subtitle=' . self::$subtitle;
+            }
+
+            if (self::$description) {
+                $url .= '&description=' . self::$description;
+            }
+
+            header("Location: " . $url);
             exit;
         }
 

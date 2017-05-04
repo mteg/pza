@@ -44,6 +44,14 @@
             {{/foreach}}
 
             <div>
+                <span>Ważność badań</span>
+                <span class="fit">
+                    {{if $med_max}}{{$med_max}}{{else}}brak ważnych badań{{/if}}
+                </span>
+                <div></div>
+            </div>
+
+            <div>
                 <span>Przynależność</span>
                 <span class="fit">
                     {{include file="insider/user_memberships.html"}}

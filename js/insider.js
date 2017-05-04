@@ -283,6 +283,39 @@ function init_controls(element) {
             clearTimeout(ajax_spinner_timeout);
             $('#ajax-loading').hide();
         });
+
+    init_form_helper(element);
+}
+
+// TODO: skończyć!
+function init_form_helper(element)
+{
+    $('form :input', element).each(function() {
+        $(this).on("change", function(e) {
+            var form = $(this).parents('form');
+            var field = $(this);
+            var req_url = 'unknown';
+            if (!$(form).data('helper'))
+                return;
+
+            req_url = $(form).data('helper');
+
+            $.ajax({
+                'url': req_url,
+                'method': 'post',
+                'data': $(form).serialize(),
+                'dataType': 'json',
+                'success': function(data, textStatus, jqXHR) {
+                    if (data[field.attr('name')]) {
+                        field.addClass('err');
+                        field.next('div.error').html(data[field.attr('name')]);
+                        field.focus();
+                        // może jakaś animacja zwarająca uwagę na błąd?!
+                    }
+                }
+            });
+        })
+    });
 }
 
 function generate_autocomplete_option(label, name)

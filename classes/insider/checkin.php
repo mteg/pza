@@ -11,6 +11,10 @@ class insider_checkin
     /* Obiekt Smarty */
     protected $S;
 
+    static $allowed_urls = array(
+        "\/insider\/signup\?id=\d"
+    );
+
 
     /* Lekkie powtórzenie z insider_action! */
     function __construct()
@@ -30,6 +34,16 @@ class insider_checkin
     function route()
     {
         $this->login();
+    }
+
+    private function check_urls($url)
+    {
+        foreach (self::$allowed_urls as $allowed_url) {
+            if (preg_match('/' . $allowed_url . '/i', $url))
+                return true;
+        }
+        
+        return false;
     }
 
     private function auth($login, $pw)
@@ -54,7 +68,13 @@ class insider_checkin
                 session_start();
                 $_SESSION["user_id"] = $udata["id"];
                 $_SESSION["adm_of"] = insider_memberships::adm_of();
-                header("Location: /insider/welcome");
+
+                // TODO: przenosimy do poprzedniej lokalizacji jeśli mamy taką możliwosć
+                if ($_REQUEST['url'] && $this->check_urls($_REQUEST['url'])) {
+                    header("Location: " . $_REQUEST["url"]);
+                } else {
+                    header("Location: /insider/welcome");
+                }
                 exit;
             }
 
@@ -87,6 +107,13 @@ class insider_checkin
             if(strlen($login) || strlen($pw))
                 $this->S->assign("err", $err);
         }
+
+        $this->S->assign('url', $_REQUEST['url']);
+
+        //TODO: debug
+        $this->S->assign("subtitle", $_REQUEST['subtitle'] ? $_REQUEST['subtitle'] : null);
+        $this->S->assign("description", $_REQUEST['description'] ? $_REQUEST['description'] : null);
+        $this->S->assign("creator", true);
 
         $this->S->display("insider/login.html");
     }
@@ -130,7 +157,7 @@ class insider_checkin
         }
     }
 
-    private function useradd($u)
+    private function validate_user($u)
     {
         $i = $_POST;
 
@@ -157,6 +184,19 @@ class insider_checkin
                 if(!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $i["member_from"]))
                     $err["member_from"] = "Niewłaściwa data (RRRR-MM-DD)";
 
+        $retr = vsql::get('select id from users where surname=' . vsql::quote($i['surname']). ' and birthdate=' . vsql::quote($i['birthdate']));
+        if ($retr)
+            $err['birthdate'] = 'Użytkownik o podanym nazwisku i dacie urodzenia już istnieje! ' .
+                                'Kliknij <a href="/insider/checkin/recover?url=' . $_REQUEST['url']. '&subtitle=' . $_REQUEST['subtitle']. '&description=' . $_REQUEST['description']. '">TU</a> by odzyskać hasło';
+
+
+        return $err;
+    }
+
+    private function useradd($u)
+    {
+        $err = $this->validate_user($u);
+
         if(!count($err))
         {
             if($id = $u->update(0, array_intersect_key($i, $u->fields)))
@@ -168,7 +208,11 @@ class insider_checkin
                 insider_passwd::passwd($id, $i["pw1"]);
                 $this->subscribe($i["member"], $i["member_from"]);
 
-                header("Location: /insider/welcome");
+                if ($_REQUEST['url'] && $this->check_urls($_REQUEST['url'])) {
+                    header("Location: " . $_REQUEST["url"]);
+                } else {
+                    header("Location: /insider/welcome");
+                }
             }
 
         }
@@ -181,6 +225,14 @@ class insider_checkin
         return array("" => "-- brak wyboru --") +
             vsql::retr("SELECT id, name FROM members WHERE deleted = 0 ORDER BY name",
                 "id", "name");
+    }
+
+    function rhelp()
+    {
+        access::$nologin = true;
+        $u = new insider_users(true);
+
+        echo json_encode($this->validate_user($u));
     }
 
     function register()
@@ -200,10 +252,14 @@ class insider_checkin
         }
 
         $this->S->assign("member_list", $this->member_list());
+        $this->S->assign('url', $_REQUEST['url']);
+        $this->S->assign("subtitle", $_REQUEST['subtitle'] ? $_REQUEST['subtitle'] : null);
+        $this->S->assign("description", $_REQUEST['description'] ? $_REQUEST['description'] : null);
 
         $this->S->assign("u", $u);
         $this->S->display("insider/register.html");
     }
+
     function recover()
     {
         access::$nologin = true;
@@ -270,8 +326,20 @@ class insider_checkin
                             vsql::update("users", array("login" => $_POST["login"]), $uid);
                         insider_passwd::passwd($uid, $_POST["pw1"]);
                         echo "passwd: $uid, " . $_POST["pw1"];
+
+                        //TODO: zalogować użytkownika
+                        // przejść do URL jeśli zdefiniowany
+                        $this-$this->auth($_POST['login'], $_POST['pw1']);
+
+                        // TODO: przenosimy do poprzedniej lokalizacji jeśli mamy taką możliwosć
+                        if ($_REQUEST['url'] && $this->check_urls($_REQUEST['url'])) {
+                            header("Location: " . $_REQUEST["url"]);
+                            return;
+                        }
+
                         $this->S->assign("title", "Zmiana hasła zakończona");
-                        $this->S->assign("msg", "Udało się zmienić hasło! Teraz w końcu możesz <a href='/insider/checkin'>zalogować się.</a>");
+//                        $this->S->assign("msg", "Udało się zmienić hasło! Teraz w końcu możesz <a href='/insider/checkin'>zalogować się.</a>");
+                        $this->S->assign("msg", "Udało się zmienić hasło! Zostałeś automatycznie zalogowany na swoje konto.</a>");
                         $this->S->display("insider/success.html");
                         return;
                     }
@@ -303,6 +371,10 @@ class insider_checkin
             $this->S->assign("err", $err);
             $this->S->assign("data", $_POST);
         }
+
+        $this->S->assign("url", $_REQUEST['url'] ? $_REQUEST['url'] : null);
+        $this->S->assign("subtitle", $_REQUEST['subtitle'] ? $_REQUEST['subtitle'] : null);
+        $this->S->assign("description", $_REQUEST['description'] ? $_REQUEST['description'] : null);
         $this->S->display("insider/recover.html");
     }
 

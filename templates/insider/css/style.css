@@ -44,6 +44,11 @@ h1 {
 h1.login-header {
   margin-top: 100px;
 }
+
+h2.login-header, h3.login-header {
+  padding: 0 20px;
+}
+
 h2 {
   font-size: 1.5em;
   font-weight: 300;
@@ -530,7 +535,7 @@ span.dupcheck {
  * views
  */
 .login-center {
-  width: 580px;
+  width: 650px;
   margin: 0 auto;
   overflow: hidden;
   padding: 0 10px;
@@ -579,6 +584,11 @@ span.dupcheck {
 .register-center .notification.error {
   margin-top: 0;
   max-width: 980px;
+}
+
+.disabled-div {
+  pointer-events: none;
+  opacity: 0.4;
 }
 /* **********************************************************************
  * responsive

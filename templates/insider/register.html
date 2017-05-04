@@ -7,11 +7,17 @@
 {{block name="body"}}
 
 <h1 class="register-header">Zarejestruj się wewnątrz PZA</h1>
+{{if $subtitle}}
+<h2 class="login-header">{{$subtitle}}</h2>
+{{/if}}
+{{*{{if $description}}
+<h3 class="login-header">{{$description}}</h3>
+{{/if}}*}}
 {{strip}}
 <section class="gray-panel">
   
   <div class="register-center">
-    <form action="/insider/checkin/register" method="post">
+    <form action="/insider/checkin/register?url={{$url}}&subtitle={{$subtitle}}&description={{$description}}" data-helper="/insider/checkin/rhelp?url={{$url}}&subtitle={{$subtitle}}&description={{$description}}" method="post">
       
       {{if $err}}
       <div class="notification error">

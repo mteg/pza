@@ -2,6 +2,19 @@
 
 class insider_signup extends insider_action
 {
+    public function __construct()
+    {
+        $id = $_REQUEST["id"];
+        $info = vsql::get("SELECT `name` FROM
+                grounds AS g
+                WHERE g.deleted = 0 AND g.id = " . vsql::quote($id));
+
+        access::$subtitle = 'Zapis na imprezę PZA: ' . $info['name'];
+        access::$description = 'Przed zapisaniem Cię na zawody musimy zebrać nieco danych. Najpierw zaloguj się na swoje konto w systemie PZA lub, jeśli nie posiadasz konta, wypełnij formularz rejestracyjny.';
+
+        parent::__construct();
+    }
+
     static function user_cats($cats, $event_date)
     {
         $user_info = vsql::get("SELECT sex, birthdate FROM users WHERE id = " . access::getuid());
