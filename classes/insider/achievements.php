@@ -167,6 +167,8 @@
                     $ground_name = $family == "course" ? "Szkolenie" : "Zgrupowanie";
                     $this->order = "surname, name";
                     $this->add_columns("creat");
+                    $this->columns["email"] = array("E-mail", "order" => "u.email", "search" => "u.email");
+                    $this->columns["phone"] = array("Telefon", "order" => "u.phone", "search" => "u.phone");
                     break;
 
                 case "rank":
@@ -403,7 +405,7 @@
                 $columns[] = "IFNULL(MAX(le.due), '---') AS med_date";
             }
 
-            $query = "SELECT SQL_CALC_FOUND_ROWS t.id, t.creat, g.name AS ground, u.surname AS surname, u.name AS name,
+            $query = "SELECT SQL_CALC_FOUND_ROWS t.id, t.creat, g.name AS ground, u.surname AS surname, u.name AS name, u.email, u.phone,
                              t.position, t.points, cat.name AS categ, t.duration, t.date," .
                             ($this->has_signup_restrictions() ? "m.name AS member," : "") .
                             "IF(g.type = 'nature:cave', REPLACE(t.style, ',', '\n'), t.style) AS style, g.summit, g.country, g.region, g.difficulty, " .

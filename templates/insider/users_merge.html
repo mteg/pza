@@ -1,0 +1,28 @@
+{{block name="dialog"}}
+<input type="hidden" class="dialog-title" value="Przedłużenie uprawnień">
+
+<div class="source-domain">
+<input type="hidden" name="source" value="/insider/users">
+<input type="hidden" name="method" value="merge">
+<form>
+    <div class="table-edit table-form">
+        <input type="hidden" name="id" value="{{$request.id}}">
+        <div class="field">
+            <label>Konto dołączane</label>
+            <span>
+                {{$user_ref|escape:'html'}} ({{$request.id}})
+            </span>
+        </div>
+        {{include file="insider/field.html" nofit=1 i=["name" => "Konto podstawowe", "ref" => "users", "by" => "ref"] k="osoba" data=$request}}
+        <div>
+            <i>
+                Konto {{$request.id}} zostanie dołączone do wybranego konta.
+                W przypadku różnych informacji w profilu, pierwszeństwo będą miały dane
+                (nazwisko, imię, data urodzenia, adres zamieszkania) wskazane w koncie podstawowym.
+                Dane do logowania i dane kontaktowe (telefon, e-mail) zostaną pobrane z konta dołączanego.
+            </i>
+        </div>
+    </div>
+</form>
+</div>
+{{/block}}

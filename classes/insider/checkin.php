@@ -197,6 +197,7 @@ class insider_checkin
     {
         $err = $this->validate_user($u);
 
+        $i = $_POST;
         if(!count($err))
         {
             if($id = $u->update(0, array_intersect_key($i, $u->fields)))

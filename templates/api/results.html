@@ -2,17 +2,19 @@
 <p>{{$event.city}}, {{$event.date}}</p>
 {{foreach from=$results item=rlist key=categ}}
         <h3>{{$categ}}</h3>
-        <table>
+        <table class="wyniki">
             <tr>
                 <th>Miejsce</th>
                 <th>Nazwisko</th>
                 <th>Imię</th>
+                <th>Klub</th>
             </tr>
             {{foreach from=$rlist item=i key=k}}
             <tr>
                 <td>{{$i.position}}</td>
                 <td>{{$i.surname}}</td>
                 <td>{{$i.name}}</td>
+                <td><i>{{$i.member_name|escape:'html'}}</i></td>
             </tr>
             {{/foreach}}
         </table>

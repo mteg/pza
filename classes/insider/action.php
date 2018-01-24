@@ -134,6 +134,7 @@ abstract class insider_action
             "Wszystkie uprawnienia" => "/insider/entitlements|search(entitlements)",
             "Wszystkie członkostwa" => "/insider/memberships|search(memberships)",
             "Dziennik zmian" => "/insider/register|search(register)",
+            "Nowe konta" => "/insider/newusers|search(newusers)",
         ),
 
     );

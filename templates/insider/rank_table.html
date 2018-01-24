@@ -13,7 +13,7 @@
 {{foreach from=$results item=i key=k}}
 <tr>
     <td style="text-align: right;">{{$i.position}}</td>
-    <td>{{$i.user_name|escape:'html'}}</td>
+    <td>{{$i.user_name|escape:'html'}}{{if $clubs && $i.user_club}}<br/><small>{{$i.user_club|escape:'html'}}</small>{{/if}}</td>
     <td style="text-align: center;">{{$i.points|round:2|number_format:1}}</td>
     {{foreach from=$events item=ei key=ek}}
     <td style="text-align: center;" title="Miejsce: {{$i.scores.$ek.position}}">
@@ -22,5 +22,10 @@
         {{/if}}
     </td>
     {{/foreach}}
+</tr>
+{{foreachelse}}
+<tr>
+    <td>&nbsp;</td>
+    <td colspan="99"><i>(brak zawodników w rankingu)</i></td>
 </tr>
 {{/foreach}}

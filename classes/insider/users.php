@@ -57,6 +57,9 @@
                 $this->actions["/insider/users/edit?about=1&"] = array("name" => "Edytuj 'o sobie'");
             if(access::glob("entmgr(*)"))
                 $this->actions["/insider/users/addentl?&"] = array("name" => "Dodaj uprawnienie");
+            if(access::has("delete(users)"))
+                $this->actions["/insider/users/merge?&"] = array("name" => "Połącz konta");
+
             if(access::has("edit(memberships)"))
                 $this->actions["/insider/users/transfer?&"] = array("name" => "Zmiana klubu");
             $this->actions["/insider/users/achievements"] = array("name" => "Aktywność", "target" => "_self");
@@ -358,6 +361,75 @@ WHERE t.deleted = 0  AND g.type = \"nature:cave\" AND t.user = " . vsql::quote($
             parent::add();
         }
 
+        function merge()
+        {
+            access::ensure("delete(users)");
+
+            $userid = $_REQUEST["id"];
+            $this->S->assign("user_ref", vsql::get("SELECT ref FROM users WHERE id = " . vsql::quote($userid), "ref"));
+
+            if(isset($_REQUEST["osoba"]))
+            {
+                $mergeid = preg_replace('/^([0-9]+):.*$/', '\1', $_REQUEST["osoba"]);
+                if($mergeid == $userid)
+                    $err["osoba"] = "Wybrałeś to samo konto!";
+                else if(!is_numeric($mergeid))
+                    $err["osoba"] = "Nie wskazano identyfikatora konta!";
+                else
+                {
+
+                    /* Profile */
+                    $istare = vsql::get("SELECT * FROM users WHERE id = " . vsql::quote($mergeid));
+                    $inowe  = vsql::get("SELECT * FROM users WHERE id = " . vsql::quote($userid));
+
+                    $updstare = array();
+
+                    /* Stare aktualizujemy ewentualnie o te, jeśli podano w nowych */
+                    foreach(array("phone", "email", "login", "password") as $k)
+                        if(strlen($v = trim($inowe[$k])))
+                            if($v != trim($istare[$k]))
+                                $updstare[$k] = $inowe[$k];
+
+                    /* Jeśli mamy jakieś nowe dane, to aktualizujemy */
+                    foreach(array_keys($this->fields) as $k)
+                        if(strlen($v = trim($inowe[$k])))
+                            if(!strlen(trim($istare[$k])))
+                                $updstare[$k] = $inowe[$k];
+
+                    /* Aktualizujemy! */
+                    vsql::update("users", $updstare, $mergeid);
+
+                    /* Jedziemy po tabelach */
+                    foreach(array("entitlements", "memberships", "achievements") as $t)
+                    {
+                        $tabids = vsql::retr("SELECT id FROM {$t} WHERE deleted = 0 AND `user` = " . vsql::quote($userid), "id", "id");
+                        foreach($tabids as $tabid)
+                            vsql::update($t, array("user" => $mergeid), $tabid);
+                    }
+
+                    /*
+                    foreach(array("entitlements", "memberships", "achievements", "grounds", "rights", "memberships", "members") as $t)
+                        foreach(array("creat_by", "mod_by", "deleted_by") as $k) {
+                            $tabids = vsql::retr("SELECT id FROM {$t} WHERE deleted = 0 AND `{$k}` = " . vsql::quote($userid), "id", "id");
+                            foreach ($tabids as $tabid)
+                                vsql::update($t, array($k => $mergeid), $tabid);
+                        }
+                    */
+
+                    vsql::delete("users", $userid);
+
+                    header("Location: /insider/users/view?id=" . $mergeid);
+                    exit;
+
+                }
+                $this->S->assign("err", $err);
+            }
+
+
+            $this->w_action("merge");
+
+        }
+
         function transfer()
         {
             access::ensure("edit(memberships)");
@@ -386,6 +458,12 @@ WHERE t.deleted = 0  AND g.type = \"nature:cave\" AND t.user = " . vsql::quote($
             $this->S->assign("member_list", insider_checkin::member_list());
             $this->S->assign("date", date("Y-m-d"));
             $this->w_action("transfer");
+        }
+
+        function complete()
+        {
+            $this->fields["osoba"] = array("ref" => "users", "by" => "ref");
+            parent::complete();
         }
 
 

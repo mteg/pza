@@ -79,11 +79,13 @@ switch($op)
 
     case "results":
         $event = $_REQUEST["event"]; $res = array();
-        foreach(vsql::retr("SELECT a.id, cat.name AS cat_name, a.position, u.surname, u.name
+        foreach(vsql::retr("SELECT a.id, cat.name AS cat_name, a.position, u.surname, u.name, mem.name AS member_name
                             FROM grounds AS ev
                                 JOIN achievements AS a ON a.ground = ev.id AND a.deleted = 0
                                 LEFT JOIN grounds AS cat ON a.categ = cat.id
                                 JOIN users AS u ON u.id = a.user AND u.deleted = 0
+                                LEFT JOIN memberships AS m ON m.user = u.id AND DATE(ev.start) BETWEEN m.starts AND m.due AND m.deleted = 0
+                                LEFT JOIN members AS mem ON mem.id = m.member AND mem.deleted  = 0                            
                                 WHERE ev.type LIKE '%' AND ev.id = " . vsql::quote($event) .
                             " ORDER BY cat_name, CAST(a.position AS signed), u.surname, u.name") as $i)
         {
