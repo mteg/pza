@@ -170,6 +170,9 @@ class insider_checkin
         if(!strlen($i["login"]))
             $err["login"] = "Musisz ustawić jakiś login!";
 
+        if ($i['znpdo'] != 1)
+            $err['znpdo'] = "Zgoda wymagana";
+
         if($msg = insider_passwd::verify($i["pw1"]))
             $err["pw1"] = $msg;
         else if($i["pw1"] != $i["pw2"])
