@@ -68,6 +68,15 @@
             
             {{include file="insider/field.html" nofit=1 i=["name" => "Klub", "type" => "select", "options" => $member_list] k="member"}}
             {{include file="insider/field.html" nofit=1 i=["name" => "Członkostwo od", "type" => "date"] k="member_from"}}
+            <br/><br/>
+            {{include file="insider/field.html" nofit=1 i=["name" => "Zgoda na przetwarzanie danych osobowych", "type" => "flags",
+                "options" => [
+                  '1' => 'Wyrażam zgodę na przetwarzanie powyżej wskazanych danych osobowych w celu obsługi mojego uczestnictwa w rywalizacji sportowej w sportach reprezentowanych przez PZA oraz w celu ewidencji uprawnień instruktorskich, trenerskich i podobnych nadanych przez PZA. Dane będą przetwarzane przez Polski Związek Alpinizmu z siedzibą przy ul. Mokotowska 24 lok. 62, 00-561 Warszawa i nie będą udostępniane podmiotom trzecim bez odrębnej zgody.'
+                ]
+            ] k="znpdo"}}
+            <!--<span class="notification desc">-->
+              <p></p>
+            </span>
             
           </div>
           <div class="fields-section">
